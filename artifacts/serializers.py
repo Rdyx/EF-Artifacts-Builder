@@ -32,6 +32,7 @@ class ArtifactSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SetSerializer(serializers.HyperlinkedModelSerializer):
+    setLevel = serializers.StringRelatedField(source='set_level', read_only=True)
     artifact1 = ArtifactSerializer(source='set_art_1')
     artifact2 = ArtifactSerializer(source='set_art_2')
     artifact3 = ArtifactSerializer(source='set_art_3')
@@ -59,7 +60,7 @@ class SetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Set
-        fields = ('set_name', 'set_arts_number',
+        fields = ('set_name', 'set_arts_number', 'setLevel',
                   'artifact1', 'artifact2', 'artifact3', 'artifact4', 'artifact5', 'artifact6',
                   'bonus1', 'race1', 'value1',
                   'bonus2', 'race2', 'value2',

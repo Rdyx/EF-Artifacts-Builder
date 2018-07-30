@@ -32,7 +32,6 @@ class ArtifactLevel(models.Model):
 
 
 class Artifact(models.Model):
-    # urlPrefix = 'https://www.endlessfrontierdata.com/'
     artifact_img = models.CharField(max_length=200)
     artifact_number = models.IntegerField(default=0, unique=True)
     artifact_level = models.ForeignKey(ArtifactLevel, on_delete=models.CASCADE, default=2)
@@ -53,6 +52,7 @@ class Artifact(models.Model):
 
 class Set(models.Model):
     set_name = models.CharField(max_length=100)
+    set_level = models.ForeignKey(ArtifactLevel, on_delete=models.CASCADE, related_name='set_level', default=6)
     set_arts_number = models.IntegerField()
     set_art_1 = models.ForeignKey(Artifact, on_delete=models.CASCADE, related_name='set_art_1', blank=True, null=True)
     set_art_2 = models.ForeignKey(Artifact, on_delete=models.CASCADE, related_name='set_art_2', blank=True, null=True)
@@ -86,7 +86,7 @@ class Set(models.Model):
     set_bonus_6_value = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
-        ordering = ['set_name', 'set_arts_number']
+        ordering = ['set_level', 'set_name', 'set_arts_number']
 
     def __str__(self):
-        return self.set_name
+        return str(self.set_level) + ' ' + str(self.set_name)
