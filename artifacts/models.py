@@ -86,7 +86,7 @@ class Set(models.Model):
     set_bonus_6_value = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
-        ordering = ['set_level', 'set_name', 'set_arts_number']
+        ordering = ['set_name', '-set_level_id']
 
     def __str__(self):
         return str(self.set_level) + ' ' + str(self.set_name)
