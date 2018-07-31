@@ -1,10 +1,20 @@
 body {
     background-color: #000 !important;
     min-width: 100%;
+    font-family: 'Kaushan Script', cursive !important;
 }
 
 .white-text {
     color: #FFF;
+}
+
+.bolded {
+    font-weight: bolder !important;
+}
+
+.bordered {
+    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #FFF;
 }
 
 .loading {

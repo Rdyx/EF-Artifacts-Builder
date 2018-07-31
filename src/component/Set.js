@@ -38,7 +38,8 @@ export default class Set extends Component {
     render() {
         return (
             <div>
-                <p className={`text-center white-text`}>{this.state.selectedSet.set_name}</p>
+                <div className={`text-center bolded bordered white-text mt-2`}>{this.state.selectedSet.set_tech_name}</div>
+                <div className={`text-center white-text mb-3`}>{this.state.selectedSet.set_name}</div>
                 <div className="row">{this.state.artifacts.map(this.showArts)}</div>
             </div>
         )

@@ -136,7 +136,7 @@ export default class App extends Component {
     getSelection(set) {
         return (
             <li className="text-center">
-                <div className="col-12">{set.set_name}</div>
+                <div className="col-12 bolded">{set.setLevel} {set.set_tech_name}</div>
             </li>
         )
     }
@@ -261,7 +261,7 @@ export default class App extends Component {
             <div className="container-fluid text-center">
                 {this.state.loading ? (
                     <div className="row">
-                        <h1 className="loading white-text">Loading...</h1>
+                        <h1 className="loading bolded white-text">Loading...</h1>
                     </div>
                 ) : null}
                 <div onClick={() => this.closeScreenModal}>
@@ -306,10 +306,10 @@ export default class App extends Component {
                         </div>
                     </div>
                     <div id="capture" className="right-box d-none d-sm-block">
-                        <h1>Stats Resume</h1>
-                        <p className="col-12">Number of arts : {this.sum(this.state.totalNumberOfArts)}</p>
-                        <p className="col-12">Total game speed bonus : {this.sum(this.state.gameSpeedBonuses)}</p>
-                        <p className="col-12">Total bonus medals : {this.sum(this.state.bonusMedals)}</p>
+                        <h1 className="bolded pr-2 pl-2">Stats Resume</h1>
+                        <p className="col-12">Number of arts : <span className="bolded">{this.sum(this.state.totalNumberOfArts)}</span></p>
+                        <p className="col-12">Total game speed bonus : <span className="bolded">{this.sum(this.state.gameSpeedBonuses)}</span></p>
+                        <p className="col-12">Total bonus medals : <span className="bolded">{this.sum(this.state.bonusMedals)}</span></p>
                         <p className="col-12">List of selected sets</p>
                         <ul className="list-unstyled">
                             {this.state.selectedList.map(this.getSelection)}
