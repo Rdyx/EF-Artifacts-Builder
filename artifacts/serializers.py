@@ -60,7 +60,7 @@ class SetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Set
-        fields = ('set_name', 'set_arts_number', 'setLevel',
+        fields = ('set_name', 'set_arts_number', 'setLevel', 'set_tech_name',
                   'artifact1', 'artifact2', 'artifact3', 'artifact4', 'artifact5', 'artifact6',
                   'bonus1', 'race1', 'value1',
                   'bonus2', 'race2', 'value2',

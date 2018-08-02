@@ -1,9 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
-
-
 class Race(models.Model):
     race_name = models.CharField(max_length=200)
 
@@ -53,6 +50,7 @@ class Artifact(models.Model):
 class Set(models.Model):
     set_name = models.CharField(max_length=100)
     set_level = models.ForeignKey(ArtifactLevel, on_delete=models.CASCADE, related_name='set_level', default=6)
+    set_tech_name = models.CharField(max_length=20)
     set_arts_number = models.IntegerField()
     set_art_1 = models.ForeignKey(Artifact, on_delete=models.CASCADE, related_name='set_art_1', blank=True, null=True)
     set_art_2 = models.ForeignKey(Artifact, on_delete=models.CASCADE, related_name='set_art_2', blank=True, null=True)
@@ -89,4 +87,4 @@ class Set(models.Model):
         ordering = ['set_name', '-set_level_id']
 
     def __str__(self):
-        return str(self.set_level) + ' ' + str(self.set_name)
+        return str(self.set_tech_name) + ' ' + str(self.set_level) + ' ' + str(self.set_name)

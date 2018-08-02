@@ -5,11 +5,11 @@ from .serializers import SetSerializer, ArtifactSerializer, ArtifactLevelSeriali
 
 # @api_view(['GET'])
 # def my_api_view(request, format=None):
-    # get data
+
 
 class SetViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows sets to be viewed.
     """
     queryset = Set.objects.all()
     serializer_class = SetSerializer
@@ -17,7 +17,7 @@ class SetViewSet(viewsets.ModelViewSet):
 
 class ArtifactViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows artifacts to be viewed.
     """
     queryset = Artifact.objects.all()
     serializer_class = ArtifactSerializer
@@ -25,7 +25,7 @@ class ArtifactViewSet(viewsets.ModelViewSet):
 
 class ArtifactLevelViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows artifacts levels to be viewed.
     """
     queryset = ArtifactLevel.objects.all()
     serializer_class = ArtifactLevelSerializer
@@ -33,7 +33,7 @@ class ArtifactLevelViewSet(viewsets.ModelViewSet):
 
 class BonusViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows bonus to be viewed.
     """
     queryset = Bonus.objects.all()
     serializer_class = BonusSerializer
@@ -41,7 +41,7 @@ class BonusViewSet(viewsets.ModelViewSet):
 
 class RaceViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows races to be viewed.
     """
     queryset = Race.objects.all()
     serializer_class = RaceSerializer
