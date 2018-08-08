@@ -345,6 +345,12 @@ export default class App extends Component {
                                 feel free to contact me at winmac666@gmail.com with proofs that you're from the staff
                                 (Watch out ! Badass Mail over here ! :D)
                             </p>
+                            <p className="col-12">
+                                Source code is free to read at <a className="efd external"
+                                                                  href="https://github.com/Rdyx/EF-Artifacts-Builder" target={"_blank"}>
+                                GitHub
+                            </a>
+                            </p>
                             <h3 className="col-12">Thanks for reading, happy building !</h3>
                         </div>
                     </Modal>
