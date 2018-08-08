@@ -273,7 +273,7 @@ export default class App extends Component {
         let sentencesArray = [];
         sentencesArray.push(`Yaaaaarrhhhhh ! ${v} ! DO WHAT YOU WANT CAUSE A PIRATE IS FREE ! YOU ARE A PIRATE !`);
         sentencesArray.push(`Kawaaaaiiiii ${v} !`);
-        sentencesArray.push(`Omae wa mou shinderu. `);
+        sentencesArray.push(`Omae wa mou shinderu ${v}. `);
         sentencesArray.push(`May the SR be with you, ${v}.`);
         sentencesArray.push(`All your base are belong to us, ${v} !`);
         sentencesArray.push(`Thank you ${v} ! But our Princess is in another castle !`);
