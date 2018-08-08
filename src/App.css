@@ -2,6 +2,8 @@ body {
     background-color: #000 !important;
     min-width: 100%;
     font-family: 'Kaushan Script', cursive !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .white-text {
@@ -48,8 +50,18 @@ label {
     max-width: 100%;
 }
 
-a, a:link, a:visited, a:hover, a:visited {
+a, a:link, a:visited, a:hover, a:active {
     color: #FFF !important;
+}
+
+a.efd, a.efd:link, a.efd:visited, a.efd:hover, a.efd:active {
+    color: lightskyblue !important;
+    text-underline: #000 !important;
+}
+
+a[target="_blank"]:after {
+    content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+    margin: 0 3px 0 5px;
 }
 
 .text-color {
@@ -138,7 +150,7 @@ a, a:link, a:visited, a:hover, a:visited {
     top: 6px;
     left: -10px;
     height: 25px;
-    width: 25px;
+    width: 23px;
     background-color: lime;
 }
 
@@ -158,4 +170,14 @@ a, a:link, a:visited, a:hover, a:visited {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+.full-height {
+    max-height: 95vh;
+    height: calc(100vh - 85px);
+}
+
+.underlined {
+    border-bottom: 1px dashed #FFF;
+    cursor: help;
 }

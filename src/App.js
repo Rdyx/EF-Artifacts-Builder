@@ -36,18 +36,29 @@ export default class App extends Component {
             artifact: null,
             showArtStats: false,
             showScreenModal: false,
+            showInfoModal: false,
             canvas: null,
             canvasMobile: null,
             searchBySetName: '',
-            loading: false
+            loading: false,
+            fullStatsMobile: false,
+            visitorCount: null,
         };
         this.triggerScreenshot = this.triggerScreenshot.bind(this);
         this.closeScreenModal = this.closeScreenModal.bind(this);
+        this.closeInfoModal = this.closeInfoModal.bind(this);
     }
 
     componentWillMount() {
         this.setState({loading: true});
-        // fetch('http://127.0.0.1:8002/sets/')
+        // fetch('http://127.0.0.1:8002/sets/')s
+        fetch('http://127.0.0.1:8002/visits/1/')
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                this.setState({visitorCount: data.visits})
+            });
         fetch('http://efartifactsbuilder.alwaysdata.net/sets/')
             .then((response) => {
                 return response.json()
@@ -202,23 +213,27 @@ export default class App extends Component {
                         // setting if/else to get sets[0] in this case
                         if (sets[index]) {
                             return (
-                                <div className="row justify-content-around parent">
+                                <div className="row justify-content-around">
                                     <div className="col-2 white-text child">
                                         {sets[index].setLevel}
                                     </div>
-                                    <div className="col-10 row justify-content-around">
-                                        {sets.map(this.artsNumber)}
+                                    <div className="col-9">
+                                        <div className="row justify-content-around">
+                                            {sets.map(this.artsNumber)}
+                                        </div>
                                     </div>
                                 </div>
                             )
                         } else {
                             return (
-                                <div className="row justify-content-around parent">
+                                <div className="row justify-content-around">
                                     <div className="col-2 white-text child">
                                         {sets[0].setLevel}
                                     </div>
-                                    <div className="col-10 row justify-content-around">
-                                        {sets.map(this.artsNumber)}
+                                    <div className="col-9">
+                                        <div className="row justify-content-around">
+                                            {sets.map(this.artsNumber)}
+                                        </div>
                                     </div>
                                 </div>
                             )
@@ -252,8 +267,36 @@ export default class App extends Component {
         )
     };
 
+    randomVisitorSentence() {
+        let v = `Visitor ${this.state.visitorCount}`;
+        let sentencesArray = [];
+        sentencesArray.push(`Yaaaaarrhhhhh ! ${v} ! DO WHAT YOU WANT CAUSE A PIRATE IS FREE ! YOU ARE A PIRATE !`);
+        sentencesArray.push(`Kawaaaaiiiii ${v} !`);
+        sentencesArray.push(`Omae wa mou shinderu. `);
+        sentencesArray.push(`May the SR be with you, ${v}.`);
+        sentencesArray.push(`All your base are belong to us, ${v} !`);
+        sentencesArray.push(`Thank you ${v} ! But our Princess is in another castle !`);
+        sentencesArray.push(`It's a-me ! ${v} !`);
+        sentencesArray.push(`I used to be an adventurer like you, ${v}, until I took an arrow to the knee.`);
+        sentencesArray.push(`${v}, do a barrel roll !`);
+        sentencesArray.push(`Praise the sun ${v} !`);
+        sentencesArray.push(`The cake is a lie  ${v} !`);
+        sentencesArray.push(`${v} JEEEENNKKIIIINNNNS !`);
+        sentencesArray.push(`${v}, it's time to kick ass and chew bubble gum, and I'm all outta gum !`);
+        let randomIndex = Math.floor(Math.random() * Math.floor(sentencesArray.length));
+        if (this.state.visitorCount) {
+            return (
+                <h3>{sentencesArray[randomIndex]}</h3>
+            )
+        }
+    };
+
     closeScreenModal = () => {
         this.setState({showScreenModal: false, canvas: null})
+    };
+
+    closeInfoModal = () => {
+        this.setState({showInfoModal: false})
     };
 
     render() {
@@ -261,7 +304,10 @@ export default class App extends Component {
             <div className="container-fluid text-center">
                 {this.state.loading ? (
                     <div className="row">
-                        <h1 className="loading bolded white-text">Loading...</h1>
+                        <div className="loading bolded white-text">
+                            <h1 className="col-12 mt-5">Loading...</h1>
+                            <div className="col mt-5">{this.randomVisitorSentence()}</div>
+                        </div>
                     </div>
                 ) : null}
                 <div onClick={() => this.closeScreenModal}>
@@ -275,8 +321,35 @@ export default class App extends Component {
                              alt="Screenshot"/>
                     </Modal>
                 </div>
+                <div onClick={() => this.closeInfoModal}>
+                    <Modal
+                        isOpen={this.state.showInfoModal}
+                        onRequestClose={this.closeInfoModal}
+                        style={customStyles}
+                    >
+                        <div className="text-center">
+                            <h1 className="col-12">Endless Frontier Artifacts Builder</h1>
+                            <p className="col-12">This builder has been made by Rdyx (S2) from Limitless.</p>
+                            <p className="col-12">
+                                I simply wanted to discover some frameworks and have a user-friendly interface
+                                to build sets setups.
+                            </p>
+                            <p className="col-12">
+                                A special thank to <a className="efd external"
+                                                      href="https://www.endlessfrontierdata.com/" target="_blank">
+                                Endless
+                                Frontier Data
+                            </a> for their data about arts and their artifacts images.
+                                Since I didn't ask before link their images,
+                                feel free to contact me at winmac666@gmail.com with proofs that you're from the staff
+                                (Watch out ! Badass Mail over here ! :D)
+                            </p>
+                            <h3 className="col-12">Thanks for reading, happy building !</h3>
+                        </div>
+                    </Modal>
+                </div>
                 <nav className="sticky-top row navbar navbar-dark bg-dark justify-content-between">
-                    <a className="navbar-brand">EFAB</a>
+                    <a className="navbar-brand underlined" onClick={() => this.setState({showInfoModal: true})}>EFAB</a>
                     <button
                         className="btn btn-outline-warning my-2 my-sm-0 d-none d-sm-block"
                         onClick={this.triggerScreenshot}>Screen Stats
@@ -289,16 +362,25 @@ export default class App extends Component {
                             onChange={(e) => this.setState({searchBySetName: e.target.value})}/>
                     </div>
                 </nav>
-                <div className="screenstats row text-center sticky-top d-block d-sm-none">
-                    <h2 className="col-12">Stats Resume</h2>
-                    <p className="col-12">Number of arts : {this.sum(this.state.totalNumberOfArts)}</p>
-                    <p className="col-12">Total game speed bonus : {this.sum(this.state.gameSpeedBonuses)}</p>
-                    <p className="col-12">Total bonus medals : {this.sum(this.state.bonusMedals)}</p>
-                    <p className="col-12">List of selected sets</p>
-                    <ul className="list-unstyled col-xs-12">
-                        {this.state.selectedList.map(this.getSelection)}
-                    </ul>
+                <div className="sticky-top">
+                    <div className={`screenstats row text-center d-block d-sm-none pt-3
+                        ${this.state.fullStatsMobile ? 'full-height' : null}`}>
+                        <h2 className="col-12">Stats Resume</h2>
+                        <p className="col-12">Number of arts : {this.sum(this.state.totalNumberOfArts)}</p>
+                        <p className="col-12">Total game speed bonus : {this.sum(this.state.gameSpeedBonuses)}</p>
+                        <p className="col-12">Total bonus medals : {this.sum(this.state.bonusMedals)}</p>
+                        <p className="col-12">List of selected sets</p>
+                        <ul className="list-unstyled col-xs-12">
+                            {this.state.selectedList.map(this.getSelection)}
+                        </ul>
+                    </div>
+                    <div
+                        className="screenstats row bordered d-block d-sm-none"
+                        onClick={() => this.setState({fullStatsMobile: !this.state.fullStatsMobile})}>
+                        {this.state.fullStatsMobile ? 'See less' : 'See more'}
+                    </div>
                 </div>
+
                 <div className="row">
                     <div className="col-12 col-md-9 left-box">
                         <div className="row">
@@ -307,9 +389,12 @@ export default class App extends Component {
                     </div>
                     <div id="capture" className="right-box d-none d-sm-block">
                         <h1 className="bolded pr-2 pl-2">Stats Resume</h1>
-                        <p className="col-12">Number of arts : <span className="bolded">{this.sum(this.state.totalNumberOfArts)}</span></p>
-                        <p className="col-12">Total game speed bonus : <span className="bolded">{this.sum(this.state.gameSpeedBonuses)}</span></p>
-                        <p className="col-12">Total bonus medals : <span className="bolded">{this.sum(this.state.bonusMedals)}</span></p>
+                        <p className="col-12">Number of arts : <span
+                            className="bolded">{this.sum(this.state.totalNumberOfArts)}</span></p>
+                        <p className="col-12">Total game speed bonus : <span
+                            className="bolded">{this.sum(this.state.gameSpeedBonuses)}</span></p>
+                        <p className="col-12">Total bonus medals : <span
+                            className="bolded">{this.sum(this.state.bonusMedals)}</span></p>
                         <p className="col-12">List of selected sets</p>
                         <ul className="list-unstyled">
                             {this.state.selectedList.map(this.getSelection)}
