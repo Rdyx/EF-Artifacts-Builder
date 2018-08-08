@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Set, Artifact, ArtifactLevel, Bonus, Race
+from .models import HitCount, Set, Artifact, ArtifactLevel, Bonus, Race
+
+
+class HitCountSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = HitCount
+        fields = ('visits',)
 
 
 class ArtifactLevelSerializer(serializers.HyperlinkedModelSerializer):

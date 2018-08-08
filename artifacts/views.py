@@ -1,10 +1,21 @@
-from .models import Set, Artifact, ArtifactLevel, Bonus, Race
+from .models import HitCount, Set, Artifact, ArtifactLevel, Bonus, Race
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
-from .serializers import SetSerializer, ArtifactSerializer, ArtifactLevelSerializer, BonusSerializer, RaceSerializer
+from .serializers import HitCountSerializer, SetSerializer, ArtifactSerializer, ArtifactLevelSerializer, \
+    BonusSerializer, RaceSerializer
+from django.db.models import F
+from django.http import JsonResponse
 
-# @api_view(['GET'])
-# def my_api_view(request, format=None):
+
+class HitCountViewSet(viewsets.ModelViewSet):
+    queryset = HitCount.objects.all()
+    serializer_class = HitCountSerializer
+
+    # Getting visitor counter and increment it after GET request
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        HitCount.objects.filter(pk=instance.id).update(visits=F('visits') + 1)
+        serializer = self.get_serializer(instance)
+        return JsonResponse(serializer.data)
 
 
 class SetViewSet(viewsets.ModelViewSet):

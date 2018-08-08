@@ -1,6 +1,10 @@
 from django.db import models
 
 
+class HitCount(models.Model):
+    visits = models.IntegerField(default=0)
+
+
 class Race(models.Model):
     race_name = models.CharField(max_length=200)
 
