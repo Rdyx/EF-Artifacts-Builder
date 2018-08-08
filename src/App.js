@@ -52,7 +52,8 @@ export default class App extends Component {
     componentWillMount() {
         this.setState({loading: true});
         // fetch('http://127.0.0.1:8002/sets/')s
-        fetch('http://127.0.0.1:8002/visits/1/')
+        // fetch('http://127.0.0.1:8002/visits/1/')
+        fetch('http://efartifactsbuilder.alwaysdata.net/visits/1/')
             .then(response => {
                 return response.json()
             })
