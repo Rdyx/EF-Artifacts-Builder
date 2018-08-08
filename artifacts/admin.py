@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Race, Bonus, Artifact, ArtifactLevel, Set
+from .models import HitCount, Race, Bonus, Artifact, ArtifactLevel, Set
 
 
 class SetAdmin(admin.ModelAdmin):
@@ -33,3 +33,5 @@ admin.site.register(Bonus)
 admin.site.register(Artifact, ArtifactAdmin)
 admin.site.register(Set, SetAdmin)
 admin.site.register(ArtifactLevel)
+# In case needing initialisation from admin
+# admin.site.register(HitCount)
