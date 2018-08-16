@@ -8,6 +8,7 @@ router.register(r'artifacts', views.ArtifactViewSet)
 router.register(r'artifactslevels', views.ArtifactLevelViewSet)
 router.register(r'bonus', views.BonusViewSet)
 router.register(r'races', views.RaceViewSet)
+router.register(r'settypes', views.SetTypeViewSet)
 router.register(r'visits', views.HitCountViewSet)
 
 # Wire up our API using automatic URL routing.

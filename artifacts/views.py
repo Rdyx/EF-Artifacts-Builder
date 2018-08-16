@@ -1,6 +1,6 @@
 from .models import HitCount, Set, Artifact, ArtifactLevel, Bonus, Race
 from rest_framework import viewsets
-from .serializers import HitCountSerializer, SetSerializer, ArtifactSerializer, ArtifactLevelSerializer, \
+from .serializers import HitCountSerializer, SetTypeSerializer, SetSerializer, ArtifactSerializer, ArtifactLevelSerializer, \
     BonusSerializer, RaceSerializer
 from django.db.models import F
 from django.http import JsonResponse
@@ -16,6 +16,14 @@ class HitCountViewSet(viewsets.ModelViewSet):
         HitCount.objects.filter(pk=instance.id).update(visits=F('visits') + 1)
         serializer = self.get_serializer(instance)
         return JsonResponse(serializer.data)
+
+
+class SetTypeViewSet(viewsets.ModelViewSet):
+    """
+        API endpoint that allows sets types to be viewed.
+        """
+    queryset = Set.objects.all()
+    serializer_class = SetTypeSerializer
 
 
 class SetViewSet(viewsets.ModelViewSet):

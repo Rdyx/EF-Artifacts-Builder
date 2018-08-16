@@ -51,6 +51,17 @@ class Artifact(models.Model):
         return str(self.artifact_number) + ' ' + str(self.artifact_level) + ' ' + str(self.artifact_name)
 
 
+class SetType(models.Model):
+    order = models.IntegerField(default=0)
+    type = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return str(self.order) + ' ' + str(self.type)
+
+
 class Set(models.Model):
     set_name = models.CharField(max_length=100)
     set_level = models.ForeignKey(ArtifactLevel, on_delete=models.CASCADE, related_name='set_level', default=6)
@@ -86,9 +97,10 @@ class Set(models.Model):
     set_bonus_6_race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='set_bonus_6_race', blank=True,
                                          null=True)
     set_bonus_6_value = models.CharField(max_length=20, blank=True, null=True)
+    set_type = models.ForeignKey(SetType, on_delete=models.CASCADE, related_name='set_type', blank=True, null=True)
 
     class Meta:
-        ordering = ['set_name', '-set_level_id']
+        ordering = ['set_type', 'set_name', 'set_tech_name', '-set_level_id']
 
     def __str__(self):
         return str(self.set_tech_name) + ' ' + str(self.set_level) + ' ' + str(self.set_name)

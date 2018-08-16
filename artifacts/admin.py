@@ -2,11 +2,11 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import HitCount, Race, Bonus, Artifact, ArtifactLevel, Set
+from .models import HitCount, Race, Bonus, Artifact, ArtifactLevel, Set, SetType
 
 
 class SetAdmin(admin.ModelAdmin):
-    fields = (('set_name', 'set_arts_number', 'set_level', 'set_tech_name'),
+    fields = (('set_type', 'set_name', 'set_arts_number', 'set_level', 'set_tech_name'),
               ('set_art_1', 'set_art_2', 'set_art_3', 'set_art_4', 'set_art_5', 'set_art_6'),
               ('set_bonus_1', 'set_bonus_1_race', 'set_bonus_1_value'),
               ('set_bonus_2', 'set_bonus_2_race', 'set_bonus_2_value'),
@@ -33,5 +33,6 @@ admin.site.register(Bonus)
 admin.site.register(Artifact, ArtifactAdmin)
 admin.site.register(Set, SetAdmin)
 admin.site.register(ArtifactLevel)
+admin.site.register(SetType)
 # In case needing initialisation from admin
 # admin.site.register(HitCount)
