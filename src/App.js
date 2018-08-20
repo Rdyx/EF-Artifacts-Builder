@@ -51,7 +51,7 @@ export default class App extends Component {
 
     componentWillMount() {
         this.setState({loading: true});
-        // fetch('http://127.0.0.1:8002/sets/')s
+        // fetch('http://127.0.0.1:8002/sets/')
         // fetch('http://127.0.0.1:8002/visits/1/')
         fetch('http://efartifactsbuilder.alwaysdata.net/visits/1/')
             .then(response => {
@@ -179,17 +179,15 @@ export default class App extends Component {
         sets.map(set => {
             switch (set.setLevel) {
                 case 'T0':
-                    t0Array.push(set);
-                    break;
+                    return t0Array.push(set);
                 case 'T1':
-                    t1Array.push(set);
-                    break;
+                    return t1Array.push(set);
                 case 'T2':
-                    t2Array.push(set);
-                    break;
+                    return t2Array.push(set);
                 case 'T3':
-                    t3Array.push(set);
-                    break;
+                    return t3Array.push(set);
+                default:
+                    return null
             }
         });
         if (t0Array.length > 0) {
@@ -337,7 +335,8 @@ export default class App extends Component {
                             </p>
                             <p className="col-12">
                                 A special thank to <a className="efd external"
-                                                      href="https://www.endlessfrontierdata.com/" target="_blank">
+                                                      href="https://www.endlessfrontierdata.com/" target="_blank"
+                                                      rel="noopener noreferrer">
                                 Endless
                                 Frontier Data
                             </a> for their data about arts and their artifacts images.
@@ -347,7 +346,8 @@ export default class App extends Component {
                             </p>
                             <p className="col-12">
                                 Source code is free to read at <a className="efd external"
-                                                                  href="https://github.com/Rdyx/EF-Artifacts-Builder" target={"_blank"}>
+                                                                  href="https://github.com/Rdyx/EF-Artifacts-Builder"
+                                                                  target={"_blank"} rel="noopener noreferrer">
                                 GitHub
                             </a>
                             </p>
