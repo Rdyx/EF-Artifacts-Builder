@@ -1,13 +1,18 @@
 import React, {Component} from 'react';
 import Artifact from './Artifact';
-
+import PropTypes from 'prop-types';
 
 export default class Set extends Component {
+    static propTypes = {
+        set: PropTypes.object.isRequired,
+    };
+
     constructor(props) {
         super(props);
         this.state = {
             artifacts: [],
-            selectedSet: null
+            selectedSet: null,
+            i: 0,
         };
     }
 
@@ -28,7 +33,7 @@ export default class Set extends Component {
     showArts = (art) => {
         if (art) {
             return (
-                <div className="container col-6 col-md-4">
+                <div key={art.artifact_number} className="container col-6 col-md-4">
                     <Artifact artifact={art}/>
                 </div>
             );
