@@ -43,8 +43,8 @@ export default class Set extends Component {
     render() {
         return (
             <div>
-                <div className={`text-center bolded bordered white-text mt-2`}>{this.state.selectedSet.set_tech_name}</div>
-                <div className={`text-center white-text mb-3`}>{this.state.selectedSet.set_name}</div>
+                <div className={`text-center bolded bordered white-text mt-2`}>{this.state.selectedSet.set_tech_name.replace(/\(2p\)/,'')}</div>
+                <div className={`text-center white-text mb-3`}>{this.state.selectedSet.set_name.replace(/\(2p\)/,'')}</div>
                 <div className="row">{this.state.artifacts.map(this.showArts)}</div>
             </div>
         )

@@ -18,10 +18,6 @@ export class HeaderModal extends Component {
         };
     }
 
-    closeInfoModal = () => {
-        this.setState({isOpen: false})
-    };
-
     render() {
         return (
             <div onClick={this.props.handler}>

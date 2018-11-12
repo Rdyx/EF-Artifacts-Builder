@@ -1,5 +1,27 @@
+:root {
+    --main-bg-color: #000;
+    --main-text-color: #FFF;
+    --set-name-border-color: #FFF;
+    --external-link: lightskyblue;
+    --set-checkbox-text-color: rgba(250, 0, 0, 0.5);
+    --checkbox-bg: rgba(255, 255, 255, 0.2);
+    --checkbox-hover-bg: rgba(250, 180, 50, 1);
+    --checkbox-text-color: #FFF;
+    --checkmark-color: lime;
+    --right-box-bg: rgba(255, 255, 255, 0.7);
+    --right-box-text-color: #000;
+    --right-box-border: 1px solid white;
+    --set-box-border: 1px solid rgba(0, 150, 255, 1);
+    --art-img-hover-bg: rgba(250, 0, 0, 0.5);
+    --art-img-hover-border: 1px solid red;
+    --set-box-hover-bg: rgba(0, 100, 255, 0.4);
+    --info-title-decoration: 1px dashed #FFF;
+    --version-border-bottom: 1px solid rgba(0, 0, 0, 0.8)
+}
+
+
 body {
-    background-color: #000 !important;
+    background-color: var(--main-bg-color) !important;
     min-width: 100%;
     font-family: 'Yanone Kaffeesatz', sans-serif !important;
     margin: 0 !important;
@@ -7,7 +29,7 @@ body {
 }
 
 .white-text {
-    color: #FFF;
+    color: var(--main-text-color);
 }
 
 .bolded {
@@ -15,15 +37,15 @@ body {
 }
 
 .bordered {
-    border-top: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
+    border-top: 1px solid var(--set-name-border-color);
+    border-bottom: 1px solid var(--set-name-border-color);
 }
 
 .loading {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #000;
+    background-color: var(--main-bg-color);
     z-index: 1500;
     width: 100%;
     height: 100%;
@@ -39,8 +61,8 @@ label {
 }
 
 .screenstats {
-    background-color: #000;
-    color: #FFF;
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
     max-height: 180px;
     overflow-y: scroll;
     text-align: center;
@@ -55,11 +77,11 @@ label {
 
 a, a:link, a:visited, a:hover, a:active {
     transition: all 0.2s ease;
-    color: #FFF !important;
+    color: var(--main-text-color) !important;
 }
 
 a.efd, a.efd:link, a.efd:visited, a.efd:hover, a.efd:active {
-    color: lightskyblue !important;
+    color: var(--external-link) !important;
     text-underline: #000 !important;
 }
 
@@ -69,16 +91,16 @@ a[target="_blank"]:after {
 }
 
 .text-color {
-    color: #FFF;
+    color: var(--main-text-color);
 }
 
 .text-color:hover {
-    background-color: rgba(250, 0, 0, 0.5);
+    background-color: var(--set-checkbox-text-color);
     cursor: pointer;
 }
 
 .left-box {
-    background-color: rgba(0, 0, 0, 1);
+    background-color: var(--main-bg-color);
 }
 
 .right-box {
@@ -87,8 +109,10 @@ a[target="_blank"]:after {
     border-radius: 5px;
     max-height: 550px;
     margin-top: 5em;
-    background-color: rgba(250, 180, 50, 1);
-    color: #FFF;
+    /*background-color: rgba(250, 180, 50, 1);*/
+    background-color: var(--right-box-bg);
+    color: var(--right-box-text-color);
+    border: var(--right-box-border);
     width: 25%; /* Set the width of the sidebar */
     position: fixed; /* Fixed Sidebar (stay in place on scroll) */
     top: 0; /* Stay at the top */
@@ -101,7 +125,7 @@ a[target="_blank"]:after {
     transition: all 0.2s ease;
     margin: 0.25em 0 0.25em 0;
     border-radius: 5px;
-    border: 1px solid rgba(0, 150, 255, 1);
+    border: var(--set-box-border);
 }
 
 .art-image {
@@ -115,19 +139,19 @@ a[target="_blank"]:after {
 
 .art-image:hover {
     cursor: pointer;
-    border: 1px solid red;
+    border: var(--art-img-hover-border);
     border-radius: 5px;
-    background-color: rgba(250, 0, 0, 0.5);
+    background-color: var(--art-img-hover-bg);
 }
 
 .hovered:hover {
-    background-color: rgba(0, 100, 255, 0.4);
+    background-color: var(--set-box-hover-bg);
 }
 
 .personnal-checkbox {
     transition: all 0.2s ease;
     margin-top: 0.25em;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--checkbox-bg);
     /*background-color: #000;*/
     cursor: pointer;
     width: 2em;
@@ -141,17 +165,17 @@ a[target="_blank"]:after {
     cursor: pointer;
 }
 
-.personnal-checkbox input:hover ~ .checkmark {
-    background-color: #ccc;
-}
+/*.personnal-checkbox input:hover ~ .checkmark {*/
+    /*background-color: var(--checkbox-hover-bg);*/
+/*}*/
 
 .personnal-checkbox input:checked ~ .checkmark:after {
     display: block;
 }
 
-.personnal-checkbox input:checked ~ .checkmark {
-    background-color: #2196F3;
-}
+/*.personnal-checkbox input:checked ~ .checkmark {*/
+    /*background-color: #2196F3;*/
+/*}*/
 
 .personnal-checkbox .checkmark {
     position: relative;
@@ -159,7 +183,7 @@ a[target="_blank"]:after {
     left: -10px;
     height: 25px;
     width: 23px;
-    background-color: lime;
+    /*background-color: var(--checkmark-color);*/
 }
 
 .checkmark:after {
@@ -173,7 +197,7 @@ a[target="_blank"]:after {
     top: 4px;
     width: 5px;
     height: 15px;
-    border: solid lime;
+    border: solid var(--checkmark-color);
     border-width: 0 3px 3px 0;
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
@@ -187,7 +211,7 @@ a[target="_blank"]:after {
 }
 
 .underlined {
-    border-bottom: 1px dashed #FFF;
+    border-bottom: var(--info-title-decoration);
     cursor: help;
 }
 
@@ -195,11 +219,19 @@ a[target="_blank"]:after {
     cursor: pointer;
     border-radius: 5px;
     border: none;
-    background-color: rgba(255, 255, 255, 0.2) !important;
-    color: #fff !important;
+    background-color: var(--checkbox-bg) !important;
+    color: var(--main-text-color) !important;
     transition: all 0.2s ease;
 }
 
 .personnal-checkbox.radio-btn:hover {
-    background-color: rgba(250, 180, 50, 1) !important;
+    background-color: var(--checkbox-hover-bg) !important;
+}
+
+.big {
+    font-size: 125%;
+}
+
+.version-underline {
+    border-bottom: var(--version-border-bottom);
 }

@@ -34,7 +34,7 @@ export default class App extends Component {
     componentWillMount() {
         this.setState({loading: true});
         // fetch('http://127.0.0.1:8000/visits/1/')
-        fetch('http://efartifactsbuilder.alwaysdata.net/visits/1/')
+        fetch('https://efartifactsbuilder.alwaysdata.net/visits/1/')
             .then(response => {
                 return response.json()
             })
@@ -42,7 +42,7 @@ export default class App extends Component {
                 this.setState({visitorCount: data.visits})
             });
         // fetch('http://127.0.0.1:8000/sets/')
-        fetch('http://efartifactsbuilder.alwaysdata.net/sets/')
+        fetch('https://efartifactsbuilder.alwaysdata.net/sets/')
             .then((response) => {
                 return response.json()
             })
@@ -74,6 +74,10 @@ export default class App extends Component {
                     }
                     i++;
                 }
+                // Sorting every index (array of sets) by arts number
+                sortedData.map(x => {
+                        return x.sort((a,b) => (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0))
+                });
                 this.setState({
                     // data: data
                     data: sortedData,
