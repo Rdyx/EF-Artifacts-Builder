@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {HeaderModal} from "../Modals/HeaderModal";
 import {VersionModal} from "../Modals/VersionModal";
+import {versions} from "../Versions/Versions";
 
 export class NavBar extends Component {
     static propTypes = {
@@ -37,7 +38,7 @@ export class NavBar extends Component {
                 <nav className="sticky-top row navbar navbar-dark bg-dark justify-content-between">
                     <div className="navbar-brand">
                         <a className="underlined mr-3 big" onClick={() => this.setState({showInfoModal: true})}>EFAB</a>
-                        <a className="underlined small" onClick={() => this.setState({versionModal: true})}>V1.3</a>
+                        <a className="underlined small" onClick={() => this.setState({versionModal: true})}>{versions[0].number}</a>
                     </div>
                     <button
                         className="btn btn-outline-warning my-2 my-sm-0 d-none d-sm-block"
