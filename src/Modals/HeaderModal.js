@@ -38,9 +38,13 @@ export class HeaderModal extends Component {
                                                   href="https://www.endlessfrontierdata.com/" target="_blank"
                                                   rel="noopener noreferrer">Endless Frontier Data</a>
                             for their data about arts and their artifacts images.
-                            Since I didn't ask before link their images,
-                            feel free to contact me at winmac666@gmail.com with proofs that you're from the staff
-                            (Watch out ! Badass Mail over here ! :D)
+                        </p>
+                        <p className="col-12">
+                            Feel free to give feedback on <a className="efd external"
+                                                             href="https://www.reddit.com/r/EndlessFrontier/comments/97rass/endless_frontier_artifacts_builder/"
+                                                             target="_blank"
+                                                             rel="noopener noreferrer">Reddit</a>
+                            or directly by mail @ winmac666@gmail.com (Watch out ! Badass Mail over here ! :D)
                         </p>
                         <p className="col-12">
                             Source code is free to read at <a className="efd external"

@@ -38,7 +38,8 @@ export class NavBar extends Component {
                 <nav className="sticky-top row navbar navbar-dark bg-dark justify-content-between">
                     <div className="navbar-brand">
                         <a className="underlined mr-3 big" onClick={() => this.setState({showInfoModal: true})}>EFAB</a>
-                        <a className="underlined small" onClick={() => this.setState({versionModal: true})}>{versions[0].number}</a>
+                        <a className="underlined small"
+                           onClick={() => this.setState({versionModal: true})}>{versions[0].number}</a>
                     </div>
                     <button
                         className="btn btn-outline-warning my-2 my-sm-0 d-none d-sm-block"
@@ -46,6 +47,9 @@ export class NavBar extends Component {
                     </button>
                     <div className="col-xs-12 margin-top">
                         <input
+                            aria-label="Search By Set Technical Name"
+                            name="search"
+                            id="search"
                             type="text"
                             className="col-xs-12 form-control"
                             placeholder="Search By Set Technical Name"

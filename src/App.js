@@ -76,7 +76,7 @@ export default class App extends Component {
                 }
                 // Sorting every index (array of sets) by arts number
                 sortedData.map(x => {
-                        return x.sort((a,b) => (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0))
+                    return x.sort((a, b) => (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0))
                 });
                 this.setState({
                     // data: data
@@ -90,31 +90,33 @@ export default class App extends Component {
             })
     };
 
-    handleList = (event) => {
-        if ((this.state.selectedList.includes(event))) {
+    handleList = (event, status = null) => {
+        const regex = / \(\dp\)/;
+        const selected = this.state.selectedList.some(set => set.set_name.replace(regex, '') === event.set_name.replace(regex, ''));
+        // if (this.state.selectedList.includes(event)) {
+        if (selected || (selected && status === 'remove')) {
             // Selected Sets
             let array = [...this.state.selectedList]; // make a separate copy of the array
-            let index = array.indexOf(event);
+            let index = this.state.selectedList.map(e => e.set_name).indexOf(event.set_name.replace(regex, ''));
+            // let index = array.indexOf(event);
             array.splice(index, 1);
             // Total arts number
             let array2 = [...this.state.totalNumberOfArts];
-            let index2 = array2.indexOf(event.set_arts_number);
-            array2.splice(index2, 1);
+            array2.splice(index, 1);
             // Total game speed bonus
             let array3 = [...this.state.gameSpeedBonuses];
-            let index3 = array3.indexOf(this.findBonus(event, /Game Speed/));
-            array3.splice(index3, 1);
+            array3.splice(index, 1);
             // Total medals bonus
             let array4 = [...this.state.bonusMedals];
-            let index4 = array4.indexOf(this.findBonus(event, /Increase Additional Medals Obtained/));
-            array4.splice(index4, 1);
+            array4.splice(index, 1);
             this.setState({
                 selectedList: array,
                 totalNumberOfArts: array2,
                 gameSpeedBonuses: array3,
                 bonusMedals: array4
             });
-        } else {
+        }
+        if (!status) {
             this.setState(prevState => ({
                 selectedList: [...prevState.selectedList, event],
                 totalNumberOfArts: [...prevState.totalNumberOfArts, event.set_arts_number],
@@ -204,6 +206,25 @@ export default class App extends Component {
             <div
                 key={set.set_name}
                 className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? null : 'd-none'}`}>
+                <div className="row justify-content-around">
+                    <div className="col-2 white-text child"/>
+                    <div className="col-9">
+                        <div className="row justify-content-around">
+                            <label className="col-6 text-center text-color personnal-checkbox">
+                                X
+                                <input
+                                    onClick={() => this.handleList(set, 'remove')}
+                                    type="radio"
+                                    name={set.set_name.replace(/ \(\dp\)/, '')}
+                                    value={set.set_name}
+                                    defaultChecked={true}
+                                >
+                                </input>
+                                <span className="checkmark"/>
+                            </label>
+                        </div>
+                    </div>
+                </div>
                 {globalArray.map((sets, index) => {
                         // Seems on sets with 1 pair of bonus can't be fetched by sets[index] so
                         // Setting if/else to get sets[0] in this case
@@ -257,9 +278,9 @@ export default class App extends Component {
                 <label className="text-center text-color personnal-checkbox">
                     {set.set_arts_number}
                     <input
-                        onClick={() => this.handleList(set)}
-                        type="checkbox"
-                        name={set.set_tech_name}
+                        onClick={this.state.selectedList.includes(set) ? null : () => this.handleList(set)}
+                        type="radio"
+                        name={set.set_name.replace(/ \(\dp\)/, '')}
                         value={set.set_name}
                     >
                     </input>

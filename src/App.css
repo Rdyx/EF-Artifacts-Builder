@@ -28,6 +28,10 @@ body {
     padding: 0 !important;
 }
 
+.hidden {
+    display: none;
+}
+
 .white-text {
     color: var(--main-text-color);
 }
