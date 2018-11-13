@@ -52,6 +52,10 @@ export class HeaderModal extends Component {
                                                               target={"_blank"} rel="noopener noreferrer">GitHub</a>
                         </p>
                         <h3 className="col-12">Thanks for reading, happy building !</h3>
+                        <p className="col-12 small mb-0">
+                            If you like this tool and want to support/reward me, feel free to use
+                            the <b>Donate</b> button ! Thanks ! :)
+                        </p>
                     </div>
                 </Modal>
             </div>

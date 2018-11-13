@@ -1,6 +1,16 @@
 export const versions = [
     {
-        number: 1.3,
+        number: '1.3.1',
+        date: '13 November 2018',
+        title: "Minor updates, fixed api public urls, design fixes, donation button.",
+        content: {
+            point1: "Few updates upon back-end (forced HTTPS, public urls).",
+            point2: "Updated different modals sizes.",
+            point3: "Added paypal.me link, if you like this tool feel free to support and reward me ! :)",
+        },
+    },
+    {
+        number: '1.3',
         date: '12 November 2018',
         title: "Sets selection modified, EFAB infos changed, improved performances.",
         content: {
@@ -11,7 +21,7 @@ export const versions = [
         },
     },
     {
-        number: 1.2,
+        number: '1.2',
         date: '11 November 2018',
         title: "Versioning status + arts number sorting.",
         content: {

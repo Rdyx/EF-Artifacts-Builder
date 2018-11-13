@@ -23,8 +23,8 @@ export class VersionModal extends Component {
             <div key={v.number}>
                 <div className="row version-underline pb-0">
                     <div className="col-1"><b><i>{v.number}</i></b></div>
-                    <div className="col-8"><b>{v.title}</b></div>
-                    <div className="col-3 pr-0"><b><i>{v.date}</i></b></div>
+                    <div className="col-7 col-sm-9"><b>{v.title}</b></div>
+                    <div className="col-3 col-sm-2 pr-0"><b><i>{v.date}</i></b></div>
                 </div>
                 <div className={`row pt-1 ${lastIndex ? '' : 'mb-4'}`}>
                     <div className="col-1"/>

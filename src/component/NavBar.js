@@ -41,11 +41,18 @@ export class NavBar extends Component {
                         <a className="underlined small"
                            onClick={() => this.setState({versionModal: true})}>{versions[0].number}</a>
                     </div>
+                    <a href="https://www.paypal.me/rdyx" target="_blank" rel="noopener noreferrer">
+                        <button
+                            className="btn btn-outline-warning my-2 my-sm-0"
+                        >
+                            Donate
+                        </button>
+                    </a>
                     <button
                         className="btn btn-outline-warning my-2 my-sm-0 d-none d-sm-block"
                         onClick={this.props.triggerScreenshot}>Screen Stats
                     </button>
-                    <div className="col-xs-12 margin-top">
+                    <div className="margin-top">
                         <input
                             aria-label="Search By Set Technical Name"
                             name="search"

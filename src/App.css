@@ -89,7 +89,7 @@ a.efd, a.efd:link, a.efd:visited, a.efd:hover, a.efd:active {
     text-underline: #000 !important;
 }
 
-a[target="_blank"]:after {
+a.efd[target="_blank"]:after {
     content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
     margin: 0 3px 0 5px;
 }

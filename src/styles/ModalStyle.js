@@ -1,6 +1,7 @@
 const base = {
     overlay: {
         zIndex: 1045,
+        overflow: 'scroll',
     },
     content: {
         position: 'absolute',
@@ -22,6 +23,10 @@ export const headerModalStyle = {
     ...base,
     content: {
         ...base.content,
+        top: '50%',
+        bottom: '-2%',
+        paddingLeft: '10px',
+        paddingRight: '10px',
         width: '70%',
     }
 };
@@ -29,15 +34,13 @@ export const headerModalStyle = {
 export const versionModalStyle = {
     overlay: {
         ...base.overlay,
-        overflow: 'scroll',
     },
     content: {
         ...base.content,
         top: '50%',
         bottom: '-40%',
-        paddingLeft: '50px',
-        paddingRight: '50px',
+        paddingLeft: '30px',
+        paddingRight: '30px',
         width: '70%',
     }
-
 };
