@@ -1,4 +1,4 @@
-from .models import HitCount, Set, Artifact, ArtifactLevel, Bonus, Race
+from .models import HitCount, Set, SetType, Artifact, ArtifactLevel, Bonus, Race
 from rest_framework import viewsets
 from .serializers import HitCountSerializer, SetTypeSerializer, SetSerializer, ArtifactSerializer, ArtifactLevelSerializer, \
     BonusSerializer, RaceSerializer
@@ -22,7 +22,7 @@ class SetTypeViewSet(viewsets.ModelViewSet):
     """
         API endpoint that allows sets types to be viewed.
         """
-    queryset = Set.objects.all()
+    queryset = SetType.objects.all()
     serializer_class = SetTypeSerializer
 
 

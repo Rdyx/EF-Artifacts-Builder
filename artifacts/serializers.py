@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import HitCount, Set, Artifact, ArtifactLevel, Bonus, Race
+from .models import HitCount, Set, SetType, Artifact, ArtifactLevel, Bonus, Race
 
 
 class HitCountSerializer(serializers.HyperlinkedModelSerializer):
@@ -38,7 +38,11 @@ class ArtifactSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SetTypeSerializer(serializers.HyperlinkedModelSerializer):
-    set_type = serializers.StringRelatedField(source='set_type', read_only=True)
+    set_type = serializers.StringRelatedField(source='type', read_only=True)
+
+    class Meta:
+        model = SetType
+        fields = ('set_type',)
 
 
 class SetSerializer(serializers.HyperlinkedModelSerializer):
