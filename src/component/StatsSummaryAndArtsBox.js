@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {ArtsBox} from "./ArtsBox";
+import arrow from "../img/arrow.svg";
 
 export class StatsSummaryAndArtsBox extends Component {
     static propTypes = {
@@ -38,15 +39,16 @@ export class StatsSummaryAndArtsBox extends Component {
         return (
             <Fragment>
                 <div className="sticky-top">
-                    <div className={`screenstats row text-center d-block d-sm-none pt-3
+                    <div className={`screenstats bordered row text-center d-block d-sm-none pt-3
                         ${this.state.fullStatsMobile ? 'full-height' : null}`}>
                         <h2 className="col-12">Stats Summary</h2>
                         {listContent}
                     </div>
                     <div
-                        className="screenstats row bordered d-block d-sm-none"
+                        className={`screenstats col-4 d-block d-sm-none arrow
+                            ${this.state.fullStatsMobile ? 'rotate-180' : ''}`}
                         onClick={() => this.setState({fullStatsMobile: !this.state.fullStatsMobile})}>
-                        {this.state.fullStatsMobile ? 'See less' : 'See more'}
+                        <img src={arrow} alt={this.state.fullStatsMobile ? 'See Less' : 'See More'}/>
                     </div>
                 </div>
 

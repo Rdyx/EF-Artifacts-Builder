@@ -35,7 +35,7 @@ export class NavBar extends Component {
                 {this.state.versionModal ? (
                     <VersionModal versions={[]} handler={this.closeVersionModal}/>
                 ) : null}
-                <nav className="sticky-top row navbar navbar-dark bg-dark justify-content-between">
+                <nav className="row navbar navbar-dark bg-dark justify-content-between">
                     <div className="navbar-brand">
                         <a className="underlined mr-3 big" onClick={() => this.setState({showInfoModal: true})}>EFAB</a>
                         <a className="underlined small"

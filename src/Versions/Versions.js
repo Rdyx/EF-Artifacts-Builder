@@ -1,5 +1,14 @@
 export const versions = [
     {
+        number: '1.4',
+        date: '14 November 2018',
+        title: "Mobile Application prompt, mobile summary list button.",
+        content: {
+            point1: "Your browser should now propose you to \"install\" EFAB on your mobile ! It's a simple link to the app but without all the browsers features around like URL bar !",
+            point2: "Mobile button to show summary of selected arts list has changed, it should feel more \"natural\".",
+        },
+    },
+    {
         number: '1.3.1',
         date: '13 November 2018',
         title: "Minor updates, fixed api public urls, design fixes, donation button.",

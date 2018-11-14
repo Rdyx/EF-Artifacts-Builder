@@ -16,7 +16,7 @@
     --art-img-hover-border: 1px solid red;
     --set-box-hover-bg: rgba(0, 100, 255, 0.4);
     --info-title-decoration: 1px dashed #FFF;
-    --version-border-bottom: 1px solid rgba(0, 0, 0, 0.8)
+    --version-border-bottom: 1px solid rgba(0, 0, 0, 0.8);
 }
 
 
@@ -43,6 +43,11 @@ body {
 .bordered {
     border-top: 1px solid var(--set-name-border-color);
     border-bottom: 1px solid var(--set-name-border-color);
+}
+
+.arrow {
+    margin: -10px auto 0;
+    border: 2px solid var(--set-name-border-color);
 }
 
 .loading {
@@ -210,8 +215,11 @@ a.efd[target="_blank"]:after {
 
 .full-height {
     transition: all 0.2s ease;
-    max-height: 95vh;
-    height: calc(100vh - 85px);
+    max-height: 85vh;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
 }
 
 .underlined {

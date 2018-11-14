@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Endless Frontier Artifacts Builder",
+    "short_name": "EFAB",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
