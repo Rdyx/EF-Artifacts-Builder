@@ -1,5 +1,14 @@
 export const versions = [
     {
+        number: '1.5',
+        date: '15 November 2018',
+        title: "Offline mod, minor changes.",
+        content: {
+            point1: "You can now use EFAB offline ! This will require to at least access the app online once then data will be stocked and you'll be able to use everything as usual even if you have no connection !",
+            point2: "Image links added to modal upon EFAB logo.",
+        },
+    },
+    {
         number: '1.4',
         date: '14 November 2018',
         title: "Mobile Application prompt, mobile summary list button.",

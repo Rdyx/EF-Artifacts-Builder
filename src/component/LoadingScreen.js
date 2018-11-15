@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 export class LoadingScreen extends Component {
     static propTypes = {
         visitorCount: PropTypes.number,
+        offline: PropTypes.string.isRequired,
     };
 
-    randomVisitorSentence() {
+    randomVisitorSentence = () => {
         let v = `Visitor ${this.props.visitorCount}`;
         let sentencesArray = [];
         sentencesArray.push(`Yaaaaarrhhhhh ! ${v} ! DO WHAT YOU WANT CAUSE A PIRATE IS FREE ! YOU ARE A PIRATE !`);
@@ -35,7 +36,9 @@ export class LoadingScreen extends Component {
             <div className="row">
                 <div className="loading bolded white-text">
                     <h1 className="col-12 mt-5">Loading...</h1>
-                    <div className="col mt-5">{this.randomVisitorSentence()}</div>
+                    <div className="col mt-5">
+                        {this.props.offline !== '' ? this.props.offline : this.randomVisitorSentence()}
+                    </div>
                 </div>
             </div>
         )

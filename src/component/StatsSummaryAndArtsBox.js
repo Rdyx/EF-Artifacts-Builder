@@ -11,6 +11,7 @@ export class StatsSummaryAndArtsBox extends Component {
         selectedList: PropTypes.array.isRequired,
         setsData: PropTypes.array.isRequired,
         setsTypes: PropTypes.array.isRequired,
+        offline: PropTypes.string.isRequired,
     };
 
     constructor(props) {
@@ -21,6 +22,11 @@ export class StatsSummaryAndArtsBox extends Component {
     }
 
     render() {
+        const offline = this.props.offline !== '' ? (
+            <p className="col-12 alert-danger">
+                {this.props.offline}
+            </p>
+        ) : null;
         const listContent = (
             <div>
                 <p className="col-12">Number of arts : <span
@@ -41,6 +47,7 @@ export class StatsSummaryAndArtsBox extends Component {
                 <div className="sticky-top">
                     <div className={`screenstats bordered row text-center d-block d-sm-none pt-3
                         ${this.state.fullStatsMobile ? 'full-height' : null}`}>
+                        {offline}
                         <h2 className="col-12">Stats Summary</h2>
                         {listContent}
                     </div>
@@ -55,6 +62,7 @@ export class StatsSummaryAndArtsBox extends Component {
                 <div className="row">
                     <ArtsBox setsData={this.props.setsData} setsTypes={this.props.setsTypes}/>
                     <div id="capture" className="right-box d-none d-sm-block">
+                        {offline}
                         <h1 className="bolded pr-2 pl-2">Stats Summary</h1>
                         {listContent}
                     </div>

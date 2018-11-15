@@ -7,7 +7,6 @@ import {versions} from "../Versions/Versions";
 export class VersionModal extends Component {
     static propTypes = {
         handler: PropTypes.func.isRequired,
-        versions: PropTypes.array.isRequired,
     };
 
     constructor(props) {

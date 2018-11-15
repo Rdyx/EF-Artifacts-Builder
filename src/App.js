@@ -28,66 +28,89 @@ export default class App extends Component {
             searchBySetType: 'All',
             loading: false,
             visitorCount: null,
+            offline: '',
         };
     }
 
     componentWillMount() {
+        // let online = false;
         this.setState({loading: true});
         // fetch('http://127.0.0.1:8000/visits/1/')
         fetch('https://efartifactsbuilder.alwaysdata.net/visits/1/')
             .then(response => {
-                return response.json()
+                return response.json();
             })
             .then(data => {
-                this.setState({visitorCount: data.visits})
-            });
-        // fetch('http://127.0.0.1:8000/sets/')
-        fetch('https://efartifactsbuilder.alwaysdata.net/sets/')
-            .then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                // Sorting 2 dimensions array to sort arts by their names
-                let sortedData = [];
-                let pushInArray = [];
-                let setTypesArray = ['All'];
-                let i = 0;
-                while (i < data.length) {
-                    let setType = data[i].setType.replace(/\d+ /, '');
-                    if (!setTypesArray.includes(setType)) {
-                        setTypesArray.push(setType);
-                    }
-                    // If next index exists
-                    if (data[i + 1]) {
-                        // Push this index into array pushInArray
-                        pushInArray.push(data[i]);
-                        // If set name of the actual set is not the same than next set name, excluding (*p)
-                        if (data[i].set_name.match(/(.*)[^ (\dp)]/g)[0] !== data[i + 1].set_name.match(/(.*)[^ (\dp)]/g)[0]) {
-                            // Pushing pushInArray into sortedData
-                            sortedData.push(pushInArray);
-                            // Reseting pushInArray
-                            pushInArray = [];
+                this.setState({visitorCount: data.visits});
+                // fetch('http://127.0.0.1:8000/sets/')
+                fetch('https://efartifactsbuilder.alwaysdata.net/sets/')
+                    .then(response => {
+                        return response.json()
+                    })
+                    .then(data => {
+                        // Sorting 2 dimensions array to sort arts by their names
+                        localStorage.setItem('data', '');
+                        localStorage.setItem('setTypes', '');
+                        let sortedData = [];
+                        let pushInArray = [];
+                        let setTypesArray = ['All'];
+                        let i = 0;
+                        while (i < data.length) {
+                            let setType = data[i].setType.replace(/\d+ /, '');
+                            if (!setTypesArray.includes(setType)) {
+                                setTypesArray.push(setType);
+                            }
+                            // If next index exists
+                            if (data[i + 1]) {
+                                // Push this index into array pushInArray
+                                pushInArray.push(data[i]);
+                                // If set name of the actual set is not the same than next set name, excluding (*p)
+                                if (data[i].set_name.match(/(.*)[^ (\dp)]/g)[0] !== data[i + 1].set_name.match(/(.*)[^ (\dp)]/g)[0]) {
+                                    // Pushing pushInArray into sortedData
+                                    sortedData.push(pushInArray);
+                                    // Reseting pushInArray
+                                    pushInArray = [];
+                                }
+                            } else {
+                                pushInArray.push(data[i]);
+                                sortedData.push(pushInArray);
+                            }
+                            i++;
                         }
-                    } else {
-                        pushInArray.push(data[i]);
-                        sortedData.push(pushInArray);
-                    }
-                    i++;
-                }
-                // Sorting every index (array of sets) by arts number
-                sortedData.map(x => {
-                    return x.sort((a, b) => (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0))
-                });
-                this.setState({
-                    // data: data
-                    data: sortedData,
-                    setTypes: setTypesArray,
-                    loading: false
-                });
+                        // Sorting every index (array of sets) by arts number
+                        sortedData.map(x => {
+                            return x.sort((a, b) => (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0))
+                        });
+                        localStorage.setItem('data', JSON.stringify(sortedData));
+                        localStorage.setItem('setTypes', JSON.stringify(setTypesArray));
+                        this.setState({
+                            data: JSON.parse(localStorage.getItem('data')),
+                            setTypes: JSON.parse(localStorage.getItem('setTypes')),
+                            loading: false,
+                        });
+                    })
+                    .catch(error => {
+                        this.checkOfflineAndLocalStorage('There has been a problem while loading data. Please try again later.');
+                    })
             })
-            .catch((error) => {
-                console.log(error)
+            .catch(error => {
+                this.checkOfflineAndLocalStorage('You need to connect at least once to run this app.');
             })
+    };
+
+    checkOfflineAndLocalStorage = (message) => {
+        if (localStorage.getItem('data') && localStorage.getItem('setTypes')) {
+            return this.setState({
+                data: JSON.parse(localStorage.getItem('data')),
+                setTypes: JSON.parse(localStorage.getItem('setTypes')),
+                loading: false,
+                offline: 'You are currently offline, data may be outdated.',
+            });
+        } else {
+            return this.setState({
+                offline: message,
+            });
+        }
     };
 
     handleList = (event, status = null) => {
@@ -298,7 +321,7 @@ export default class App extends Component {
         return (
             <div className="container-fluid text-center">
                 {this.state.loading ? (
-                    <LoadingScreen visitorCount={this.state.visitorCount}/>
+                    <LoadingScreen visitorCount={this.state.visitorCount} offline={this.state.offline}/>
                 ) : null}
                 {this.state.showScreenModal ? (
                     <ScreenshotModal
@@ -318,6 +341,7 @@ export default class App extends Component {
                     selectedList={this.state.selectedList.map(this.getSelection)}
                     setsData={this.state.data.map(this.getSets)}
                     setsTypes={this.state.setTypes.map(this.getSetsTypes)}
+                    offline={this.state.offline}
                 />
             </div>
         );

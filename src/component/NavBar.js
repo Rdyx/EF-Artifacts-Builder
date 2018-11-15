@@ -33,7 +33,7 @@ export class NavBar extends Component {
                     <HeaderModal handler={this.closeInfoModal}/>
                 ) : null}
                 {this.state.versionModal ? (
-                    <VersionModal versions={[]} handler={this.closeVersionModal}/>
+                    <VersionModal handler={this.closeVersionModal}/>
                 ) : null}
                 <nav className="row navbar navbar-dark bg-dark justify-content-between">
                     <div className="navbar-brand">
