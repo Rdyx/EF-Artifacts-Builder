@@ -280,7 +280,7 @@ export default class App extends Component {
         return (
             <label
                 key={setType}
-                className="col-4 col-md-2 mr-2 ml-2 mb-2 mt-2 radio-btn personnal-checkbox">
+                className="col-4 col-lg-2 m-2 radio-btn personnal-checkbox">
                 <input
                     type="radio"
                     name="setType"

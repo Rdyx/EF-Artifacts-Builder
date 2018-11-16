@@ -1,5 +1,13 @@
 export const versions = [
     {
+        number: '1.5.1',
+        date: '16 November 2018',
+        title: "Minor design fixes for mobile/tablet devices.",
+        content: {
+            point1: "Fixed set categories text going out of the box under specific resolutions (ipad mostly).",
+        },
+    },
+    {
         number: '1.5',
         date: '15 November 2018',
         title: "Offline mod, minor changes.",
