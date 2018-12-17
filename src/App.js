@@ -115,23 +115,24 @@ export default class App extends Component {
 
     handleList = (event, status = null) => {
         const regex = / \(\dp\)/;
-        const selected = this.state.selectedList.some(set => set.set_name.replace(regex, '') === event.set_name.replace(regex, ''));
-        // if (this.state.selectedList.includes(event)) {
-        if (selected || (selected && status === 'remove')) {
-            // Selected Sets
-            let array = [...this.state.selectedList]; // make a separate copy of the array
-            let index = this.state.selectedList.map(e => e.set_name).indexOf(event.set_name.replace(regex, ''));
-            // let index = array.indexOf(event);
+        const eventSetName = event.set_name.replace(regex, '');
+        const isInList = this.state.selectedList.some(set => set.set_name.replace(regex, '') === eventSetName);
+
+        if (isInList || (isInList && status === 'remove')) {
+            let setNamesArray = []; // create an array that will contains cleaned set names for easier match
+            this.state.selectedList.map(set => setNamesArray.push(set.set_name.replace(regex, '')));
+            let index = setNamesArray.indexOf(eventSetName);
+
+            // Use index got to clean arrays
+            let array = this.state.selectedList;
             array.splice(index, 1);
-            // Total arts number
-            let array2 = [...this.state.totalNumberOfArts];
+            let array2 = this.state.totalNumberOfArts;
             array2.splice(index, 1);
-            // Total game speed bonus
-            let array3 = [...this.state.gameSpeedBonuses];
+            let array3 = this.state.gameSpeedBonuses;
             array3.splice(index, 1);
-            // Total medals bonus
-            let array4 = [...this.state.bonusMedals];
+            let array4 = this.state.bonusMedals;
             array4.splice(index, 1);
+
             this.setState({
                 selectedList: array,
                 totalNumberOfArts: array2,
@@ -318,6 +319,7 @@ export default class App extends Component {
     };
 
     render() {
+        console.log(this.state.selectedList)
         return (
             <div className="container-fluid text-center">
                 {this.state.loading ? (

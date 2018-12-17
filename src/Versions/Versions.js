@@ -1,5 +1,13 @@
 export const versions = [
     {
+        number: '1.5.2',
+        date: '17 December 2018',
+        title: "Minor bug fix for selected list and stats calculation.",
+        content: {
+            point1: "Fixed bug that was not clearing list properly (previously on index from a weird map(), now properly get index from selected set list based on set name).",
+        },
+    },
+    {
         number: '1.5.1',
         date: '16 November 2018',
         title: "Minor design fixes for mobile/tablet devices.",
