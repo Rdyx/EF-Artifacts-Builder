@@ -14,13 +14,6 @@ export class HeaderModal extends Component {
         handler: PropTypes.func.isRequired,
     };
 
-    constructor() {
-        super();
-        this.state = {
-            isOpen: true,
-        };
-    }
-
     logoUrl = (url, logo) => {
         return (
             <li className="list-inline-item mr-2">
@@ -36,9 +29,9 @@ export class HeaderModal extends Component {
 
     render() {
         return (
-            <div onClick={this.props.handler}>
+            <div>
                 <Modal
-                    isOpen={this.state.isOpen}
+                    isOpen={true}
                     onRequestClose={this.props.handler}
                     style={headerModalStyle}
                 >

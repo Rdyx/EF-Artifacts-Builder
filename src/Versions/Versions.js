@@ -1,5 +1,20 @@
 export const versions = [
     {
+        number: '1.6.0',
+        date: '09 January 2019',
+        title: "New major update ! New filtering system + some redesign.",
+        content: {
+            point1: "Enhanced filtering system ! There is now a button dedicated to show filters, less mess on the main page ! You can still use \"old\" filters and you can now select only sets having the selected bonus ! Thanks @xanderbitme for the suggestion on reddit.",
+            point2: "Filters are stackable ! ",
+            point3: "From the previous point, you now have filter button in the top bar, when filters are applyed the filter button will turn green and you'll have a reset filter button available.",
+            point4: "Redesigned text input search bar. Will now be bigger and easier to reach on small devices.",
+            point5: "Redesigned Stats Summary box, you can now have a better view of your current stats and also have each set stats next to it.",
+            point6: "Modified modal close system. Previously any click would close it, now if you click on the \"textbox\" it will keep opened. You have to click outside of it (or press esc) to close it. This will prevent unwanted modal closures.",
+            point7: "Moved the not connected alert out of summary box for computer screen extraction. You will no longer have it on your offline saved setups.",
+            point8: "Removed some forgotten console.log() (Woopsie !)",
+        },
+    },
+    {
         number: '1.5.2',
         date: '17 December 2018',
         title: "Minor bug fix for selected list and stats calculation.",

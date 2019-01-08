@@ -10,18 +10,11 @@ export class ScreenshotModal extends Component {
         canvasMobile: PropTypes.string,
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isOpen: true,
-        }
-    }
-
     render() {
         return (
-            <div onClick={this.props.handler}>
+            <div>
                 <Modal
-                    isOpen={this.state.isOpen}
+                    isOpen={true}
                     onRequestClose={this.props.handler}
                     style={customStyles}
                 >

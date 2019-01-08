@@ -9,24 +9,17 @@ export class ArtifactModal extends Component {
         artifact: PropTypes.object.isRequired,
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isOpen: true,
-        }
-    }
-
     render() {
         return (
-            <div className="over-the-top" onClick={this.props.handler}>
+            <div>
                 <Modal
-                    isOpen={this.state.isOpen}
+                    isOpen={true}
                     onRequestClose={this.props.handler}
                     style={customStyles}
                 >
                     <div>
                         {this.props.artifact ? (
-                            <div onClick={this.props.handler}>
+                            <div>
                                 <div className="text-center">
                                     <h1 className="text-center">{this.props.artifact.artifact_name}</h1>
                                     <img className="text-center"

@@ -9,13 +9,6 @@ export class VersionModal extends Component {
         handler: PropTypes.func.isRequired,
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isOpen: true,
-        }
-    }
-
     versionMapping = (v, length, index) => {
         const lastIndex = length - 1 === index;
         return (
@@ -43,9 +36,9 @@ export class VersionModal extends Component {
 
     render() {
         return (
-            <div className="over-the-top" onClick={this.props.handler}>
+            <div>
                 <Modal
-                    isOpen={this.state.isOpen}
+                    isOpen={true}
                     onRequestClose={this.props.handler}
                     style={versionModalStyle}
                 >

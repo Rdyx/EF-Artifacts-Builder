@@ -19,6 +19,7 @@ export default class App extends Component {
             totalNumberOfArts: [],
             gameSpeedBonuses: [],
             bonusMedals: [],
+            bonusTypes: ['All', 'Game Speed', 'Increase Additional Medals Obtained'],
             set: null,
             artifact: null,
             showScreenModal: false,
@@ -26,6 +27,7 @@ export default class App extends Component {
             canvasMobile: null,
             searchBySetName: '',
             searchBySetType: 'All',
+            filterByBonusType: 'All',
             loading: false,
             visitorCount: null,
             offline: '',
@@ -163,22 +165,27 @@ export default class App extends Component {
         return total;
     };
 
-    getSelection = (set) => {
-        return (
-            <li key={set.set_name + set.setLevel} className="text-center">
-                <div className="col-12 bolded">{set.setLevel} {set.set_tech_name}</div>
-            </li>
-        )
-    };
-
     findBonus = (event, regex) => {
         for (let key in event) {
-            if (/^bonus/.test(key))
+            if (/^bonus/.test(key)) {
                 if (event[key].match(regex)) {
                     let valueKey = key.replace('bonus', 'value');
                     return event[valueKey];
                 }
+            }
         }
+    };
+
+    getSelection = (set) => {
+        let findGsBonus = this.findBonus(set, /Game Speed/);
+        let findMedalBonus = this.findBonus(set, /Increase Additional Medals Obtained/);
+        return (
+            <tr key={set.set_name + set.setLevel} className="text-center">
+                <th style={{width: '60%'}}>{set.setLevel} {set.set_tech_name}</th>
+                <td style={{width: '15%'}}>{findGsBonus ? findGsBonus : 0}</td>
+                <td style={{width: '35%'}}>{findMedalBonus ? findMedalBonus : 0}</td>
+            </tr>
+        )
     };
 
     triggerScreenshot = () => {
@@ -220,12 +227,18 @@ export default class App extends Component {
         if (t3Array.length > 0) {
             globalArray.push(t3Array);
         }
-        let set = sets[0];
+
+        // Last index is selected to be able to check if the set has any required bonus
+        // to apply filter we need to get the set with maximum bonus
+        let set = sets[sets.length-1];
+
         let showIfMatch =
             // Match set tech name and set types, if All, every set is shown
             set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase()) &&
             (set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) ||
-                this.state.searchBySetType === 'All');
+                this.state.searchBySetType === 'All') &&
+            (this.findBonus(set, this.state.filterByBonusType) ||
+                this.state.filterByBonusType === 'All');
         return (
             <div
                 key={set.set_name}
@@ -281,7 +294,7 @@ export default class App extends Component {
         return (
             <label
                 key={setType}
-                className="col-4 col-lg-2 m-2 radio-btn personnal-checkbox">
+                    className="col-12 mb-1 set-filter-button radio-btn personnal-checkbox">
                 <input
                     type="radio"
                     name="setType"
@@ -290,6 +303,24 @@ export default class App extends Component {
                     onClick={(e) => this.setState({searchBySetType: e.target.value})}
                 />
                 {setType}
+                <span className="checkmark"/>
+            </label>
+        )
+    };
+
+    getBonusTypes = (bonusType) => {
+        return (
+            <label
+                key={bonusType}
+                className="col-12 mb-1 set-filter-button radio-btn personnal-checkbox">
+                <input
+                    type="radio"
+                    name="bonusType"
+                    value={bonusType}
+                    defaultChecked={bonusType === this.state.filterByBonusType}
+                    onClick={(e) => this.setState({filterByBonusType: e.target.value})}
+                />
+                {bonusType}
                 <span className="checkmark"/>
             </label>
         )
@@ -319,7 +350,6 @@ export default class App extends Component {
     };
 
     render() {
-        console.log(this.state.selectedList)
         return (
             <div className="container-fluid text-center">
                 {this.state.loading ? (
@@ -335,6 +365,10 @@ export default class App extends Component {
                 <NavBar
                     triggerScreenshot={this.triggerScreenshot}
                     searchBySetName={(e) => this.setState({searchBySetName: e.target.value})}
+                    setFiltering={this.state.searchBySetType !== 'All' || this.state.filterByBonusType !== 'All'}
+                    setsTypes={this.state.setTypes.map(this.getSetsTypes)}
+                    bonusTypes={this.state.bonusTypes.map(this.getBonusTypes)}
+                    resetFilters={() => this.setState({searchBySetType: 'All', filterByBonusType: 'All'})}
                 />
                 <StatsSummaryAndArtsBox
                     totalNumberOfArts={this.sum(this.state.totalNumberOfArts)}
@@ -342,7 +376,6 @@ export default class App extends Component {
                     bonusMedals={this.sum(this.state.bonusMedals)}
                     selectedList={this.state.selectedList.map(this.getSelection)}
                     setsData={this.state.data.map(this.getSets)}
-                    setsTypes={this.state.setTypes.map(this.getSetsTypes)}
                     offline={this.state.offline}
                 />
             </div>

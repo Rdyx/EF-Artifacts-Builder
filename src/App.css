@@ -5,6 +5,7 @@
     --external-link: lightskyblue;
     --set-checkbox-text-color: rgba(250, 0, 0, 0.5);
     --checkbox-bg: rgba(255, 255, 255, 0.2);
+    --checkbox-reverted-bg: rgba(0, 0, 0, 0.8);
     --checkbox-hover-bg: rgba(250, 180, 50, 1);
     --checkbox-text-color: #FFF;
     --checkmark-color: lime;
@@ -17,6 +18,8 @@
     --set-box-hover-bg: rgba(0, 100, 255, 0.4);
     --info-title-decoration: 1px dashed #FFF;
     --version-border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+    --btn-filter-activated: rgba(0, 155, 0, 0.5);
+    --btn-reset-filter: rgba(155, 0, 0, 0.5);
 }
 
 
@@ -117,7 +120,7 @@ a.efd[target="_blank"]:after {
     overflow-y: scroll;
     border-radius: 5px;
     max-height: 550px;
-    margin-top: 5em;
+    margin-top: 7em;
     /*background-color: rgba(250, 180, 50, 1);*/
     background-color: var(--right-box-bg);
     color: var(--right-box-text-color);
@@ -232,12 +235,19 @@ a.efd[target="_blank"]:after {
     border-radius: 5px;
     border: none;
     background-color: var(--checkbox-bg) !important;
-    color: var(--main-text-color) !important;
+    color: var(--main-text-color);
     transition: all 0.2s ease;
 }
 
 .personnal-checkbox.radio-btn:hover {
     background-color: var(--checkbox-hover-bg) !important;
+}
+
+.personnal-checkbox.set-filter-button {
+    background-color: var(--checkbox-reverted-bg) !important;
+    border-radius: 5px;
+    height: auto;
+    padding: 2px;
 }
 
 .big {
@@ -258,4 +268,37 @@ a.efd[target="_blank"]:after {
 .logo:hover {
     -webkit-filter: grayscale(0%); /* Safari 6.0 - 9.0 */
     filter: grayscale(0%);
+}
+
+.table td, .table th {
+    padding: .2rem !important;
+}
+
+.not-connected {
+    border-radius: 5px;
+    position: fixed !important;
+    top: 0;
+    right: 0;
+    margin-top: 5em;
+    width: 25%;
+}
+
+.alert-danger {
+    border-radius: 5px;
+}
+
+.btn-success {
+    background-color: var(--btn-filter-activated) !important;
+}
+
+.btn-success:hover {
+    color: var(--main-text-color) !important;
+}
+
+.btn-danger {
+    background-color: var(--btn-reset-filter) !important;
+}
+
+.btn-danger:hover {
+    color: var(--main-text-color) !important;
 }

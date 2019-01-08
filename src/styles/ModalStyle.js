@@ -23,8 +23,6 @@ export const headerModalStyle = {
     ...base,
     content: {
         ...base.content,
-        top: '50%',
-        bottom: '-2%',
         paddingLeft: '10px',
         paddingRight: '10px',
         width: '70%',
@@ -37,10 +35,19 @@ export const versionModalStyle = {
     },
     content: {
         ...base.content,
-        top: '50%',
         bottom: '-40%',
         paddingLeft: '30px',
         paddingRight: '30px',
+        width: '70%',
+    }
+};
+
+export const setsFilterModalStyle = {
+    overlay: {
+        ...base.overlay,
+    },
+    content: {
+        ...base.content,
         width: '70%',
     }
 };
