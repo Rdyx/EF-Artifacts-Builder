@@ -27,6 +27,7 @@ class RaceSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ArtifactSerializer(serializers.HyperlinkedModelSerializer):
+    art_level = serializers.StringRelatedField(source='artifact_level', read_only=True)
     bonus1 = serializers.StringRelatedField(source='artifact_bonus_1.bon_name', read_only=True)
     race1 = serializers.StringRelatedField(source='artifact_bonus_1_race.race_name', read_only=True)
     bonus2 = serializers.StringRelatedField(source='artifact_bonus_2.bon_name', read_only=True)
@@ -34,7 +35,7 @@ class ArtifactSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Artifact
-        fields = ('artifact_img', 'artifact_number', 'artifact_name', 'bonus1', 'race1', 'bonus2', 'race2')
+        fields = ('art_level', 'artifact_img', 'artifact_number', 'artifact_name', 'bonus1', 'race1', 'bonus2', 'race2')
 
 
 class SetTypeSerializer(serializers.HyperlinkedModelSerializer):
