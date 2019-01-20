@@ -302,3 +302,12 @@ a.efd[target="_blank"]:after {
 .btn-danger:hover {
     color: var(--main-text-color) !important;
 }
+
+tr.result-background {
+    background-color: var(--checkbox-bg);
+    color: var(--checkbox-text-color);
+}
+
+table.personnal-table {
+    border-radius: 5px;
+}

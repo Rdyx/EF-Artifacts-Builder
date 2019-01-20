@@ -1,5 +1,21 @@
 export const versions = [
     {
+        number: '1.7.0a',
+        date: '20 January 2019',
+        title: "Another very huge update ! Automatic builder is here !",
+        content: {
+            point1: "The Automatic builder to find the bests setups depending on what you need is up ! To use it, simply use the inputs at the top of sets boxes. Fill how much artifacts you want to use, the maximum gs you want and build ! That's as simple as this !",
+            point2: "The algorithm can find optimised builds and if it's not possible you can also get the closest results it found (or none if you asked something not reachable).",
+            point3: "You can filter which sets' tier you want in the filter list. I.E: you can autobuild with T2 6* and T1 7*",
+            point4: "Every set is counted with its parts. I.E: for BE (R2) set, 2/5, 4/5 AND 5/5 are taken in account in the build. If you disable it, you will also disable every parted bonus.",
+            point5: "You can still use the manual builder, just click on the new button in the top bar.",
+            point6: "You can disable a set from builder by clicking on the \"X\" at the top of its box.",
+            point7: "This update is still in alpha since I probably can't think about everything that could happens when you try to build. It required many code addition, update and redesigning. This means you can find some bugs. Feel free to report (contacts in EFAB logo)",
+            point8: "If you find a better combination than the algorithm, feel free to report it to me with screens, I will try to check it out.",
+            point9: "The algorithm is based on the Multi-Dimensional Knapsack Problem (MDKP) modified to work with EF constraints."
+        },
+    },
+    {
         number: '1.6.0',
         date: '09 January 2019',
         title: "New major update ! New filtering system + some redesign.",

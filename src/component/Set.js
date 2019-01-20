@@ -41,10 +41,11 @@ export default class Set extends Component {
     };
 
     render() {
+        const regex = / \(\dp\)/;
         return (
             <div>
-                <div className={`text-center bolded bordered white-text mt-2`}>{this.state.selectedSet.set_tech_name.replace(/\(2p\)/,'')}</div>
-                <div className={`text-center white-text mb-3`}>{this.state.selectedSet.set_name.replace(/\(2p\)/,'')}</div>
+                <div className={`text-center bolded bordered white-text mt-2`}>{this.state.selectedSet.set_tech_name.replace(regex, '')}</div>
+                <div className={`text-center white-text mb-3`}>{this.state.selectedSet.set_name.replace(regex, '')}</div>
                 <div className="row">{this.state.artifacts.map(this.showArts)}</div>
             </div>
         )

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Modal from "react-modal";
 import {setsFilterModalStyle} from "../styles/ModalStyle";
@@ -8,6 +8,8 @@ export class SetsFiltering extends Component {
         handler: PropTypes.func.isRequired,
         setsTypes: PropTypes.array.isRequired,
         bonusTypes: PropTypes.array.isRequired,
+        setsLevels: PropTypes.array.isRequired,
+        optimiser: PropTypes.bool.isRequired,
     };
 
     render() {
@@ -23,9 +25,15 @@ export class SetsFiltering extends Component {
                             <h3>Category</h3>
                             {this.props.setsTypes}
                         </div>
-                        <div className="col-6">
+                        <div className="col-6 justify-content-around">
                             <h3>Bonus Type</h3>
                             {this.props.bonusTypes}
+                            {this.props.optimiser ? (
+                                <Fragment>
+                                    <h3 className="mt-3">Sets Levels</h3>
+                                    {this.props.setsLevels}
+                                </Fragment>
+                            ) : null}
                         </div>
                     </div>
                 </Modal>

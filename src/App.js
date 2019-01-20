@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as html2canvas from 'html2canvas';
@@ -7,6 +7,7 @@ import {ScreenshotModal} from "./Modals/ScreenshotModal";
 import {NavBar} from "./component/NavBar";
 import {StatsSummaryAndArtsBox} from "./component/StatsSummaryAndArtsBox";
 import {LoadingScreen} from "./component/LoadingScreen";
+import {filterSets, knapsack} from "./optimiser/Optimiser";
 
 
 export default class App extends Component {
@@ -15,11 +16,14 @@ export default class App extends Component {
         this.state = {
             selectedList: [],
             data: [],
+            excludedFromOptimiser: [],
             setTypes: [],
             totalNumberOfArts: [],
             gameSpeedBonuses: [],
             bonusMedals: [],
             bonusTypes: ['All', 'Game Speed', 'Increase Additional Medals Obtained'],
+            artsLevels: [6, 7],
+            setsLevels: ['T0', 'T1', 'T2', 'T3'],
             set: null,
             artifact: null,
             showScreenModal: false,
@@ -28,9 +32,18 @@ export default class App extends Component {
             searchBySetName: '',
             searchBySetType: 'All',
             filterByBonusType: 'All',
+            filterBySetLevel: 'All',
             loading: false,
             visitorCount: null,
             offline: '',
+            optimiser: true,
+            optimiserNbArts: 0,
+            optimiserMaxGS: 0,
+            optimiserSixStarsLevel: 'T3',
+            optimiserSevenStarsLevel: 'T2',
+            optimiserEightStarsLevel: 'T0',
+            optimisedSets: [],
+            optimisedCloseResults: [],
         };
     }
 
@@ -115,6 +128,15 @@ export default class App extends Component {
         }
     };
 
+    resetSummaryState = () => {
+        this.setState({
+            selectedList: [],
+            totalNumberOfArts: [],
+            gameSpeedBonuses: [],
+            bonusMedals: [],
+        });
+    };
+
     handleList = (event, status = null) => {
         const regex = / \(\dp\)/;
         const eventSetName = event.set_name.replace(regex, '');
@@ -152,6 +174,25 @@ export default class App extends Component {
         }
     };
 
+    handleOptimisedList = (event, status = null) => {
+        const regex = / \(\dp\)/;
+        const eventSetName = event.set_name.replace(regex, '');
+        const isInList = this.state.excludedFromOptimiser.some(setName => setName === eventSetName);
+
+        if (isInList || (isInList && status === 'remove')) {
+            let index = this.state.excludedFromOptimiser.indexOf(eventSetName);
+
+            // Use index got to clean array
+            let array = this.state.excludedFromOptimiser;
+            array.splice(index, 1);
+
+            this.setState({excludedFromOptimiser: array});
+        }
+        if (!status) {
+            this.setState(prevState => ({excludedFromOptimiser: [...prevState.excludedFromOptimiser, eventSetName]}));
+        }
+    };
+
     sum = (input) => {
         if (toString.call(input) !== "[object Array]")
             return false;
@@ -170,15 +211,16 @@ export default class App extends Component {
             if (/^bonus/.test(key)) {
                 if (event[key].match(regex)) {
                     let valueKey = key.replace('bonus', 'value');
-                    return event[valueKey];
+                    return parseInt(event[valueKey], 10);
                 }
             }
         }
     };
 
     getSelection = (set) => {
-        let findGsBonus = this.findBonus(set, /Game Speed/);
-        let findMedalBonus = this.findBonus(set, /Increase Additional Medals Obtained/);
+        let findGsBonus = !isNaN(set.bonusGS) ? set.bonusGS : this.findBonus(set, /Game Speed/);
+        let findMedalBonus = !isNaN(set.bonusMedals) ? set.bonusMedals : this.findBonus(set, /Increase Additional Medals Obtained/);
+
         return (
             <tr key={set.set_name + set.setLevel} className="text-center">
                 <th style={{width: '60%'}}>{set.setLevel} {set.set_tech_name}</th>
@@ -193,6 +235,18 @@ export default class App extends Component {
             .then(canvas => {
                 this.setState({showScreenModal: true, canvas: canvas.toDataURL()});
             })
+    };
+
+    showIfMatch = (set, optimised = true) => {
+        // Match set tech name and set types, if All, every set is shown
+        return optimised ? set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase()) &&
+            (set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) ||
+                this.state.searchBySetType === 'All') :
+            set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase()) &&
+            (set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) ||
+                this.state.searchBySetType === 'All') &&
+            (this.findBonus(set, this.state.filterByBonusType) ||
+                this.state.filterByBonusType === 'All');
     };
 
     getSets = (sets) => {
@@ -230,19 +284,13 @@ export default class App extends Component {
 
         // Last index is selected to be able to check if the set has any required bonus
         // to apply filter we need to get the set with maximum bonus
-        let set = sets[sets.length-1];
+        let set = sets[sets.length - 1];
+        let showIfMatch = this.showIfMatch(set, false);
 
-        let showIfMatch =
-            // Match set tech name and set types, if All, every set is shown
-            set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase()) &&
-            (set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) ||
-                this.state.searchBySetType === 'All') &&
-            (this.findBonus(set, this.state.filterByBonusType) ||
-                this.state.filterByBonusType === 'All');
         return (
             <div
                 key={set.set_name}
-                className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? null : 'd-none'}`}>
+                className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? '' : 'd-none'}`}>
                 <div className="row justify-content-around">
                     <div className="col-2 white-text child"/>
                     <div className="col-9">
@@ -290,11 +338,75 @@ export default class App extends Component {
         )
     };
 
+    getOptimizedSets = (sets) => {
+        // This function is here to filter and fill ArtsBox only with sets that automatic builder will use
+        const artLevels = /[6-8]/g;
+        const sixStarsSets = /T[012]/g;
+        const sevenStarsSets = /T[01]/g;
+
+        sets = sets.filter(set => {
+            const testGSValue = this.findBonus(set, /Game Speed/);
+            const testMedalsValue = this.findBonus(set, /Increase Additional Medals Obtained/);
+            const setLevel = set.setLevel;
+            const artLevel = set.artifact1.art_level.replace('*', '');
+
+            return !artLevel.match(artLevels) || !(testGSValue || testMedalsValue) ? false :
+                !(setLevel.match(sixStarsSets) && artLevel === '6') ?
+                    !(setLevel.match(sevenStarsSets) && artLevel === '7') : false;
+        });
+
+        if (sets.length > 0) {
+            const regex = / \(\dp\)/;
+            const set = sets[sets.length - 1];
+            let showIfMatch = this.showIfMatch(set);
+
+            return (
+                <div
+                    key={set.set_name}
+                    className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? '' : 'd-none'}`}>
+                    <div className="offset-1 col-10 white-text child">
+                        <div className="row justify-content-around">
+                            <label className="col text-center text-color personnal-checkbox">
+                                X
+                                <input
+                                    onClick={() => this.handleOptimisedList(set)}
+                                    type="radio"
+                                    name={set.set_name.replace(regex, '')}
+                                    value={set.set_name}
+                                    defaultChecked={false}
+                                >
+                                </input>
+                                <span className="checkmark"/>
+                            </label>
+                            <label className="col ml-2 text-center text-color personnal-checkbox">
+                                V
+                                <input
+                                    onClick={() => this.handleOptimisedList(set, 'remove')}
+                                    type="radio"
+                                    name={set.set_name.replace(regex, '')}
+                                    value={set.set_name}
+                                    defaultChecked={true}
+                                >
+                                </input>
+                                <span className="checkmark"/>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <Set
+                            set={set}
+                        />
+                    </div>
+                </div>
+            )
+        }
+    };
+
     getSetsTypes = (setType) => {
         return (
             <label
                 key={setType}
-                    className="col-12 mb-1 set-filter-button radio-btn personnal-checkbox">
+                className="col-12 mb-1 set-filter-button radio-btn personnal-checkbox">
                 <input
                     type="radio"
                     name="setType"
@@ -326,6 +438,64 @@ export default class App extends Component {
         )
     };
 
+    optimiserSetSetsLevelsFilter = (e) => {
+        const eValueSplited = e.target.value.split(',');
+        const setLevel = eValueSplited[0];
+        const setTier = eValueSplited[1];
+
+        return setLevel === '6' ? this.setState({optimiserSixStarsLevel: setTier}) :
+            setLevel === '7' ? this.setState({optimiserSevenStarsLevel: setTier}) :
+                setLevel === '8' ? this.setState({optimiserSevenStarsLevel: setTier}) : null;
+    };
+
+    getSetLevels = (artLevel) => {
+        let setLevelBoxes = [];
+        // Lvl 8 is here to be available easier later
+        const setSetsLevel = artLevel === 6 ? 3 : artLevel === 7 ? 2 : artLevel === 8 ? 0 : 0;
+        const setTier = artLevel === 6 ? this.state.optimiserSixStarsLevel :
+            artLevel === 7 ? this.state.optimiserSevenStarsLevel :
+                artLevel === 8 ? this.state.optimiserEightStarsLevel : 0;
+
+        for (let i = 0; i <= setSetsLevel; i++) {
+            const setLevel = this.state.setsLevels[i];
+            const newLine = i === setSetsLevel ? (<br/>) : null;
+
+            setLevelBoxes.push(
+                <Fragment key={artLevel + i}>
+                    <label className="col-3 mb-1 set-filter-button radio-btn personnal-checkbox">
+                        <input
+                            type="radio"
+                            name={artLevel}
+                            value={[artLevel, setLevel]}
+                            defaultChecked={setTier === setLevel}
+                            onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
+                        />
+                        {setLevel} {artLevel}*
+                        <span className="checkmark"/>
+                    </label>
+                    {newLine}
+                </Fragment>
+            );
+        }
+
+        return setLevelBoxes
+    };
+
+    swapManualToAutomaticBuilder = () => {
+        this.setState({
+            optimiser: !this.state.optimiser,
+            optimiserNbArts: 0,
+            optimiserMaxGS: 0,
+            optimiserSixStarsLevel: 'T3',
+            optimiserSevenStarsLevel: 'T2',
+            optimiserEightStarsLevel: 'T0',
+            optimisedSets: [],
+            optimisedCloseResults: [],
+        });
+        this.resetSummaryState();
+    };
+
+
     artsNumber = (set) => {
         // let setName = set.set_name.replace(/ \(\dp\)/g, '');
         return (
@@ -343,6 +513,91 @@ export default class App extends Component {
                 </label>
             </div>
         )
+    };
+
+    startBuild = () => {
+        const nbArtsWanted = this.state.optimiserNbArts;
+
+        let getResults = knapsack(
+            this.state.data,
+            nbArtsWanted,
+            this.state.optimiserMaxGS,
+            1250,
+            this.findBonus,
+            this.state.excludedFromOptimiser,
+            this.state.optimiserSixStarsLevel,
+            this.state.optimiserSevenStarsLevel,
+            this.state.optimiserEightStarsLevel,
+        );
+
+        let maxArtsFromSolution = [];
+
+        getResults.map(set => {
+            return maxArtsFromSolution.push(set.totalArts);
+        });
+
+        maxArtsFromSolution = Math.max(...maxArtsFromSolution);
+
+        let solutionMessage = (
+            <div key="message" className="col-12 white-text mt-1 mb-2">
+                {
+                    nbArtsWanted > 1 ?
+                        maxArtsFromSolution === nbArtsWanted ?
+                            `Most optimised solution(s) found` :
+                            maxArtsFromSolution < nbArtsWanted ?
+                                `Closest solution(s) found` :
+                                'No solution found' : 'No solution found'
+                }
+            </div>
+        );
+
+        this.setState({optimisedSets: [solutionMessage], optimisedCloseResults: [solutionMessage]});
+
+        getResults.map(set => {
+            return set.totalArts === nbArtsWanted ?
+                this.setState(prevState => ({optimisedSets: [...prevState.optimisedSets, set]})) :
+                this.setState(prevState => ({optimisedCloseResults: [...prevState.optimisedCloseResults, set]}))
+        });
+
+        if (getResults[0]) {
+            for (let i = 0; i < getResults.length; i++) {
+                if (getResults[i].totalArts === nbArtsWanted) {
+                    return this.pushInStates(getResults[i]);
+                } else if (getResults[i].sets.length > 0) {
+                    this.pushInStates(getResults[i]);
+                } else {
+                    this.resetSummaryState();
+                }
+            }
+        }
+    };
+
+    pushInStates = (setsArray) => {
+        this.resetSummaryState();
+
+        return setsArray.sets.map(set => {
+            return this.setState(prevState => ({
+                    selectedList: [...prevState.selectedList, set],
+                    totalNumberOfArts: [...prevState.totalNumberOfArts, set.set_arts_number],
+                    gameSpeedBonuses: [...prevState.gameSpeedBonuses, set.bonusGS],
+                    bonusMedals: [...prevState.bonusMedals, set.bonusMedals]
+                })
+            );
+        });
+    };
+
+    getOptimisedResults = () => {
+        const optimisedSets = this.state.optimisedSets;
+        const optimisedCloseResults = this.state.optimisedCloseResults;
+
+        return optimisedSets.length > 1 ? optimisedSets : optimisedCloseResults;
+    };
+
+    getArrayResult = (e) => {
+        const index = e.target.id;
+
+        return this.state.optimisedSets.length > 1 ?
+            this.pushInStates(this.state.optimisedSets[index]) : this.pushInStates(this.state.optimisedCloseResults[index]);
     };
 
     closeScreenModal = () => {
@@ -363,11 +618,14 @@ export default class App extends Component {
                     />
                 ) : null}
                 <NavBar
+                    swapManualToAutomaticBuilder={() => this.swapManualToAutomaticBuilder()}
                     triggerScreenshot={this.triggerScreenshot}
                     searchBySetName={(e) => this.setState({searchBySetName: e.target.value})}
                     setFiltering={this.state.searchBySetType !== 'All' || this.state.filterByBonusType !== 'All'}
                     setsTypes={this.state.setTypes.map(this.getSetsTypes)}
                     bonusTypes={this.state.bonusTypes.map(this.getBonusTypes)}
+                    optimiser={this.state.optimiser}
+                    setsLevels={this.state.artsLevels.map(this.getSetLevels)}
                     resetFilters={() => this.setState({searchBySetType: 'All', filterByBonusType: 'All'})}
                 />
                 <StatsSummaryAndArtsBox
@@ -375,8 +633,15 @@ export default class App extends Component {
                     gameSpeedBonuses={this.sum(this.state.gameSpeedBonuses)}
                     bonusMedals={this.sum(this.state.bonusMedals)}
                     selectedList={this.state.selectedList.map(this.getSelection)}
-                    setsData={this.state.data.map(this.getSets)}
+                    setsData={this.state.optimiser ? this.state.data.map(this.getOptimizedSets) : this.state.data.map(this.getSets)}
                     offline={this.state.offline}
+                    optimiser={this.state.optimiser}
+                    optimiserNbArts={(e) => this.setState({optimiserNbArts: parseInt(e.target.value, 10) ? parseInt(e.target.value, 10) : 0})}
+                    optimiserMaxGS={(e) => this.setState({optimiserMaxGS: parseInt(e.target.value, 10) ? parseInt(e.target.value, 10) : 0})}
+                    startBuild={() => this.startBuild()}
+                    wantedArts={this.state.optimiserNbArts}
+                    getOptimisedResults={this.getOptimisedResults()}
+                    getArrayResult={(e) => this.getArrayResult(e)}
                 />
             </div>
         );

@@ -11,6 +11,13 @@ export class StatsSummaryAndArtsBox extends Component {
         selectedList: PropTypes.array.isRequired,
         setsData: PropTypes.array.isRequired,
         offline: PropTypes.string.isRequired,
+        optimiser: PropTypes.bool.isRequired,
+        optimiserNbArts: PropTypes.func.isRequired,
+        optimiserMaxGS: PropTypes.func.isRequired,
+        startBuild: PropTypes.func.isRequired,
+        wantedArts: PropTypes.number.isRequired,
+        getOptimisedResults: PropTypes.array.isRequired,
+        getArrayResult: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -33,22 +40,24 @@ export class StatsSummaryAndArtsBox extends Component {
             <div className="pl-1 pr-1">
                 <table className="table table-bordered table-striped">
                     <tbody>
-                        <tr>
-                            <th>Number of arts</th>
-                            <th>Total game speed bonus</th>
-                            <th>Total bonus medals</th>
-                        </tr>
-                        <tr className="bolded">
-                            <td>{this.props.totalNumberOfArts}</td>
-                            <td>{this.props.gameSpeedBonuses}</td>
-                            <td>{this.props.bonusMedals}</td>
-                        </tr>
+                    <tr>
+                        <th>Number of arts</th>
+                        <th>Total game speed bonus</th>
+                        <th>Total bonus medals</th>
+                    </tr>
+                    <tr className="bolded">
+                        <td>{this.props.totalNumberOfArts}</td>
+                        <td>{this.props.gameSpeedBonuses}</td>
+                        <td>{this.props.bonusMedals}</td>
+                    </tr>
                     </tbody>
                 </table>
                 <h3 className="col-12 mt-3">List of selected sets</h3>
                 <table className="table table-bordered table-striped">
                     <tbody>
-                    {this.props.selectedList.length > 0 ? this.props.selectedList : (<tr><th>None</th></tr>)}
+                    {this.props.selectedList.length > 0 ? this.props.selectedList : (<tr>
+                        <th>None</th>
+                    </tr>)}
                     </tbody>
                 </table>
             </div>
@@ -72,14 +81,23 @@ export class StatsSummaryAndArtsBox extends Component {
                 </div>
 
                 <div className="row">
-                    <ArtsBox setsData={this.props.setsData}/>
+                    <ArtsBox
+                        optimiser={this.props.optimiser}
+                        setsData={this.props.setsData}
+                        optimiserNbArts={this.props.optimiserNbArts}
+                        optimiserMaxGS={this.props.optimiserMaxGS}
+                        startBuild={this.props.startBuild}
+                        getOptimisedResults={this.props.getOptimisedResults}
+                        wantedArts={this.props.wantedArts}
+                        getArrayResult={this.props.getArrayResult}
+                    />
                     <div className="not-connected d-none d-sm-block">
                         {offline}
                     </div>
-                    <div id="capture" className="right-box d-none d-sm-block pt-1">
-                        <h1 className="bolded pr-2 pl-2">Stats Summary</h1>
-                        {listContent}
-                    </div>
+                </div>
+                <div id="capture" className="right-box d-none d-sm-block pt-1">
+                    <h1 className="bolded pr-2 pl-2">Stats Summary</h1>
+                    {listContent}
                 </div>
             </Fragment>
         )
