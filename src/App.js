@@ -16,7 +16,7 @@ export default class App extends Component {
         this.state = {
             selectedList: [],
             data: [],
-            excludedFromOptimiser: ["Lunar Goddess' Treasure Set", "Relic Set of Halloween Friends", "Ancient Claws Set"],
+            excludedFromOptimiser: [],
             setTypes: [],
             totalNumberOfArts: [],
             gameSpeedBonuses: [],
@@ -37,13 +37,13 @@ export default class App extends Component {
             visitorCount: null,
             offline: '',
             optimiser: true,
-            optimiserNbArts: 36,
-            optimiserMaxGS: 345,
-            optimiserSixStarsLevel: 'T2',
+            optimiserNbArts: 0,
+            optimiserMaxGS: 0,
+            optimiserSixStarsLevel: 'T3',
             optimiserSevenStarsLevel: 'T2',
             optimiserEightStarsLevel: 'T0',
             optimisedSets: [],
-            optimisedCloseResults: [],
+            optimisedResultSelectedIndex: 1,
         };
     }
 
@@ -387,7 +387,7 @@ export default class App extends Component {
                                     type="radio"
                                     name={set.set_name.replace(regex, '')}
                                     value={set.set_name}
-                                    defaultChecked={false}
+                                    defaultChecked={this.state.excludedFromOptimiser.indexOf(set.set_name) !== -1}
                                 >
                                 </input>
                                 <span className="checkmark"/>
@@ -399,7 +399,7 @@ export default class App extends Component {
                                     type="radio"
                                     name={set.set_name.replace(regex, '')}
                                     value={set.set_name}
-                                    defaultChecked={true}
+                                    defaultChecked={this.state.excludedFromOptimiser.indexOf(set.set_name) === -1}
                                 >
                                 </input>
                                 <span className="checkmark"/>
@@ -496,21 +496,6 @@ export default class App extends Component {
         return setLevelBoxes
     };
 
-    swapManualToAutomaticBuilder = () => {
-        this.setState({
-            excludedFromOptimiser: [],
-            optimiser: !this.state.optimiser,
-            optimiserNbArts: 0,
-            optimiserMaxGS: 0,
-            optimiserSixStarsLevel: 'T3',
-            optimiserSevenStarsLevel: 'T2',
-            optimiserEightStarsLevel: 'T0',
-            optimisedSets: [],
-            optimisedCloseResults: [],
-        });
-        this.resetSummaryState();
-    };
-
 
     artsNumber = (set) => {
         // let setName = set.set_name.replace(/ \(\dp\)/g, '');
@@ -523,6 +508,7 @@ export default class App extends Component {
                         type="radio"
                         name={set.set_name.replace(/ \(\dp\)/, '')}
                         value={set.set_name}
+                        defaultChecked={this.state.selectedList.some(setx => setx.set_name === set.set_name)}
                     >
                     </input>
                     <span className="checkmark"/>
@@ -538,7 +524,7 @@ export default class App extends Component {
             this.state.data,
             nbArtsWanted,
             this.state.optimiserMaxGS,
-            1550,
+            1250,
             this.findBonus,
             this.state.excludedFromOptimiser,
             this.state.optimiserSixStarsLevel,
@@ -546,49 +532,33 @@ export default class App extends Component {
             this.state.optimiserEightStarsLevel,
         );
 
-        let maxArtsFromSolution = [];
-
-        getResults.map(set => {
-            return maxArtsFromSolution.push(set.totalArts);
-        });
-
-        maxArtsFromSolution = Math.max(...maxArtsFromSolution);
+        getResults = getResults.sort((set1, set2) => set1.totalArts >= set2.totalArts ? -1 : 1);
 
         let solutionMessage = (
             <div key="message" className="col-12 white-text mt-1 mb-2">
                 {
-                    nbArtsWanted > 1 ?
-                        maxArtsFromSolution === nbArtsWanted ?
-                            `Most optimised solution(s) found` :
-                            maxArtsFromSolution < nbArtsWanted ?
-                                `Closest solution(s) found` :
-                                'No solution found' : 'No solution found'
+                    nbArtsWanted > 1 && getResults[0].totalArts > 0 ?
+                        (<Fragment>
+                                <span>Solution(s) found</span>
+                                <br/>
+                                <span>Don't forget to adapt for race optimisation if needed</span>
+                            </Fragment>
+                        ) :
+                        'No solution found'
                 }
             </div>
         );
 
-        this.setState({optimisedSets: [solutionMessage], optimisedCloseResults: [solutionMessage]});
+        this.setState({optimisedSets: [solutionMessage]});
 
         getResults.map(set => {
-            return set.totalArts === nbArtsWanted ?
-                this.setState(prevState => ({optimisedSets: [...prevState.optimisedSets, set]})) :
-                this.setState(prevState => ({optimisedCloseResults: [...prevState.optimisedCloseResults, set]}))
+            return this.setState(prevState => ({optimisedSets: [...prevState.optimisedSets, set]}));
         });
 
-        if (getResults[0]) {
-            for (let i = 0; i < getResults.length; i++) {
-                if (getResults[i].totalArts === nbArtsWanted) {
-                    return this.pushInStates(getResults[i]);
-                } else if (getResults[i].sets.length > 0) {
-                    this.pushInStates(getResults[i]);
-                } else {
-                    this.resetSummaryState();
-                }
-            }
-        }
+        return getResults[0] && getResults[0].sets.length > 0 ? this.pushInStates(getResults[0]) : this.resetSummaryState();
     };
 
-    pushInStates = (setsArray) => {
+    pushInStates = (setsArray, index) => {
         this.resetSummaryState();
 
         return setsArray.sets.map(set => {
@@ -596,24 +566,16 @@ export default class App extends Component {
                     selectedList: [...prevState.selectedList, set],
                     totalNumberOfArts: [...prevState.totalNumberOfArts, set.set_arts_number],
                     gameSpeedBonuses: [...prevState.gameSpeedBonuses, set.bonusGS],
-                    bonusMedals: [...prevState.bonusMedals, set.bonusMedals]
+                    bonusMedals: [...prevState.bonusMedals, set.bonusMedals],
+                    optimisedResultSelectedIndex: index ? parseInt(index, 10) : 1,
                 })
             );
         });
     };
 
-    getOptimisedResults = () => {
-        const optimisedSets = this.state.optimisedSets;
-        const optimisedCloseResults = this.state.optimisedCloseResults;
-
-        return optimisedSets.length > 1 ? optimisedSets : optimisedCloseResults;
-    };
-
     getArrayResult = (e) => {
         const index = e.target.id;
-
-        return this.state.optimisedSets.length > 1 ?
-            this.pushInStates(this.state.optimisedSets[index]) : this.pushInStates(this.state.optimisedCloseResults[index]);
+        return this.pushInStates(this.state.optimisedSets[index], index)
     };
 
     closeScreenModal = () => {
@@ -634,7 +596,7 @@ export default class App extends Component {
                     />
                 ) : null}
                 <NavBar
-                    swapManualToAutomaticBuilder={() => this.swapManualToAutomaticBuilder()}
+                    swapManualToAutomaticBuilder={() => this.setState({optimiser: !this.state.optimiser})}
                     triggerScreenshot={this.triggerScreenshot}
                     searchBySetName={(e) => this.setState({searchBySetName: e.target.value.replace(/[°"§%()[]{}=\\?´`'#<>|,;.:+_-]+/g, '')})}
                     setFiltering={this.state.searchBySetType !== 'All' || this.state.filterByBonusType !== 'All'}
@@ -652,12 +614,14 @@ export default class App extends Component {
                     setsData={this.state.optimiser ? this.state.data.map(this.getOptimizedSets) : this.state.data.map(this.getSets)}
                     offline={this.state.offline}
                     optimiser={this.state.optimiser}
-                    optimiserNbArts={(e) => this.setState({optimiserNbArts: parseInt(e.target.value, 10) ? parseInt(e.target.value, 10) : 0})}
-                    optimiserMaxGS={(e) => this.setState({optimiserMaxGS: parseInt(e.target.value, 10) ? parseInt(e.target.value, 10) : 0})}
+                    optimiserNbArts={(e) => this.setState({optimiserNbArts: parseInt(e.target.value, 10)})}
+                    optimiserMaxGS={(e) => this.setState({optimiserMaxGS: parseInt(e.target.value, 10)})}
                     startBuild={() => this.startBuild()}
                     wantedArts={this.state.optimiserNbArts}
-                    getOptimisedResults={this.getOptimisedResults()}
+                    maxGS={this.state.optimiserMaxGS}
+                    getOptimisedResults={this.state.optimisedSets}
                     getArrayResult={(e) => this.getArrayResult(e)}
+                    optimisedResultSelectedIndex={this.state.optimisedResultSelectedIndex}
                 />
             </div>
         );

@@ -112,7 +112,7 @@ export const knapsack = (
         const newGSValue = lastSubSolution.gameSpeed + lastItem.bonusGS;
         const newMedalsValue = lastSubSolution.medalsBonus + lastItem.bonusMedals;
 
-        if ((newGSValue >= lastGSValue && newMedalsValue >= lastMedalsValue && newGSValue <= maxGS && lastItemMedals >= minMedalsPerSet)) {
+        if ((newGSValue >= lastGSValue && newMedalsValue > lastMedalsValue && newGSValue <= maxGS && lastItemMedals >= minMedalsPerSet)) {
             const _lastSets = lastSubSolution.sets.slice();
             _lastSets.push(lastItem);
             return {totalArts: newMaxArts, gameSpeed: newGSValue, medalsBonus: newMedalsValue, sets: _lastSets};

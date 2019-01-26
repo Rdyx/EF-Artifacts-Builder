@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {customStyles} from "../styles/ModalStyle";
 import PropTypes from 'prop-types';
 import Modal from "react-modal";
@@ -72,18 +72,37 @@ export class SetModal extends Component {
         }).filter(bonus => bonus);
     };
 
-    setRows = (setArtsNumber, bonus) => {
-        const fillMissingData = [];
+    setRows = (setArtsNumber, bonuses) => {
+        function fillArray(color, cap = 4, length = bonuses.length) {
+            const fillMissingData = [];
 
-        if (bonus.length < 4) {
-            for (let i = bonus.length; i < 4; i++) {
-                fillMissingData.push(
-                    <td key={i}>X</td>
-                )
+            if (length < cap) {
+                for (let i = length; i < cap; i++) {
+                    fillMissingData.push(
+                        <td key={i} className={`${color} align-middle`}>X</td>
+                    )
+                }
             }
+
+            return fillMissingData;
         }
 
-        return bonus[0].map((bonusName, index) => {
+        return bonuses[0].map((bonusName, index) => {
+            const bonus = bonusName[0];
+
+            // Using regex to set rows colors
+            const mustHaveStats = /Game Speed|Medals Obtained/;
+            const attackStats = /Attack Power|Attack Speed|Critical Damage|Critical Strike Rate|Movement Speed/;
+            const ecoStats = /Open Gold|Quest Upgrade|Unit Upgrade|Gold Acquisition|Quest Time/;
+            const defStats = /HP Of|Defense Power|Revival Time/;
+            const otherStats = /Dungeon Material|Battle Engaging/;
+
+            const rowColor = bonus.match(mustHaveStats) ? 'table-success' :
+                bonus.match(attackStats) ? 'table-danger' :
+                    bonus.match(ecoStats) ? 'table-warning' :
+                        bonus.match(defStats) ? 'table-secondary' :
+                            bonus.match(otherStats) ? 'table-info' : '';
+
             // Have to set multiple conditions since sets can be only 3 parts and 3 bonus actived from it
             const bonusStep =
                 // Create <th> only if index is 0 or ('even' and setArtsNumber is 3)
@@ -95,7 +114,7 @@ export class SetModal extends Component {
                         // For 'odd' sets (5 parts) we check the index+2 value to fix the case where we got 6/5 (last bonus step)
                         <th
                             rowSpan={setArtsNumber === 3 && index === 0 ? 3 : 2}
-                            className="align-middle"
+                            className="align-middle table-light"
                         >
                             {
                                 setArtsNumber === 3 && index === 0 ? setArtsNumber + '/' + setArtsNumber :
@@ -110,19 +129,20 @@ export class SetModal extends Component {
             return (
                 <tr key={index}>
                     {bonusStep}
-                    <td style={{wordBreak: 'keep-all'}}>
-                        {this.setDefaultValue(bonusName[0])}
+                    <td className={rowColor}>
+                        {this.setDefaultValue(bonus)}
                     </td>
-                    {bonus.map((bonusArray, indexArray) => {
+                    {bonuses.map((bonusArray, indexArray) => {
                             return (
-                                <td key={bonusArray}>
+                                <td key={bonusArray}
+                                    className={`${rowColor} align-middle bolded`}>
                                     {indexArray !== 0 ?
                                         this.setDefaultValue(bonusArray[index][0]) : this.setDefaultValue(bonusArray[index][1])}
                                 </td>
                             )
                         }
                     )}
-                    {fillMissingData}
+                    {fillArray(rowColor)}
                 </tr>
             )
         })
@@ -130,11 +150,13 @@ export class SetModal extends Component {
 
     createTable = (setArtsNumber, bonusValues) => {
         return (
-            <table className="table table-striped table-bordered  mt-2">
+            <Fragment>
+
+            <table className="table table-striped table-bordered table-dark black-text mt-2">
                 <tbody>
-                <tr>
+                <tr className="table-light align-middle">
                     <th style={{width: '10%'}}/>
-                    <th style={{width: '50%'}}>Bonus Name</th>
+                    <th style={{width: '50%'}}>Bonus</th>
                     <th style={{width: '10%'}}>T0</th>
                     <th style={{width: '10%'}}>T1</th>
                     <th style={{width: '10%'}}>T2</th>
@@ -143,6 +165,18 @@ export class SetModal extends Component {
                 {this.setRows(setArtsNumber, bonusValues)}
                 </tbody>
             </table>
+                <table className="table table-bordered table-dark black-text">
+                    <tbody>
+                    <tr>
+                        <th className="table-success">GS/Medals</th>
+                        <th className="table-danger">Attack</th>
+                        <th className="table-warning">Economy</th>
+                        <th className="table-secondary">Defense</th>
+                        <th className="table-info">Others</th>
+                    </tr>
+                    </tbody>
+                </table>
+            </Fragment>
         )
     };
 

@@ -16,9 +16,11 @@ export class StatsSummaryAndArtsBox extends Component {
         optimiserMaxGS: PropTypes.func.isRequired,
         startBuild: PropTypes.func.isRequired,
         wantedArts: PropTypes.number.isRequired,
+        maxGS: PropTypes.number.isRequired,
         getOptimisedResults: PropTypes.array.isRequired,
         getArrayResult: PropTypes.func.isRequired,
-    };
+        optimisedResultSelectedIndex: PropTypes.number.isRequired,
+};
 
     constructor(props) {
         super(props);
@@ -92,7 +94,9 @@ export class StatsSummaryAndArtsBox extends Component {
                         startBuild={this.props.startBuild}
                         getOptimisedResults={this.props.getOptimisedResults}
                         wantedArts={this.props.wantedArts}
+                        maxGS={this.props.maxGS}
                         getArrayResult={this.props.getArrayResult}
+                        optimisedResultSelectedIndex={this.props.optimisedResultSelectedIndex}
                     />
                     <div className="not-connected d-none d-sm-block">
                         {offline}

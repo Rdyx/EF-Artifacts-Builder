@@ -1,6 +1,7 @@
 :root {
     --main-bg-color: #000;
     --main-text-color: #FFF;
+    --table-dark-text: #000;
     --set-name-border-color: #FFF;
     --external-link: lightskyblue;
     --set-checkbox-text-color: rgba(250, 0, 0, 0.5);
@@ -37,6 +38,10 @@ body {
 
 .white-text {
     color: var(--main-text-color);
+}
+
+.black-text {
+    color: var(--table-dark-text) !important;
 }
 
 .bolded {

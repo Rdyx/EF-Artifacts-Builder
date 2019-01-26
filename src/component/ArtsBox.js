@@ -9,8 +9,10 @@ export class ArtsBox extends Component {
         optimiserMaxGS: PropTypes.func.isRequired,
         startBuild: PropTypes.func.isRequired,
         wantedArts: PropTypes.number.isRequired,
+        maxGS: PropTypes.number.isRequired,
         getOptimisedResults: PropTypes.array.isRequired,
         getArrayResult: PropTypes.func.isRequired,
+        optimisedResultSelectedIndex: PropTypes.number.isRequired,
     };
 
     triggerBuild = (e) => {
@@ -21,6 +23,7 @@ export class ArtsBox extends Component {
         const resultLength = this.props.getOptimisedResults.length;
         let solutions = [];
 
+        console.log(this.props.optimisedResultSelectedIndex)
         if (resultLength > 1 && this.props.getOptimisedResults[1].sets.length > 0) {
             this.props.getOptimisedResults.map((set, index) => {
                 // Index will start above 0 since index 0 is the solutionMessage
@@ -35,7 +38,7 @@ export class ArtsBox extends Component {
                                     type="radio"
                                     name="autoBuilderResult"
                                     value={set.set_name}
-                                    defaultChecked={index === 1}
+                                    defaultChecked={index === this.props.optimisedResultSelectedIndex}
                                 >
                                 </input>
                                 <span className="checkmark"/>
@@ -64,6 +67,7 @@ export class ArtsBox extends Component {
     };
 
     render() {
+        console.log(this.props.maxGS)
         return (
             <div className="col-12 col-md-9 left-box mt-2 mb-3">
                 {this.props.optimiser ? (
@@ -78,6 +82,7 @@ export class ArtsBox extends Component {
                                     name="nbArts"
                                     type="number"
                                     onChange={this.props.optimiserNbArts}
+                                    defaultValue={this.props.wantedArts === 0 ? '' : this.props.maxGS}
                                     max={50}
                                     min={0}
                                     placeholder={0}
@@ -93,6 +98,7 @@ export class ArtsBox extends Component {
                                     name="maxGS"
                                     type="number"
                                     onChange={this.props.optimiserMaxGS}
+                                    defaultValue={this.props.maxGS === 0 ? '' : this.props.maxGS}
                                     min={0}
                                     placeholder={0}
                                     step={25}
