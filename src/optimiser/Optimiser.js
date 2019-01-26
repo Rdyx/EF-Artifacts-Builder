@@ -142,8 +142,7 @@ export const knapsack = (
             }
             memo.push(row);
         }
-        console.log(medals)
-        console.log(memo)
+
         if (memo.length > 0) {
             // Push every knapsack best result to results
             results.push(getLastOfEach(memo));

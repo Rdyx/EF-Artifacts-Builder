@@ -1,5 +1,19 @@
 export const versions = [
     {
+        number: '1.7.1a',
+        date: '26 January 2019',
+        title: "Auto-builder results system modified, Set Summary modal, Summary Box update and manual/auto swap modified",
+        content: {
+            point1: "Results from auto-builder has been slightly modified, the base algorithm is still the same but you will now have all results (previously only \"best\" ones if possible or closest ones) sorted by the art number. This will let you have more choices, even not the most relevant ones, from the results.",
+            point2: "Summary Box slight update, you can now see how much parts a set is using after its technical name.",
+            point3: "You can now have a set stats summary, simply click on its technical name and you'll have a table with its stats. The legend used is from my own appreciation, it may differ for you but it's just there to help you for readability.",
+            point4: "A very big thanks for your feedbacks, as noticed, the algorithm is kicking off sub-parted sets for its final results (too long to explain here), that's why you can sometimes find better compositions than the algorithm when you use some !",
+            point5: "To try to help you build, swaping from auto to manual builder will now keep the solution you're using. That means you can use a \"close\" suggested result and complete it the way you want. When you'll back to auto from manual you will get the inputs filled as you did plus you will know which build you selected before (if you did). Sets you excluded will be kept and tiers filters too.",
+            point6: "Fixed minor bugs, such as using special characters in search field was making EFAB crash before. Now, they are ignored.",
+            point7: "Again, a big thanks for your feedbacks, I try to do as much as i can ! :)",
+        },
+    },
+    {
         number: '1.7.0a',
         date: '20 January 2019',
         title: "Another very huge update ! Automatic builder is here !",

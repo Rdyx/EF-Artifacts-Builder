@@ -50,15 +50,15 @@ export default class App extends Component {
     componentWillMount() {
         // let online = false;
         this.setState({loading: true});
-        fetch('http://127.0.0.1:8000/visits/1/')
-        // fetch('https://efartifactsbuilder.alwaysdata.net/visits/1/')
+        // fetch('http://127.0.0.1:8000/visits/1/')
+        fetch('https://efartifactsbuilder.alwaysdata.net/visits/1/')
             .then(response => {
                 return response.json();
             })
             .then(data => {
                 this.setState({visitorCount: data.visits});
-                fetch('http://127.0.0.1:8000/sets/')
-                // fetch('https://efartifactsbuilder.alwaysdata.net/sets/')
+                // fetch('http://127.0.0.1:8000/sets/')
+                fetch('https://efartifactsbuilder.alwaysdata.net/sets/')
                     .then(response => {
                         return response.json()
                     })
@@ -532,7 +532,10 @@ export default class App extends Component {
             this.state.optimiserEightStarsLevel,
         );
 
-        getResults = getResults.sort((set1, set2) => set1.totalArts >= set2.totalArts ? -1 : 1);
+        getResults = getResults.sort((set1, set2) => set1.totalArts >= set2.totalArts &&
+        set1.maxGS >= set2.maxGS &&
+        set1.medalsBonus >= set2.medalsBonus ?
+            -1 : 1);
 
         let solutionMessage = (
             <div key="message" className="col-12 white-text mt-1 mb-2">
