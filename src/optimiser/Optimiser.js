@@ -29,44 +29,39 @@ export const filterSets = (
 
     // Filtering sets to retreive only usefull data
     // Goal is to have lighter data to use with algorithm later
-    let objectStyle = {};
-    unifiedArray.map((set, index) => {
-        // When we launch build, we sent an already filtered array
-        // We already got GS and Medals values + findBonus() won't work
-        const hasBeenFilteredEarlier = !isNaN(set.bonusGS) && !isNaN(set.bonusMedals);
-
-        const testGSValue = hasBeenFilteredEarlier ? set.bonusGS : findBonus(set, /Game Speed/);
-        const testMedalsValue = hasBeenFilteredEarlier ? set.bonusMedals : findBonus(set, /Increase Additional Medals Obtained/);
-        const bonusGSValue = testGSValue ? testGSValue : 0;
-        const bonusMedalsValue = testMedalsValue ? testMedalsValue : 0;
+    let objectStyle = [];
+    unifiedArray.map(set => {
+        const bonusGSValue = findBonus(set, /Game Speed/) ? findBonus(set, /Game Speed/) : 0;
+        const bonusMedalsValue = findBonus(set, /Increase Additional Medals Obtained/) ? findBonus(set, /Increase Additional Medals Obtained/) : 0;
+        // const bonusGSValue = testGSValue ? testGSValue : 0;
+        // const bonusMedalsValue = testMedalsValue ? testMedalsValue : 0;
         const avgGSByNBArts = bonusGSValue / set.set_arts_number;
 
         // Since GS and Medals Bonus are most important bonus, save those sets and flush the rest
         return bonusGSValue || bonusMedalsValue ?
-            objectStyle['s' + index] = {
+            objectStyle.push({
                 'setLevel': set.setLevel,
                 'set_name': set.set_name.replace(/ \(\dp\)/g, ''),
+                // 'set_name': set.set_name,
                 'set_tech_name': set.set_tech_name,
                 'set_arts_number': set.set_arts_number,
                 'bonusGS': bonusGSValue,
                 'bonusMedals': bonusMedalsValue,
                 'avgGS': avgGSByNBArts,
-                'artifact1': set.artifact1,
-            } : null;
+                // 'artifact1': set.artifact1,
+            }) : null;
     });
 
     // Sorting each set by its GS/NbArt ratio
-    return Object.keys(objectStyle).sort(function (set1, set2) {
-        return objectStyle[set1].avgGS - objectStyle[set2].avgGS > 0 ? -1 : 1;
-    }).map(key => objectStyle[key]);
+    return objectStyle.sort((set1, set2) => {
+        return (set1.avgGS - set2.avgGS) * -1;
+    });
 };
 
 // KNAPSACK ALGORITHM MODIFIED A BIT TO FIT THE APP NEEDS
 export const knapsack = (
     sets, maxArts, maxGS, minMedalsPerSet, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, EightStarsLevel
 ) => {
-    sets = filterSets(sets, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, EightStarsLevel);
-
     function getSolution(row, nbArts, maxGS, minMedalsPerSet, memo) {
         const NO_SOLUTION = {totalArts: 0, gameSpeed: 0, medalsBonus: 0, sets: []};
 
@@ -87,9 +82,12 @@ export const knapsack = (
         // If not, we keep it
         // If yes, we filter all sets matching and push them in a separate array (we would lose them else)
         const lastItemName = lastItem.set_name;
+
         let filteredSets = [];
+
         lastSubSolution.sets = lastSubSolution.sets.filter(set => {
             const currentSetName = set.set_name;
+
             if (currentSetName === lastItemName) {
                 filteredSets.push(set);
                 return false;
@@ -129,6 +127,8 @@ export const knapsack = (
         return lastRow[lastRow.length - 1];
     }
 
+    sets = filterSets(sets, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, EightStarsLevel);
+
     let results = [];
     // Creating loop to make multiple knapsacks
     for (let medals = 0; medals <= minMedalsPerSet; medals += 50) {
@@ -142,6 +142,8 @@ export const knapsack = (
             }
             memo.push(row);
         }
+        console.log(medals)
+        console.log(memo)
         if (memo.length > 0) {
             // Push every knapsack best result to results
             results.push(getLastOfEach(memo));

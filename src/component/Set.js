@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import Artifact from './Artifact';
 import PropTypes from 'prop-types';
+import {SetModal} from "../Modals/SetModal";
 
 export default class Set extends Component {
     static propTypes = {
         set: PropTypes.object.isRequired,
+        wholeSetForModalStats: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -12,7 +14,7 @@ export default class Set extends Component {
         this.state = {
             artifacts: [],
             selectedSet: null,
-            i: 0,
+            showSetStats: false,
         };
     }
 
@@ -26,7 +28,6 @@ export default class Set extends Component {
                 this.props.set.artifact5,
                 this.props.set.artifact6
             ],
-            selectedSet: this.props.set
         });
     }
 
@@ -40,12 +41,29 @@ export default class Set extends Component {
         }
     };
 
+    closeSetStats = () => {
+        this.setState({showSetStats: false})
+    };
+
     render() {
         const regex = / \(\dp\)/;
         return (
             <div>
-                <div className={`text-center bolded bordered white-text mt-2`}>{this.state.selectedSet.set_tech_name.replace(regex, '')}</div>
-                <div className={`text-center white-text mb-3`}>{this.state.selectedSet.set_name.replace(regex, '')}</div>
+                {this.state.showSetStats ? (
+                    <SetModal
+                        handler={this.closeSetStats}
+                        sets={this.props.wholeSetForModalStats}
+                    />
+                ) : null}
+                <div
+                    onClick={() => this.setState({showSetStats: true})}
+                    className={`text-center bolded bordered white-text mt-2 set-title`}>
+                    {this.props.set.set_tech_name.replace(regex, '')}
+                </div>
+                <div
+                    className={`text-center white-text mb-3`}>
+                    {this.props.set.set_name.replace(regex, '')}
+                </div>
                 <div className="row">{this.state.artifacts.map(this.showArts)}</div>
             </div>
         )

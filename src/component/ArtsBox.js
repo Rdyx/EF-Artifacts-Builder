@@ -26,7 +26,7 @@ export class ArtsBox extends Component {
                 // Index will start above 0 since index 0 is the solutionMessage
                 return index > 0 ?
                     solutions.push(
-                        <div key={set.set_name + set.setLevel} className="col-12 col-sm-3 text-center">
+                        <div key={index} className="col-12 col-sm-3 text-center">
                             <label className="col text-color personnal-checkbox mb-2">
                                 Solution {index}
                                 <input

@@ -156,6 +156,20 @@ a.efd[target="_blank"]:after {
     background-color: var(--art-img-hover-bg);
 }
 
+.set-title {
+    transition: all 0.2s ease;
+    position: relative;
+    bottom: 0;
+    margin: 0.25em 0 0.5em 0;
+}
+
+.set-title:hover {
+    cursor: pointer;
+    border: var(--art-img-hover-border);
+    border-radius: 5px;
+    background-color: var(--art-img-hover-bg);
+}
+
 .hovered:hover {
     background-color: var(--set-box-hover-bg);
 }

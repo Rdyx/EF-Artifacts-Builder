@@ -20,10 +20,6 @@ export default class Artifact extends Component {
         this.setState({showArtStats: false})
     };
 
-    showOneArt = (art) => {
-        this.setState({showArtStats: true, artifact: art})
-    };
-
     render() {
         return (
             <div>
@@ -34,7 +30,7 @@ export default class Artifact extends Component {
                     />
                 ) : null}
                 <img
-                    onClick={() => this.showOneArt(this.props.artifact)}
+                    onClick={() => this.setState({showArtStats: true})}
                     className="art-image"
                     src={this.props.artifact.artifact_img}
                     alt={this.props.artifact.artifact_name}

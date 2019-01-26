@@ -7,7 +7,7 @@ import {ScreenshotModal} from "./Modals/ScreenshotModal";
 import {NavBar} from "./component/NavBar";
 import {StatsSummaryAndArtsBox} from "./component/StatsSummaryAndArtsBox";
 import {LoadingScreen} from "./component/LoadingScreen";
-import {filterSets, knapsack} from "./optimiser/Optimiser";
+import {knapsack} from "./optimiser/Optimiser";
 
 
 export default class App extends Component {
@@ -16,7 +16,7 @@ export default class App extends Component {
         this.state = {
             selectedList: [],
             data: [],
-            excludedFromOptimiser: [],
+            excludedFromOptimiser: ["Lunar Goddess' Treasure Set", "Relic Set of Halloween Friends", "Ancient Claws Set"],
             setTypes: [],
             totalNumberOfArts: [],
             gameSpeedBonuses: [],
@@ -37,9 +37,9 @@ export default class App extends Component {
             visitorCount: null,
             offline: '',
             optimiser: true,
-            optimiserNbArts: 0,
-            optimiserMaxGS: 0,
-            optimiserSixStarsLevel: 'T3',
+            optimiserNbArts: 36,
+            optimiserMaxGS: 345,
+            optimiserSixStarsLevel: 'T2',
             optimiserSevenStarsLevel: 'T2',
             optimiserEightStarsLevel: 'T0',
             optimisedSets: [],
@@ -50,15 +50,15 @@ export default class App extends Component {
     componentWillMount() {
         // let online = false;
         this.setState({loading: true});
-        // fetch('http://127.0.0.1:8000/visits/1/')
-        fetch('https://efartifactsbuilder.alwaysdata.net/visits/1/')
+        fetch('http://127.0.0.1:8000/visits/1/')
+        // fetch('https://efartifactsbuilder.alwaysdata.net/visits/1/')
             .then(response => {
                 return response.json();
             })
             .then(data => {
                 this.setState({visitorCount: data.visits});
-                // fetch('http://127.0.0.1:8000/sets/')
-                fetch('https://efartifactsbuilder.alwaysdata.net/sets/')
+                fetch('http://127.0.0.1:8000/sets/')
+                // fetch('https://efartifactsbuilder.alwaysdata.net/sets/')
                     .then(response => {
                         return response.json()
                     })
@@ -218,12 +218,13 @@ export default class App extends Component {
     };
 
     getSelection = (set) => {
-        let findGsBonus = !isNaN(set.bonusGS) ? set.bonusGS : this.findBonus(set, /Game Speed/);
-        let findMedalBonus = !isNaN(set.bonusMedals) ? set.bonusMedals : this.findBonus(set, /Increase Additional Medals Obtained/);
+        const findGsBonus = !isNaN(set.bonusGS) ? set.bonusGS : this.findBonus(set, /Game Speed/);
+        const findMedalBonus = !isNaN(set.bonusMedals) ? set.bonusMedals : this.findBonus(set, /Increase Additional Medals Obtained/);
+        const setTechName = set.set_tech_name.replace(/ \(\dp\)/g, '');
 
         return (
             <tr key={set.set_name + set.setLevel} className="text-center">
-                <th style={{width: '60%'}}>{set.setLevel} {set.set_tech_name}</th>
+                <th style={{width: '60%'}}>{set.setLevel} {setTechName} - {set.set_arts_number}p</th>
                 <td style={{width: '15%'}}>{findGsBonus ? findGsBonus : 0}</td>
                 <td style={{width: '35%'}}>{findMedalBonus ? findMedalBonus : 0}</td>
             </tr>
@@ -247,6 +248,16 @@ export default class App extends Component {
                 this.state.searchBySetType === 'All') &&
             (this.findBonus(set, this.state.filterByBonusType) ||
                 this.state.filterByBonusType === 'All');
+    };
+
+    filterSetsForStatsModal = (set) => {
+        return this.state.data.filter(setsArray => {
+            return setsArray[0].set_name.replace(/ \(\dp\)/g, '') === set.set_name.replace(/ \(\dp\)/g, '')
+        })[0].filter(set1 => {
+            return set1.set_arts_number === set.set_arts_number;
+        }).sort((set1, set2) => {
+            return set1.setLevel >= set2.setLevel ? 1 : -1;
+        });
     };
 
     getSets = (sets) => {
@@ -286,6 +297,7 @@ export default class App extends Component {
         // to apply filter we need to get the set with maximum bonus
         let set = sets[sets.length - 1];
         let showIfMatch = this.showIfMatch(set, false);
+        const filteredSets = this.filterSetsForStatsModal(set);
 
         return (
             <div
@@ -332,6 +344,7 @@ export default class App extends Component {
                 <div>
                     <Set
                         set={set}
+                        wholeSetForModalStats={filteredSets}
                     />
                 </div>
             </div>
@@ -359,6 +372,7 @@ export default class App extends Component {
             const regex = / \(\dp\)/;
             const set = sets[sets.length - 1];
             let showIfMatch = this.showIfMatch(set);
+            const filteredSets = this.filterSetsForStatsModal(set);
 
             return (
                 <div
@@ -395,6 +409,7 @@ export default class App extends Component {
                     <div>
                         <Set
                             set={set}
+                            wholeSetForModalStats={filteredSets}
                         />
                     </div>
                 </div>
@@ -483,6 +498,7 @@ export default class App extends Component {
 
     swapManualToAutomaticBuilder = () => {
         this.setState({
+            excludedFromOptimiser: [],
             optimiser: !this.state.optimiser,
             optimiserNbArts: 0,
             optimiserMaxGS: 0,
@@ -522,7 +538,7 @@ export default class App extends Component {
             this.state.data,
             nbArtsWanted,
             this.state.optimiserMaxGS,
-            1250,
+            1550,
             this.findBonus,
             this.state.excludedFromOptimiser,
             this.state.optimiserSixStarsLevel,
@@ -620,7 +636,7 @@ export default class App extends Component {
                 <NavBar
                     swapManualToAutomaticBuilder={() => this.swapManualToAutomaticBuilder()}
                     triggerScreenshot={this.triggerScreenshot}
-                    searchBySetName={(e) => this.setState({searchBySetName: e.target.value})}
+                    searchBySetName={(e) => this.setState({searchBySetName: e.target.value.replace(/[°"§%()[]{}=\\?´`'#<>|,;.:+_-]+/g, '')})}
                     setFiltering={this.state.searchBySetType !== 'All' || this.state.filterByBonusType !== 'All'}
                     setsTypes={this.state.setTypes.map(this.getSetsTypes)}
                     bonusTypes={this.state.bonusTypes.map(this.getBonusTypes)}

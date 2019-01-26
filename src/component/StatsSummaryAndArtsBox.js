@@ -55,9 +55,12 @@ export class StatsSummaryAndArtsBox extends Component {
                 <h3 className="col-12 mt-3">List of selected sets</h3>
                 <table className="table table-bordered table-striped">
                     <tbody>
-                    {this.props.selectedList.length > 0 ? this.props.selectedList : (<tr>
-                        <th>None</th>
-                    </tr>)}
+                    {this.props.selectedList.length > 0 ? this.props.selectedList :
+                        (
+                            <tr>
+                                <th>None</th>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
