@@ -532,10 +532,7 @@ export default class App extends Component {
             this.state.optimiserEightStarsLevel,
         );
 
-        getResults = getResults.sort((set1, set2) => set1.totalArts >= set2.totalArts &&
-        set1.maxGS >= set2.maxGS &&
-        set1.medalsBonus >= set2.medalsBonus ?
-            -1 : 1);
+        getResults = getResults.sort((r1, r2) => r1.totalArts >= r2.totalArts && r1.gameSpeed*1.1 >= r2.gameSpeed && r1.medalsBonus*1.05 >= r2.medalsBonus ? -1 : 1);
 
         let solutionMessage = (
             <div key="message" className="col-12 white-text mt-1 mb-2">

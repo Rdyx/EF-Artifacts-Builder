@@ -122,9 +122,20 @@ export const knapsack = (
     }
 
     // The right-bottom-corner cell of the grid contains the final solution for the whole problem.
+    // It looks like last cell is not always the best one ? Probably related to double condition check in loops...
+    // Getting each memo best results then
     function getLastOfEach(memo) {
-        const lastRow = memo[memo.length - 1];
-        return lastRow[lastRow.length - 1];
+        const memoResults = [];
+
+        memo.map(memoArray => {
+            memoResults.push(memoArray[memoArray.length-1]);
+        });
+
+        memoResults.sort((r1, r2) => r1.totalArts >= r2.totalArts && r1.gameSpeed >= r2.gameSpeed && r1.medalsBonus >= r2.medalsBonus ? -1 : 1);
+
+        return memoResults[0];
+        // const lastRow = memo[memo.length - 1];
+        // return lastRow[lastRow.length - 1];
     }
 
     sets = filterSets(sets, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, EightStarsLevel);
