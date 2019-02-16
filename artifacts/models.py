@@ -67,6 +67,7 @@ class Set(models.Model):
     set_level = models.ForeignKey(ArtifactLevel, on_delete=models.CASCADE, related_name='set_level', default=6)
     set_tech_name = models.CharField(max_length=20)
     set_arts_number = models.IntegerField()
+    set_total_arts_number = models.IntegerField()
     set_art_1 = models.ForeignKey(Artifact, on_delete=models.CASCADE, related_name='set_art_1', blank=True, null=True)
     set_art_2 = models.ForeignKey(Artifact, on_delete=models.CASCADE, related_name='set_art_2', blank=True, null=True)
     set_art_3 = models.ForeignKey(Artifact, on_delete=models.CASCADE, related_name='set_art_3', blank=True, null=True)

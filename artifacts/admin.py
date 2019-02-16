@@ -6,7 +6,9 @@ from .models import HitCount, Race, Bonus, Artifact, ArtifactLevel, Set, SetType
 
 
 class SetAdmin(admin.ModelAdmin):
-    fields = (('set_type', 'set_name', 'set_arts_number', 'set_level', 'set_tech_name'),
+    fields = (('set_type', 'set_level'),
+              ('set_name', 'set_tech_name'),
+              ('set_arts_number', 'set_total_arts_number'),
               ('set_art_1', 'set_art_2', 'set_art_3', 'set_art_4', 'set_art_5', 'set_art_6'),
               ('set_bonus_1', 'set_bonus_1_race', 'set_bonus_1_value'),
               ('set_bonus_2', 'set_bonus_2_race', 'set_bonus_2_value'),
