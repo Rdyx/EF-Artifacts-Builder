@@ -1,30 +1,24 @@
-##Welcome to Endless Frontier Artifacts Builder !
+## Welcome to Endless Frontier Artifacts Builder !
 
-This part is the backend, it uses Python with Django and Django REST framework.
+### https://www.efab.ovh/
+
+Stored on Google Cloud Storage, powered by App Engine.
+
+Branches:
+   - old-back
+      - Back end part, used to be online for API, now used locally to generate JSON that is stored directly on cloud and used as static file. 
+   - front
+      - Front end part.
+ 
+Languages:
+   - Python 3.6
+   - Javascript
+   - SQL
+   
+Frameworks:
+   - Django (with DjangoAPIRest & SQLite)
+   - React
 
 Feel free to report bugs !
 
-Require python >= 3.6
-
-Set of commands to make it run
-
-```console
-# Building up virtual environnement and getting libraires
-virtualenv venv -p python3 --no-site-package
-. venv/bin/activate
-pip install -r requirements.txt
-
-# Create local_settings
-touch EFArtifacts/local_settings.py
-echo "SECRET_KEY='HeyImASecretKey'" > text.txt
-
-# Then setup the database
-python manage.py makemigrations
-python manage.py migrate
-
-# Create user and start server
-python manage.py createsuperuser
-python manage.py runserver
-```
-
-As simple as this, you'll have to add data by yourself to make it work ;)
+Licenced **WTFPL** :)
