@@ -1,4 +1,7 @@
-##Welcome to Endless Frontier Artifacts Builder !
+## Welcome to Endless Frontier Artifacts Builder !
+
+### UPDATE 2019/03/24
+Now using Google Cloud to provide data with a direct json as static file. I still use this back end locally to generate json data but this part is not online anymore.
 
 This part is the backend, it uses Python with Django and Django REST framework.
 
