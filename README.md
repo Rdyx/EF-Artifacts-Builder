@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 # Create local_settings
 touch EFArtifacts/local_settings.py
-echo "SECRET_KEY='HeyImASecretKey'" > text.txt
+echo "SECRET_KEY='HeyImASecretKey'" > EFArtifacts/local_settings.py
 
 # Then setup the database
 python manage.py makemigrations
