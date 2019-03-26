@@ -48,17 +48,14 @@ export default class App extends Component {
     }
 
     componentWillMount() {
-        // let online = false;
         this.setState({loading: true});
-        fetch('http://127.0.0.1:8000/visits/1/')
-        // fetch('https://efartifactsbuilder.alwaysdata.net/visits/1/')
+        fetch('https://efab.ovh')
             .then(response => {
                 return response.json();
             })
             .then(data => {
                 this.setState({visitorCount: data.visits});
-                fetch('http://127.0.0.1:8000/sets/')
-                // fetch('https://efartifactsbuilder.alwaysdata.net/sets/')
+                fetch('https://efab.ovh/data.json')
                     .then(response => {
                         return response.json()
                     })
