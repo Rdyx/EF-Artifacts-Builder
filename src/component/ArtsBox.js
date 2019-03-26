@@ -80,7 +80,7 @@ export class ArtsBox extends Component {
                                     name="nbArts"
                                     type="number"
                                     onChange={this.props.optimiserNbArts}
-                                    defaultValue={this.props.wantedArts === 0 ? '' : this.props.maxGS}
+                                    defaultValue={this.props.wantedArts === 0 ? '' : this.props.wantedArts}
                                     max={50}
                                     min={0}
                                     placeholder={0}

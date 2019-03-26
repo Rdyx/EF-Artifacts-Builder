@@ -1,0 +1,25 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+handlers:
+- url: /
+  static_files: build/index.html
+  upload: build/index.html
+  secure: always
+- url: /
+  static_dir: build
+- url: /data
+  static_files: data/data.json
+  upload: data/data.json
+  secure: always
+- url: /data
+  static_dir: data
+skip_files:
+- node_modules
+- public
+- src
+- README.md
+- cloudbuild.yaml
+- .gitignore
+- package.json
+- yarn.lock

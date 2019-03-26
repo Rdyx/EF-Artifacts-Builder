@@ -128,7 +128,7 @@ export const knapsack = (
         const memoResults = [];
 
         memo.map(memoArray => {
-            memoResults.push(memoArray[memoArray.length-1]);
+            return memoResults.push(memoArray[memoArray.length-1]);
         });
 
         memoResults.sort((r1, r2) => r1.totalArts >= r2.totalArts && r1.gameSpeed >= r2.gameSpeed && r1.medalsBonus >= r2.medalsBonus ? -1 : 1);

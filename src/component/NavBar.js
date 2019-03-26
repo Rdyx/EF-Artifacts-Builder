@@ -59,9 +59,9 @@ export class NavBar extends Component {
                 ) : null}
                 <nav className="row navbar navbar-dark bg-dark justify-content-center pt-0 pt-sm-2">
                     <div className="navbar-brand mr-sm-auto">
-                        <a className="underlined mr-3 big" onClick={() => this.setState({showInfoModal: true})}>EFAB</a>
-                        <a className="underlined small"
-                           onClick={() => this.setState({versionModal: true})}>{versions[0].number}</a>
+                        <button className="underlined mr-3 big btn-link text-white" onClick={() => this.setState({showInfoModal: true})}>EFAB</button>
+                        <button className="underlined small btn-link text-white"
+                           onClick={() => this.setState({versionModal: true})}>{versions[0].number}</button>
                     </div>
                     <div className="col-3 d-none d-sm-block"/>
                     <div className="col-12 d-sm-none"/>
