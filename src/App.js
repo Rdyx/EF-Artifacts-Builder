@@ -49,12 +49,13 @@ export default class App extends Component {
 
     componentWillMount() {
         this.setState({loading: true});
-        fetch('https://efab.ovh')
+        fetch('https://efab.ovh/index.html')
             .then(response => {
-                return response.json();
+                // Used to catch if user isn't connected at all
+                return response.status;
             })
-            .then(data => {
-                this.setState({visitorCount: data.visits});
+            .then(() => {
+                // Checking if user can fetch latest data
                 fetch('https://efab.ovh/data.json')
                     .then(response => {
                         return response.json()

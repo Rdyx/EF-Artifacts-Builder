@@ -8,6 +8,8 @@ handlers:
   secure: always
 - url: /
   static_dir: build
+  http_headers:
+    Access-Control-Allow-Origin: '*'
 skip_files:
 - node_modules
 - public
