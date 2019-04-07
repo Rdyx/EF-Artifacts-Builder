@@ -101,7 +101,7 @@ class Set(models.Model):
     set_type = models.ForeignKey(SetType, on_delete=models.CASCADE, related_name='set_type', blank=True, null=True)
 
     class Meta:
-        ordering = ['set_type', 'set_name', 'set_tech_name', '-set_level_id']
+        ordering = ['set_type', '-set_art_1__artifact_level', 'set_art_1__artifact_number']
 
     def __str__(self):
         return str(self.set_tech_name) + ' ' + str(self.set_level) + ' ' + str(self.set_name)
