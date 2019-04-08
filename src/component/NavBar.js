@@ -89,7 +89,7 @@ export class NavBar extends Component {
                         Screen Stats
                     </button>
                     <button
-                        className={`btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2 ${this.props.setFiltering ? 'btn-success' : 'mr-0 mr-sm-1'}`}
+                        className={`btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2 ${this.props.setFiltering ? 'btn-success' : this.props.listLength === 0 ? 'mr-0 mr-sm-1' : ''}`}
                         onClick={() => this.setState({setsFiltering: true})}>
                         Options
                     </button>
@@ -102,7 +102,7 @@ export class NavBar extends Component {
                     ) : null}
                     {this.props.listLength > 0 ? (
                         <button
-                            className={`btn btn-outline-warning mb-2 my-sm-0 p-2 btn-danger mr-sm-1 ${this.props.setFiltering ? 'ml-1': ''}`}
+                            className={`btn btn-outline-warning mb-2 my-sm-0 p-2 btn-danger mr-sm-1 ml-1`}
                             onClick={this.props.resetList}>
                             Reset Summary
                         </button>

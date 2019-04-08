@@ -334,3 +334,8 @@ table.personnal-table {
 .btn-link:hover {
     transition: all 0.3s ease;
 }
+
+/*Encoutered a weird bug in production: classes are not interpreted in the same order, making some divs not looking as they should*/
+[class*=col] {
+    width: 100% !important;
+}

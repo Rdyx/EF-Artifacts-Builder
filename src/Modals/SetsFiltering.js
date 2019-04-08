@@ -24,26 +24,26 @@ export class SetsFiltering extends Component {
                     style={setsFilterModalStyle}
                 >
                     <div className="row text-center">
-                        <div className="col-6">
+                        <div className="col-12 col-sm-6">
                             <h3>Category</h3>
                             {this.props.setsTypes}
                         </div>
-                        <div className="col-6 justify-content-around">
+                        <div className="col-12 col-sm-6 mt-3 mt-sm-0 justify-content-around">
                             <h3>Bonus Type</h3>
                             {this.props.bonusTypes}
+                            <h3 className="mt-3">Sets Enhancement</h3>
+                            <div className="col justify-content-around">
+                                {this.props.enhancementMode}
+                            </div>
+                            <div className="col justify-content-around">
+                                {this.props.enhancementLevels}
+                            </div>
                             {this.props.optimiser ? (
                                 <Fragment>
                                     <h3 className="mt-3">Sets Levels</h3>
                                     {this.props.setsLevels}
                                 </Fragment>
                             ) : null}
-                            <h3 className="mt-3">Sets Enhancement</h3>
-                            <div className="row justify-content-center">
-                                {this.props.enhancementMode}
-                            </div>
-                            <div className="row justify-content-center">
-                                {this.props.enhancementLevels}
-                            </div>
                         </div>
                     </div>
                 </Modal>

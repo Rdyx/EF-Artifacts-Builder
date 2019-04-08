@@ -37,7 +37,7 @@ export class HeaderModal extends Component {
                     style={headerModalStyle}
                 >
                     <div className="text-center">
-                        <ul className="list-inline mb-1 col">
+                        <ul className="list-inline mb-1 col px-0">
                             <li className="list-inline-item mr-2">
                                 <a className="efd"
                                    href="https://www.endlessfrontierdata.com/" target="_blank"
