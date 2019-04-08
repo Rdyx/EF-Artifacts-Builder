@@ -267,6 +267,7 @@ a.efd[target="_blank"]:after {
     border-radius: 5px;
     height: auto;
     padding: 2px;
+    width: 100% !important;
 }
 
 .big {
@@ -336,6 +337,6 @@ table.personnal-table {
 }
 
 /*Encoutered a weird bug in production: classes are not interpreted in the same order, making some divs not looking as they should*/
-[class*=col] {
-    width: 100% !important;
-}
+/*[class*=col] {*/
+    /*width: 100% !important;*/
+/*}*/
