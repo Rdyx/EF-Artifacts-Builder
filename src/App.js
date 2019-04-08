@@ -7,7 +7,7 @@ import {ScreenshotModal} from "./Modals/ScreenshotModal";
 import {NavBar} from "./component/NavBar";
 import {StatsSummaryAndArtsBox} from "./component/StatsSummaryAndArtsBox";
 import {LoadingScreen} from "./component/LoadingScreen";
-import {knapsack} from "./optimiser/Optimiser";
+import {calculateGSFromEnhancement, calculateMedalsFromEnhancement, knapsack} from "./optimiser/Optimiser";
 
 
 export default class App extends Component {
@@ -24,6 +24,10 @@ export default class App extends Component {
             bonusTypes: ['All', 'Game Speed', 'Increase Additional Medals Obtained'],
             artsLevels: [6, 7],
             setsLevels: ['T0', 'T1', 'T2', 'T3'],
+            enhancementModes: ['Manual', 'All'],
+            enhancementMode: 'All',
+            enhancementLevels: [0, 1, 2, 3],
+            enhanceLevel: 3,
             set: null,
             artifact: null,
             showScreenModal: false,
@@ -34,7 +38,7 @@ export default class App extends Component {
             filterByBonusType: 'All',
             filterBySetLevel: 'All',
             loading: false,
-            visitorCount: null,
+            // visitorCount: null,
             offline: '',
             optimiser: true,
             optimiserNbArts: 0,
@@ -48,15 +52,21 @@ export default class App extends Component {
     }
 
     componentWillMount() {
-        this.setState({loading: true});
-        fetch('https://efab.ovh/index.html')
+        if (!localStorage.getItem('enhanceLevel')) {
+            localStorage.setItem('enhanceLevel', 3);
+        }
+        const enhanceLevel = parseInt(localStorage.getItem('enhanceLevel'), 10);
+
+        this.setState({loading: true, enhanceLevel: enhanceLevel});
+
+        fetch(process.env.REACT_APP_PING)
             .then(response => {
                 // Used to catch if user isn't connected at all
                 return response.status;
             })
             .then(() => {
                 // Checking if user can fetch latest data
-                fetch('https://efab.ovh/data.json')
+                fetch(process.env.REACT_APP_SETS_FETCH)
                     .then(response => {
                         return response.json()
                     })
@@ -70,9 +80,14 @@ export default class App extends Component {
                         let i = 0;
                         while (i < data.length) {
                             let setType = data[i].setType.replace(/\d+ /, '');
+                            if (data[i].artifact1.art_level !== '8*'){
+                                data[i].enhance_level = this.adaptElvl(data[i], enhanceLevel);
+                            }
+
                             if (!setTypesArray.includes(setType)) {
                                 setTypesArray.push(setType);
                             }
+
                             // If next index exists
                             if (data[i + 1]) {
                                 // Push this index into array pushInArray
@@ -102,19 +117,27 @@ export default class App extends Component {
                             loading: false,
                         });
                     })
-                    .catch(error => {
-                        this.checkOfflineAndLocalStorage('There has been a problem while loading data. Please try again later.');
+                    .catch(() => {
+                        this.checkOfflineAndLocalStorage('There has been a problem while loading data. Please try again later.', enhanceLevel);
                     })
             })
-            .catch(error => {
-                this.checkOfflineAndLocalStorage('You need to connect at least once to run this app.');
+            .catch(() => {
+                this.checkOfflineAndLocalStorage('You need to connect at least once to run this app.', enhanceLevel);
             })
     };
 
-    checkOfflineAndLocalStorage = (message) => {
+    checkOfflineAndLocalStorage = (message, enhanceLevel) => {
         if (localStorage.getItem('data') && localStorage.getItem('setTypes')) {
+            // Setting sets enhance_level from localStorage value
+            let data = JSON.parse(localStorage.getItem('data')).map(sets => {
+                return sets.map(set => {
+                    set.enhance_level = enhanceLevel;
+                    return set;
+                })
+            });
+
             return this.setState({
-                data: JSON.parse(localStorage.getItem('data')),
+                data: data,
                 setTypes: JSON.parse(localStorage.getItem('setTypes')),
                 loading: false,
                 offline: 'You are currently offline, data may be outdated.',
@@ -135,16 +158,26 @@ export default class App extends Component {
         });
     };
 
-    handleList = (event, status = null) => {
+    handleList = (event, status = null, elvl, globalArray) => {
         const regex = / \(\dp\)/;
         const eventSetName = event.set_name.replace(regex, '');
-        const isInList = this.state.selectedList.some(set => set.set_name.replace(regex, '') === eventSetName);
+        const selectedList = this.state.selectedList;
+        const isInList = selectedList.some(set => set.set_name.replace(regex, '') === eventSetName);
+
+        let setNamesArray = []; // create an array that will contains cleaned set names for easier match
+        selectedList.map(set => setNamesArray.push(set.set_name.replace(regex, '')));
+        let index = setNamesArray.indexOf(eventSetName);
+
+        if (status !== 'remove') {
+            if (event.set_arts_number === event.set_total_arts_number) {
+                event.enhance_level = !isNaN(elvl) ? parseInt(elvl, 10) : !isNaN(event.enhance_level) ? parseInt(event.enhance_level) : 0;
+            }
+            this.changeSetEnhanceLevel(elvl, globalArray);
+        }
+
+        const oldSet = selectedList[index];
 
         if (isInList || (isInList && status === 'remove')) {
-            let setNamesArray = []; // create an array that will contains cleaned set names for easier match
-            this.state.selectedList.map(set => setNamesArray.push(set.set_name.replace(regex, '')));
-            let index = setNamesArray.indexOf(eventSetName);
-
             // Use index got to clean arrays
             let array = this.state.selectedList;
             array.splice(index, 1);
@@ -162,12 +195,53 @@ export default class App extends Component {
                 bonusMedals: array4
             });
         }
-        if (!status) {
+
+        // Direct set selection
+        if (status === 'select') {
+            const fullSet = event.set_arts_number === event.set_total_arts_number;
+            const findBonusMedalsMethod = this.findBonus(event, /Increase Additional Medals Obtained/);
+            const findBonusGSMethod = this.findBonus(event, /Game Speed/);
+
+            const bonusMedals = fullSet ?
+                calculateMedalsFromEnhancement(findBonusMedalsMethod, event.enhance_level) : findBonusMedalsMethod;
+            const bonusGS = fullSet ?
+                calculateGSFromEnhancement(findBonusGSMethod, event.artifact1.art_level, event.setLevel, event.enhance_level) : findBonusGSMethod;
+
             this.setState(prevState => ({
                 selectedList: [...prevState.selectedList, event],
                 totalNumberOfArts: [...prevState.totalNumberOfArts, event.set_arts_number],
-                gameSpeedBonuses: [...prevState.gameSpeedBonuses, this.findBonus(event, /Game Speed/)],
-                bonusMedals: [...prevState.bonusMedals, this.findBonus(event, /Increase Additional Medals Obtained/)]
+                gameSpeedBonuses: [...prevState.gameSpeedBonuses, bonusGS],
+                bonusMedals: [...prevState.bonusMedals, bonusMedals]
+            }));
+        }
+        // Enhancement selection
+        else if (status === 'enhance' && oldSet) {
+            const fullSet = oldSet.set_arts_number === oldSet.set_total_arts_number;
+            oldSet.enhance_level = event.enhance_level;
+
+            let bonusMedals = 0;
+            let bonusGS = 0;
+
+            if (!isNaN(oldSet.bonusMedals) || !isNaN(oldSet.bonusGS)) {
+                if (fullSet) {
+                    oldSet.calculatedBonusMedals = calculateMedalsFromEnhancement(oldSet.bonusMedals, oldSet.enhance_level);
+                    oldSet.calculatedBonusGS = calculateGSFromEnhancement(oldSet.bonusGS, oldSet.artifact1.art_level, oldSet.setLevel, oldSet.enhance_level);
+                }
+            } else {
+                const findBonusMedalsMethod = this.findBonus(oldSet, /Increase Additional Medals Obtained/);
+                const findBonusGSMethod = this.findBonus(oldSet, /Game Speed/);
+
+                bonusMedals = fullSet ?
+                    calculateMedalsFromEnhancement(findBonusMedalsMethod, oldSet.enhance_level) : findBonusMedalsMethod;
+                bonusGS = fullSet ?
+                    calculateGSFromEnhancement(findBonusGSMethod, oldSet.artifact1.art_level, oldSet.setLevel, oldSet.enhance_level) : findBonusGSMethod;
+            }
+
+            this.setState(prevState => ({
+                selectedList: [...prevState.selectedList, oldSet],
+                totalNumberOfArts: [...prevState.totalNumberOfArts, oldSet.set_arts_number],
+                gameSpeedBonuses: [...prevState.gameSpeedBonuses, bonusGS ? bonusGS : oldSet.calculatedBonusGS],
+                bonusMedals: [...prevState.bonusMedals, bonusMedals ? bonusMedals : oldSet.calculatedBonusMedals]
             }));
         }
     };
@@ -192,8 +266,10 @@ export default class App extends Component {
     };
 
     sum = (input) => {
-        if (toString.call(input) !== "[object Array]")
+        if (toString.call(input) !== "[object Array]") {
             return false;
+        }
+
         let total = 0;
         for (let i = 0; i < input.length; i++) {
             if (isNaN(input[i])) {
@@ -206,23 +282,36 @@ export default class App extends Component {
 
     findBonus = (event, regex) => {
         for (let key in event) {
-            if (/^bonus/.test(key)) {
-                if (event[key].match(regex)) {
-                    let valueKey = key.replace('bonus', 'value');
-                    return parseInt(event[valueKey], 10);
+            if (event.hasOwnProperty(key)) {
+                if (/^bonus/.test(key)) {
+                    if (event[key].match(regex)) {
+                        let valueKey = key.replace('bonus', 'value');
+                        return parseInt(event[valueKey], 10);
+                    }
                 }
+            } else {
+                return 0
             }
         }
     };
 
     getSelection = (set) => {
-        const findGsBonus = !isNaN(set.bonusGS) ? set.bonusGS : this.findBonus(set, /Game Speed/);
-        const findMedalBonus = !isNaN(set.bonusMedals) ? set.bonusMedals : this.findBonus(set, /Increase Additional Medals Obtained/);
+        const fullSet = set.set_arts_number === set.set_total_arts_number;
+        let findGsBonus = !isNaN(set.calculatedBonusGS) ?
+            set.calculatedBonusGS : fullSet ?
+                calculateGSFromEnhancement(this.findBonus(set, /Game Speed/), set.artifact1.art_level, set.setLevel, set.enhance_level) :
+                this.findBonus(set, /Game Speed/);
+
+        let findMedalBonus = !isNaN(set.calculatedBonusMedals) ?
+            set.calculatedBonusMedals : fullSet ?
+                calculateMedalsFromEnhancement(this.findBonus(set, /Increase Additional Medals Obtained/), set.enhance_level) : this.findBonus(set, /Increase Additional Medals Obtained/);
+
         const setTechName = set.set_tech_name.replace(/ \(\dp\)/g, '');
+        const elvl = !isNaN(set.enhance_level) && fullSet && set.enhance_level ? '+' + set.enhance_level : '';
 
         return (
             <tr key={set.set_name + set.setLevel} className="text-center">
-                <th style={{width: '60%'}}>{set.setLevel} {setTechName} - {set.set_arts_number}p</th>
+                <th style={{width: '60%'}}>{elvl} {set.setLevel} {setTechName} - {set.set_arts_number}p</th>
                 <td style={{width: '15%'}}>{findGsBonus ? findGsBonus : 0}</td>
                 <td style={{width: '35%'}}>{findMedalBonus ? findMedalBonus : 0}</td>
             </tr>
@@ -296,12 +385,11 @@ export default class App extends Component {
         let set = sets[sets.length - 1];
         let showIfMatch = this.showIfMatch(set, false);
         const filteredSets = this.filterSetsForStatsModal(set);
-
         return (
             <div
                 key={set.set_name}
                 className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? '' : 'd-none'}`}>
-                <div className="row justify-content-around">
+                <div className="row justify-content-around mt-1">
                     <div className="col-2 white-text child"/>
                     <div className="col-9">
                         <div className="row justify-content-around">
@@ -324,18 +412,20 @@ export default class App extends Component {
                         // Seems on sets with 1 pair of bonus can't be fetched by sets[index] so
                         // Setting if/else to get sets[0] in this case
                         return (
-                            <div
-                                key={sets[index] ? sets[index].set_name : sets[0].set_name + index}
-                                className="row justify-content-around">
-                                <div className="col-2 white-text child">
-                                    {sets[index] ? sets[index].setLevel : sets[0].setLevel}
-                                </div>
-                                <div className="col-9">
-                                    <div className="row justify-content-around">
-                                        {sets.map(this.artsNumber)}
+                            <Fragment key={sets[index] ? sets[index].set_name : sets[0].set_name + index}>
+                                <div
+                                    className="row justify-content-center">
+                                    <div className="col-2 white-text child">
+                                        {sets[index] ? sets[index].setLevel : sets[0].setLevel}
+                                    </div>
+                                    <div className="col-9">
+                                        <div className="row justify-content-around">
+                                            {sets.map(set => this.artsNumber(set, sets))}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                                {sets.map(set => this.enhancementButtons(set, globalArray))}
+                            </Fragment>
                         )
                     }
                 )}
@@ -347,6 +437,78 @@ export default class App extends Component {
                 </div>
             </div>
         )
+    };
+
+    enhancementButtons = (set, globalArray) => {
+        const elvls = set.artifact1.art_level === '6*' ?
+            this.state.enhancementLevels.filter(x => x !== 3) : this.state.enhancementLevels;
+
+        const enhanceLevel = this.adaptElvl(set, this.state.enhanceLevel);
+
+        const showElvls = set.hasOwnProperty('enhance_level') &&
+            (
+                (set.artifact1.art_level === '6*' && set.setLevel === 'T3') ||
+                (set.artifact1.art_level === '7*' && set.setLevel === 'T2')
+            ) && set.set_arts_number === set.set_total_arts_number;
+
+        // Must get the whole div in condition and rewrite it completely depending on state
+        // This avoid conflict with controlled/uncontrolled input
+        return showElvls ?
+            this.state.enhancementMode === 'Manual' ? (
+                <div key={set + 'M'}>
+                    <div
+                        className="text- bolded bordered white-text mt-2">
+                        Enhancement
+                    </div>
+                    <div>
+                        {elvls.map(elvl => {
+                                return (
+                                    <label
+                                        key={elvl + 'enhance'}
+                                        className="col-3 p-0 mt-2 text-center text-color personnal-checkbox">
+                                        <input
+                                            type="radio"
+                                            name={set.set_name + 'enhance'}
+                                            value={elvl}
+                                            defaultChecked={elvl === set.enhance_level}
+                                            onClick={(e) => this.handleList(set, 'enhance', e.target.value, globalArray)}
+                                        />
+                                        +{elvl}
+                                        <span className="checkmark"/>
+                                    </label>
+                                )
+                            }
+                        )}
+                    </div>
+                </div>
+            ) : (
+                <div key={set + 'A'}>
+                    <div
+                        className="text- bolded bordered white-text mt-2">
+                        Enhancement
+                    </div>
+                    <div>
+                        {elvls.map(elvl => {
+                                return (
+                                    <label
+                                        key={elvl + 'enhance'}
+                                        className="col-3 p-0 mt-2 text-center text-color personnal-checkbox">
+                                        <input
+                                            type="radio"
+                                            name={set.set_name + 'enhance'}
+                                            value={elvl}
+                                            checked={elvl === enhanceLevel}
+                                            readOnly={true}
+                                        />
+                                        +{elvl}
+                                        <span className="checkmark"/>
+                                    </label>
+                                )
+                            }
+                        )}
+                    </div>
+                </div>
+            ) : null;
     };
 
     getOptimizedSets = (sets) => {
@@ -371,6 +533,7 @@ export default class App extends Component {
             const set = sets[sets.length - 1];
             let showIfMatch = this.showIfMatch(set);
             const filteredSets = this.filterSetsForStatsModal(set);
+            const isExcluded = this.state.excludedFromOptimiser.indexOf(set.set_name) !== -1;
 
             return (
                 <div
@@ -385,7 +548,7 @@ export default class App extends Component {
                                     type="radio"
                                     name={set.set_name.replace(regex, '')}
                                     value={set.set_name}
-                                    defaultChecked={this.state.excludedFromOptimiser.indexOf(set.set_name) !== -1}
+                                    defaultChecked={isExcluded}
                                 >
                                 </input>
                                 <span className="checkmark"/>
@@ -397,12 +560,15 @@ export default class App extends Component {
                                     type="radio"
                                     name={set.set_name.replace(regex, '')}
                                     value={set.set_name}
-                                    defaultChecked={this.state.excludedFromOptimiser.indexOf(set.set_name) === -1}
+                                    defaultChecked={!isExcluded}
                                 >
                                 </input>
                                 <span className="checkmark"/>
                             </label>
                         </div>
+                    </div>
+                    <div>
+                        {this.enhancementButtons(set, sets)}
                     </div>
                     <div>
                         <Set
@@ -494,19 +660,143 @@ export default class App extends Component {
         return setLevelBoxes
     };
 
+    enhancementMode = (type) => {
+        return (
+            <label
+                key={type + 'enhance'}
+                className="col-4 mr-2 mb-1 set-filter-button radio-btn personnal-checkbox">
+                <input
+                    type="radio"
+                    name='enhancementMode'
+                    value={type}
+                    defaultChecked={type === this.state.enhancementMode}
+                    onClick={(e) => this.setState({enhancementMode: e.target.value})}
+                />
+                {type}
+                <span className="checkmark"/>
+            </label>
+        )
+    };
 
-    artsNumber = (set) => {
-        // let setName = set.set_name.replace(/ \(\dp\)/g, '');
+    changeDefaultElvl = (event) => {
+        const GSState = this.state.gameSpeedBonuses;
+        const MedalsState = this.state.bonusMedals;
+
+        const elvl = parseInt(event.target.value, 10);
+        localStorage.setItem('enhanceLevel', elvl);
+        this.setState({enhanceLevel: elvl});
+
+
+        if (this.state.enhancementMode === 'All') {
+            // Updating all sets in data
+            this.state.data.map(sets => sets.map(set => set.enhance_level = this.adaptElvl(set, elvl)));
+
+            // Updating all sets in selected list
+            this.state.selectedList.map((set , index) => {
+                set.enhance_level = this.adaptElvl(set, elvl);
+
+                // Check if a set comes from autobuilder and modify it
+                if (set.hasOwnProperty('calculatedBonusMedals') && set.hasOwnProperty('calculatedBonusGS')) {
+                    set.calculatedBonusMedals = calculateMedalsFromEnhancement(set.bonusMedals, set.enhance_level);
+                    set.calculatedBonusGS = calculateGSFromEnhancement(
+                        set.bonusGS,
+                        set.artifact1.art_level,
+                        set.setLevel,
+                        set.enhance_level
+                    );
+                }
+
+                // Updating totals
+                MedalsState[index] = !isNaN(set.calculatedBonusMedals) ?
+                    set.calculatedBonusMedals : calculateMedalsFromEnhancement(this.findBonus(set, /Increase Additional Medals Obtained/), set.enhance_level);
+                GSState[index] = !isNaN(set.calculatedBonusGS) ?
+                    set.calculatedBonusGS : calculateGSFromEnhancement(
+                        this.findBonus(set, /Game Speed/),
+                        set.artifact1.art_level,
+                        set.setLevel,
+                        set.enhance_level
+                    );
+
+                this.setState({
+                    bonusMedals: MedalsState,
+                    gameSpeedBonuses: GSState,
+                });
+                return set
+            });
+        }
+    };
+
+    changeSetEnhanceLevel = (event, globalArray) => {
+        const elvl = parseInt(event, 10);
+        // Depending if autobuilder or not, arrays are not composed the same way
+        // True = [set, set...]
+        // False [[set, set...], [set, set...]]
+        if (!globalArray[0][0]) {
+            return globalArray.map(set => {
+                this.modifySelectedSet(this.state.selectedList, set, elvl);
+                return set.enhance_level = this.adaptElvl(set, elvl);
+            });
+        } else {
+            return globalArray.map(sets =>
+                sets.map(set => {
+                    this.modifySelectedSet(this.state.selectedList, set, elvl);
+                    return set.enhance_level = this.adaptElvl(set, elvl);
+                })
+            );
+        }
+    };
+
+    adaptElvl = (set, elvl) => {
+        const artLevel = set.artifact1.art_level;
+        return artLevel === '8*' ? 0 : artLevel === '6*' && elvl === 3 ? elvl - 1 : elvl;
+    };
+
+    modifySelectedSet = (list, set, elvl) => {
+        let indexOf = -1;
+        list.map((setX, index) => {
+            return setX.set_name === set.set_name && setX.setLevel === set.setLevel ? indexOf = index : null;
+        });
+        if (indexOf !== -1) {
+            list[indexOf].enhance_level = this.adaptElvl(list[indexOf], elvl);
+            this.setState({selectedList: list})
+        }
+    };
+
+    enhancementLevels = (elvl) => {
+        return this.state.enhancementMode === 'All' ? (
+            <label
+                key={elvl + 'enhance'}
+                className="col-3 mb-1 set-filter-button radio-btn personnal-checkbox">
+                <input
+                    type="radio"
+                    name="enhanceLevel"
+                    value={elvl}
+                    defaultChecked={elvl === this.state.enhanceLevel}
+                    onClick={(e) => this.changeDefaultElvl(e)}
+                />
+                +{elvl}
+                <span className="checkmark"/>
+            </label>
+        ) : null;
+    };
+
+    artsNumber = (set, sets) => {
+        const elvl = set.enhance_level ? set.enhance_level : 0;
         return (
             <div key={set.set_tech_name}>
                 <label className="text-center text-color personnal-checkbox">
                     {set.set_arts_number}
                     <input
-                        onClick={this.state.selectedList.includes(set) ? null : () => this.handleList(set)}
+                        onClick={this.state.selectedList.includes(set) ?
+                            null : () => this.handleList(set, 'select', elvl, sets)}
                         type="radio"
                         name={set.set_name.replace(/ \(\dp\)/, '')}
                         value={set.set_name}
-                        defaultChecked={this.state.selectedList.some(setx => setx.set_name === set.set_name)}
+                        defaultChecked={this.state.selectedList.some(setx =>
+                            setx.set_name === set.set_name.replace(/ \(\dp\)/, '') &&
+                            setx.set_arts_number === set.set_arts_number &&
+                            setx.setLevel === set.setLevel
+                        )}
                     >
                     </input>
                     <span className="checkmark"/>
@@ -530,7 +820,9 @@ export default class App extends Component {
             this.state.optimiserEightStarsLevel,
         );
 
-        getResults = getResults.sort((r1, r2) => r1.totalArts >= r2.totalArts && r1.gameSpeed*1.1 >= r2.gameSpeed && r1.medalsBonus*1.05 >= r2.medalsBonus ? -1 : 1);
+        getResults = getResults.sort((r1, r2) =>
+            r1.totalArts >= r2.totalArts && r1.gameSpeed * 1.1 >= r2.gameSpeed && r1.medalsBonus * 1.05 >= r2.medalsBonus ? -1 : 1
+        );
 
         let solutionMessage = (
             <div key="message" className="col-12 white-text mt-1 mb-2">
@@ -560,11 +852,12 @@ export default class App extends Component {
         this.resetSummaryState();
 
         return setsArray.sets.map(set => {
+            // set.enhance_level = (set.calculatedBonusMedals - set.bonusMedals) / (set.bonusMedals / 2);
             return this.setState(prevState => ({
                     selectedList: [...prevState.selectedList, set],
                     totalNumberOfArts: [...prevState.totalNumberOfArts, set.set_arts_number],
-                    gameSpeedBonuses: [...prevState.gameSpeedBonuses, set.bonusGS],
-                    bonusMedals: [...prevState.bonusMedals, set.bonusMedals],
+                    gameSpeedBonuses: [...prevState.gameSpeedBonuses, set.calculatedBonusGS],
+                    bonusMedals: [...prevState.bonusMedals, set.calculatedBonusMedals],
                     optimisedResultSelectedIndex: index ? parseInt(index, 10) : 1,
                 })
             );
@@ -584,7 +877,10 @@ export default class App extends Component {
         return (
             <div className="container-fluid text-center">
                 {this.state.loading ? (
-                    <LoadingScreen visitorCount={this.state.visitorCount} offline={this.state.offline}/>
+                    <LoadingScreen
+                        // visitorCount={this.state.visitorCount}
+                        offline={this.state.offline}
+                    />
                 ) : null}
                 {this.state.showScreenModal ? (
                     <ScreenshotModal
@@ -603,6 +899,10 @@ export default class App extends Component {
                     optimiser={this.state.optimiser}
                     setsLevels={this.state.artsLevels.map(this.getSetLevels)}
                     resetFilters={() => this.setState({searchBySetType: 'All', filterByBonusType: 'All'})}
+                    listLength={this.state.selectedList.length}
+                    resetList={() => this.resetSummaryState()}
+                    enhancementMode={this.state.enhancementModes.map(this.enhancementMode)}
+                    enhancementLevels={this.state.enhancementLevels.map(this.enhancementLevels)}
                 />
                 <StatsSummaryAndArtsBox
                     totalNumberOfArts={this.sum(this.state.totalNumberOfArts)}
@@ -612,8 +912,14 @@ export default class App extends Component {
                     setsData={this.state.optimiser ? this.state.data.map(this.getOptimizedSets) : this.state.data.map(this.getSets)}
                     offline={this.state.offline}
                     optimiser={this.state.optimiser}
-                    optimiserNbArts={(e) => this.setState({optimiserNbArts: parseInt(e.target.value, 10)})}
-                    optimiserMaxGS={(e) => this.setState({optimiserMaxGS: parseInt(e.target.value, 10)})}
+                    optimiserNbArts={(e) => this.setState({
+                        optimiserNbArts: parseInt(e.target.value, 10) ?
+                            parseInt(e.target.value, 10) : 0
+                    })}
+                    optimiserMaxGS={(e) => this.setState({
+                        optimiserMaxGS: parseInt(e.target.value, 10) ?
+                            parseInt(e.target.value, 10) : 0
+                    })}
                     startBuild={() => this.startBuild()}
                     wantedArts={this.state.optimiserNbArts}
                     maxGS={this.state.optimiserMaxGS}

@@ -1,6 +1,50 @@
 // BASE KNAPSACK CODE AT
 // https://gist.github.com/lqt0223/21f033450a9d762ce8aee4da336363b1
 
+export const calculateMedalsFromEnhancement = (bonusMedals, elvl) => {
+    return bonusMedals+((bonusMedals/2)*elvl);
+};
+
+export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
+    const lvl0 = elvl === 0;
+    const lvl1 = elvl === 1;
+    const lvl2 = elvl === 2;
+    const trans0 = trans === 'T0';
+    const trans1 = trans === 'T1';
+    const trans2 = trans === 'T2';
+    const trans3 = trans === 'T3';
+
+    if (artLevel === '6*') {
+        if (trans0) {
+            return bonusGS === 15 ? lvl0 ? 15 : lvl1 ? 17 : 19 :
+                bonusGS === 25 ? lvl0 ? 25 : lvl1 ? 28 : 32 : 0;
+        } else if (trans1) {
+            return bonusGS === 22 ? lvl0 ? 22 : lvl1 ? 25 : 28 :
+                bonusGS === 37 ? lvl0 ? 37 : lvl1 ? 42 : 47 : 0;
+        } else if (trans2) {
+            return bonusGS === 26 ? lvl0 ? 26 : lvl1 ? 29 : 33 :
+                bonusGS === 45 ? lvl0 ? 45 : lvl1 ? 51 : 57 : 0;
+        } else if (trans3) {
+            return bonusGS === 27 ? lvl0 ? 27 : lvl1 ? 31 : 34 :
+                bonusGS === 46 ? lvl0 ? 46 : lvl1 ? 52 : 58 : 0;
+        }
+    } else if (artLevel === '7*') {
+        if (trans0) {
+            return bonusGS === 37 ? lvl0 ? 37 : lvl1 ? 43 : lvl2 ? 48 : 54 :
+                bonusGS === 16 ? lvl0 ? 16 : lvl1 ? 18 : lvl2 ? 21 : 23 : 0;
+        } else if (trans1) {
+            return bonusGS === 38 ? lvl0 ? 38 : lvl1 ? 44 : lvl2 ? 49 : 55 :
+                bonusGS === 23 ? lvl0 ? 23 : lvl1 ? 26 : lvl2 ? 30 : 33 : 0;
+        } else if (trans2) {
+            return bonusGS === 50 ? lvl0 ? 50 : lvl1 ? 58 : lvl2 ? 65 : 73 :
+                bonusGS === 30 ? lvl0 ? 30 : lvl1 ? 35 : lvl2 ? 39 : 44 : 0;
+        }
+    } else if (artLevel === '8*') {
+        // Have no GS data for 8* sets for now, will return 0 by default
+        return 0
+    }
+};
+
 // Making a filter method upon existing sets to get the most powerfull ones
 export const filterSets = (
     sets, findBonus, excludedFromOptimiser = [], sixStarsLevel = 'T3', sevenStarsLevel = 'T2', EightStarsLevel = 'T0'
@@ -22,7 +66,10 @@ export const filterSets = (
                     excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) :
                     (setLevel === sevenStarsLevel &&
                         artLevel === '7' &&
-                        excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) : null;
+                        excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) :
+                        (setLevel === EightStarsLevel &&
+                            artLevel === '8' &&
+                            excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) :null;
         })
     });
 
@@ -36,6 +83,7 @@ export const filterSets = (
         // const bonusGSValue = testGSValue ? testGSValue : 0;
         // const bonusMedalsValue = testMedalsValue ? testMedalsValue : 0;
         const avgGSByNBArts = bonusGSValue / set.set_arts_number;
+        const fullSet = set.set_arts_number === set.set_total_arts_number;
 
         // Since GS and Medals Bonus are most important bonus, save those sets and flush the rest
         return bonusGSValue || bonusMedalsValue ?
@@ -45,10 +93,16 @@ export const filterSets = (
                 // 'set_name': set.set_name,
                 'set_tech_name': set.set_tech_name,
                 'set_arts_number': set.set_arts_number,
+                'set_total_arts_number': set.set_total_arts_number,
                 'bonusGS': bonusGSValue,
+                'calculatedBonusGS': bonusGSValue ?
+                    fullSet ? calculateGSFromEnhancement(bonusGSValue, set.artifact1.art_level, set.setLevel, set.enhance_level) : bonusGSValue : 0,
                 'bonusMedals': bonusMedalsValue,
+                'calculatedBonusMedals': bonusMedalsValue ?
+                    fullSet ? calculateMedalsFromEnhancement(bonusMedalsValue, set.enhance_level) : bonusMedalsValue : 0,
                 'avgGS': avgGSByNBArts,
-                // 'artifact1': set.artifact1,
+                'enhance_level': set.enhance_level ? set.enhance_level : 0,
+                'artifact1': set.artifact1,
             }) : null;
     });
 
@@ -106,11 +160,11 @@ export const knapsack = (
         const lastGSValue = lastSolution.gameSpeed;
         const lastMedalsValue = lastSolution.medalsBonus;
 
-        const lastItemMedals = lastItem.bonusMedals;
+        const lastItemMedals = lastItem.calculatedBonusMedals;
 
         const newMaxArts = lastSubSolution.totalArts + lastItem.set_arts_number;
-        const newGSValue = lastSubSolution.gameSpeed + lastItem.bonusGS;
-        const newMedalsValue = lastSubSolution.medalsBonus + lastItem.bonusMedals;
+        const newGSValue = lastSubSolution.gameSpeed + lastItem.calculatedBonusGS;
+        const newMedalsValue = lastSubSolution.medalsBonus + lastItem.calculatedBonusMedals;
 
         if ((newGSValue >= lastGSValue && newMedalsValue > lastMedalsValue && newGSValue <= maxGS && lastItemMedals >= minMedalsPerSet)) {
             const _lastSets = lastSubSolution.sets.slice();

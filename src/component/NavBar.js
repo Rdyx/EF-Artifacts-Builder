@@ -16,6 +16,10 @@ export class NavBar extends Component {
         setsLevels: PropTypes.array.isRequired,
         optimiser: PropTypes.bool.isRequired,
         resetFilters: PropTypes.func.isRequired,
+        listLength: PropTypes.number.isRequired,
+        resetList: PropTypes.func.isRequired,
+        enhancementMode: PropTypes.array.isRequired,
+        enhancementLevels: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -55,6 +59,8 @@ export class NavBar extends Component {
                         bonusTypes={this.props.bonusTypes}
                         setsLevels={this.props.setsLevels}
                         optimiser={this.props.optimiser}
+                        enhancementMode={this.props.enhancementMode}
+                        enhancementLevels={this.props.enhancementLevels}
                     />
                 ) : null}
                 <nav className="row navbar navbar-dark bg-dark justify-content-center pt-0 pt-sm-2">
@@ -85,13 +91,20 @@ export class NavBar extends Component {
                     <button
                         className={`btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2 ${this.props.setFiltering ? 'btn-success' : 'mr-0 mr-sm-1'}`}
                         onClick={() => this.setState({setsFiltering: true})}>
-                        Filter Sets
+                        Options
                     </button>
                     {this.props.setFiltering ? (
                         <button
-                            className="btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2 btn-danger mr-sm-1"
+                            className={`btn btn-outline-warning btn-danger mb-2 my-sm-0 d-sm-block ml-1 p-2 ${this.props.listLength === 0 ? 'mr-0 mr-sm-1' : ''}`}
                             onClick={this.props.resetFilters}>
                             Reset Filters
+                        </button>
+                    ) : null}
+                    {this.props.listLength > 0 ? (
+                        <button
+                            className={`btn btn-outline-warning mb-2 my-sm-0 p-2 btn-danger mr-sm-1 ${this.props.setFiltering ? 'ml-1': ''}`}
+                            onClick={this.props.resetList}>
+                            Reset Summary
                         </button>
                     ) : null}
                     <div className="margin-top col-12 col-sm col-lg-3 pr-0 pl-0">

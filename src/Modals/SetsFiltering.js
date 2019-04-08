@@ -10,6 +10,9 @@ export class SetsFiltering extends Component {
         bonusTypes: PropTypes.array.isRequired,
         setsLevels: PropTypes.array.isRequired,
         optimiser: PropTypes.bool.isRequired,
+        enhancementMode: PropTypes.array.isRequired,
+        enhancementLevels: PropTypes.array.isRequired,
+
     };
 
     render() {
@@ -34,6 +37,13 @@ export class SetsFiltering extends Component {
                                     {this.props.setsLevels}
                                 </Fragment>
                             ) : null}
+                            <h3 className="mt-3">Sets Enhancement</h3>
+                            <div className="row justify-content-center">
+                                {this.props.enhancementMode}
+                            </div>
+                            <div className="row justify-content-center">
+                                {this.props.enhancementLevels}
+                            </div>
                         </div>
                     </div>
                 </Modal>

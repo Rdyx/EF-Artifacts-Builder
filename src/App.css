@@ -330,3 +330,7 @@ tr.result-background {
 table.personnal-table {
     border-radius: 5px;
 }
+
+.btn-link:hover {
+    transition: all 0.3s ease;
+}
