@@ -168,7 +168,7 @@ export default class App extends Component {
         selectedList.map(set => setNamesArray.push(set.set_name.replace(regex, '')));
         let index = setNamesArray.indexOf(eventSetName);
 
-        if (status !== 'remove') {
+        if (status === 'enhance') {
             if (event.set_arts_number === event.set_total_arts_number) {
                 event.enhance_level = !isNaN(elvl) ? parseInt(elvl, 10) : !isNaN(event.enhance_level) ? parseInt(event.enhance_level) : 0;
             }
@@ -702,7 +702,9 @@ export default class App extends Component {
 
         if (this.state.enhancementMode === 'All') {
             // Updating all sets in data
-            this.state.data.map(sets => sets.map(set => set.enhance_level = this.adaptElvl(set, elvl)));
+            this.state.data.map(sets => sets.map(set => {
+                return set.enhance_level = this.adaptElvl(set, elvl)
+            }));
 
             // Updating all sets in selected list
             this.state.selectedList.map((set, index) => {
