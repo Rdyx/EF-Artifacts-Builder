@@ -1,5 +1,14 @@
 export const versions = [
     {
+        number: '1.8.1',
+        date: '09 April 2019',
+        title: "UI Modifications",
+        content: {
+            point1: "Revamped a bit UI for better readability, may change again based on feedbacks. ;)",
+            point2: "Added Facebook like button to avoid users to search for it."
+        },
+    },
+    {
         number: '1.8.0',
         date: '08 April 2019',
         title: "Sets Enhancements Levels, New Server (!), Facebook Page, New Data System, Summary Reset Button...",

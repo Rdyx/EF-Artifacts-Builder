@@ -32,10 +32,10 @@ export class SetsFiltering extends Component {
                             <h3>Bonus Type</h3>
                             {this.props.bonusTypes}
                             <h3 className="mt-3">Sets Enhancement</h3>
-                            <div className="col justify-content-around">
+                            <div className="row mx-auto">
                                 {this.props.enhancementMode}
                             </div>
-                            <div className="col justify-content-around">
+                            <div className="row mx-auto">
                                 {this.props.enhancementLevels}
                             </div>
                             {this.props.optimiser ? (

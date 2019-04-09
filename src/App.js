@@ -80,7 +80,7 @@ export default class App extends Component {
                         let i = 0;
                         while (i < data.length) {
                             let setType = data[i].setType.replace(/\d+ /, '');
-                            if (data[i].artifact1.art_level !== '8*'){
+                            if (data[i].artifact1.art_level !== '8*') {
                                 data[i].enhance_level = this.adaptElvl(data[i], enhanceLevel);
                             }
 
@@ -393,17 +393,19 @@ export default class App extends Component {
                     <div className="col-2 white-text child"/>
                     <div className="col-9">
                         <div className="row justify-content-around">
-                            <label className="col-6 text-center text-color personnal-checkbox">
+                            <input
+                                id={set.set_name}
+                                onClick={() => this.handleList(set, 'remove')}
+                                type="radio"
+                                name={set.set_name.replace(/ \(\dp\)/, '')}
+                                value={set.set_name}
+                                defaultChecked={true}
+                            >
+                            </input>
+                            <label
+                                htmlFor={set.set_name}
+                                className="col-6 text-center text-color personnal-checkbox red-check">
                                 X
-                                <input
-                                    onClick={() => this.handleList(set, 'remove')}
-                                    type="radio"
-                                    name={set.set_name.replace(/ \(\dp\)/, '')}
-                                    value={set.set_name}
-                                    defaultChecked={true}
-                                >
-                                </input>
-                                <span className="checkmark"/>
                             </label>
                         </div>
                     </div>
@@ -414,7 +416,7 @@ export default class App extends Component {
                         return (
                             <Fragment key={sets[index] ? sets[index].set_name : sets[0].set_name + index}>
                                 <div
-                                    className="row justify-content-center">
+                                    className="row">
                                     <div className="col-2 white-text child">
                                         {sets[index] ? sets[index].setLevel : sets[0].setLevel}
                                     </div>
@@ -457,25 +459,27 @@ export default class App extends Component {
             this.state.enhancementMode === 'Manual' ? (
                 <div key={set + 'M'}>
                     <div
-                        className="text- bolded bordered white-text mt-2">
+                        className="bordered white-text mt-2">
                         Enhancement
                     </div>
                     <div>
                         {elvls.map(elvl => {
                                 return (
-                                    <label
-                                        key={elvl + 'enhance'}
-                                        className="col-3 p-0 mt-2 text-center text-color personnal-checkbox">
+                                    <Fragment key={elvl + 'enhance'}>
                                         <input
+                                            id={set.set_tech_name + elvl + 'enhance'}
                                             type="radio"
                                             name={set.set_name + 'enhance'}
                                             value={elvl}
                                             defaultChecked={elvl === set.enhance_level}
                                             onClick={(e) => this.handleList(set, 'enhance', e.target.value, globalArray)}
                                         />
-                                        +{elvl}
-                                        <span className="checkmark"/>
-                                    </label>
+                                        <label
+                                            htmlFor={set.set_tech_name + elvl + 'enhance'}
+                                            className="col-3 p-0 mt-2 text-center text-color personnal-checkbox green-check">
+                                            +{elvl}
+                                        </label>
+                                    </Fragment>
                                 )
                             }
                         )}
@@ -484,25 +488,27 @@ export default class App extends Component {
             ) : (
                 <div key={set + 'A'}>
                     <div
-                        className="text- bolded bordered white-text mt-2">
+                        className="text-bolded bordered white-text mt-2">
                         Enhancement
                     </div>
                     <div>
                         {elvls.map(elvl => {
                                 return (
-                                    <label
-                                        key={elvl + 'enhance'}
-                                        className="col-3 p-0 mt-2 text-center text-color personnal-checkbox">
+                                    <Fragment key={elvl + 'enhance'}>
                                         <input
+                                            id={set.set_tech_name + elvl + 'enhance'}
                                             type="radio"
                                             name={set.set_name + 'enhance'}
                                             value={elvl}
                                             checked={elvl === enhanceLevel}
                                             readOnly={true}
                                         />
-                                        +{elvl}
-                                        <span className="checkmark"/>
-                                    </label>
+                                        <label
+                                            htmlFor={set.set_tech_name + elvl + 'enhance'}
+                                            className="col-3 p-0 mt-2 text-center text-color personnal-checkbox green-check">
+                                            +{elvl}
+                                        </label>
+                                    </Fragment>
                                 )
                             }
                         )}
@@ -541,29 +547,29 @@ export default class App extends Component {
                     className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? '' : 'd-none'}`}>
                     <div className="offset-1 col-10 white-text child">
                         <div className="row justify-content-around">
-                            <label className="col text-center text-color personnal-checkbox">
+                            <input
+                                id={set.set_name + 'x'}
+                                onClick={() => this.handleOptimisedList(set)}
+                                type="radio"
+                                name={set.set_name.replace(regex, '')}
+                                value={set.set_name}
+                                defaultChecked={isExcluded}
+                            >
+                            </input>
+                            <label htmlFor={set.set_name + 'x'} className="col text-center text-color personnal-checkbox red-check">
                                 X
-                                <input
-                                    onClick={() => this.handleOptimisedList(set)}
-                                    type="radio"
-                                    name={set.set_name.replace(regex, '')}
-                                    value={set.set_name}
-                                    defaultChecked={isExcluded}
-                                >
-                                </input>
-                                <span className="checkmark"/>
                             </label>
-                            <label className="col ml-2 text-center text-color personnal-checkbox">
+                            <input
+                                id={set.set_name + 'v'}
+                                onClick={() => this.handleOptimisedList(set, 'remove')}
+                                type="radio"
+                                name={set.set_name.replace(regex, '')}
+                                value={set.set_name}
+                                defaultChecked={!isExcluded}
+                            >
+                            </input>
+                            <label htmlFor={set.set_name + 'v'} className="col ml-2 text-center text-color personnal-checkbox green-check">
                                 V
-                                <input
-                                    onClick={() => this.handleOptimisedList(set, 'remove')}
-                                    type="radio"
-                                    name={set.set_name.replace(regex, '')}
-                                    value={set.set_name}
-                                    defaultChecked={!isExcluded}
-                                >
-                                </input>
-                                <span className="checkmark"/>
                             </label>
                         </div>
                     </div>
@@ -583,37 +589,41 @@ export default class App extends Component {
 
     getSetsTypes = (setType) => {
         return (
-            <label
-                key={setType}
-                className="col-12 mb-1 set-filter-button radio-btn personnal-checkbox">
+            <div key={setType}>
                 <input
+                    id={setType + 'setType'}
                     type="radio"
                     name="setType"
                     value={setType}
                     defaultChecked={setType === this.state.searchBySetType}
                     onClick={(e) => this.setState({searchBySetType: e.target.value})}
                 />
-                {setType}
-                <span className="checkmark"/>
-            </label>
+                <label
+                    htmlFor={setType + 'setType'}
+                    className="col-12 mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal">
+                    {setType}
+                </label>
+            </div>
         )
     };
 
     getBonusTypes = (bonusType) => {
         return (
-            <label
-                key={bonusType}
-                className="col-12 mb-1 set-filter-button radio-btn personnal-checkbox">
+            <Fragment key={bonusType}>
                 <input
+                    id={bonusType + 'bonusType'}
                     type="radio"
                     name="bonusType"
                     value={bonusType}
                     defaultChecked={bonusType === this.state.filterByBonusType}
                     onClick={(e) => this.setState({filterByBonusType: e.target.value})}
                 />
-                {bonusType}
-                <span className="checkmark"/>
-            </label>
+                <label
+                    htmlFor={bonusType + 'bonusType'}
+                    className="col-12 mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal">
+                    {bonusType}
+                </label>
+            </Fragment>
         )
     };
 
@@ -641,16 +651,17 @@ export default class App extends Component {
 
             setLevelBoxes.push(
                 <Fragment key={artLevel + i}>
-                    <label className="col-3 mb-1 set-filter-button radio-btn personnal-checkbox">
-                        <input
-                            type="radio"
-                            name={artLevel}
-                            value={[artLevel, setLevel]}
-                            defaultChecked={setTier === setLevel}
-                            onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
-                        />
+                    <input
+                        id={setLevel + artLevel + i}
+                        type="radio"
+                        name={artLevel}
+                        value={[artLevel, setLevel]}
+                        defaultChecked={setTier === setLevel}
+                        onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
+                    />
+                    <label htmlFor={setLevel + artLevel + i}
+                           className="col-3 mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal">
                         {setLevel} {artLevel}*
-                        <span className="checkmark"/>
                     </label>
                     {newLine}
                 </Fragment>
@@ -662,19 +673,21 @@ export default class App extends Component {
 
     enhancementMode = (type) => {
         return (
-            <label
-                key={type + 'enhance'}
-                className="col-4 mr-2 mb-1 set-filter-button radio-btn personnal-checkbox">
+            <Fragment key={type + 'enhance'}>
                 <input
+                    id={type + 'enhance'}
                     type="radio"
                     name='enhancementMode'
                     value={type}
                     defaultChecked={type === this.state.enhancementMode}
                     onClick={(e) => this.setState({enhancementMode: e.target.value})}
                 />
-                {type}
-                <span className="checkmark"/>
-            </label>
+                <label
+                    htmlFor={type + 'enhance'}
+                    className={`col mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal ${type === 'Manual' ? 'mr-2' : ''}`}>
+                    {type}
+                </label>
+            </Fragment>
         )
     };
 
@@ -692,7 +705,7 @@ export default class App extends Component {
             this.state.data.map(sets => sets.map(set => set.enhance_level = this.adaptElvl(set, elvl)));
 
             // Updating all sets in selected list
-            this.state.selectedList.map((set , index) => {
+            this.state.selectedList.map((set, index) => {
                 set.enhance_level = this.adaptElvl(set, elvl);
 
                 // Check if a set comes from autobuilder and modify it
@@ -764,19 +777,21 @@ export default class App extends Component {
 
     enhancementLevels = (elvl) => {
         return this.state.enhancementMode === 'All' ? (
-            <label
-                key={elvl + 'enhance'}
-                className="col-3 mb-1 set-filter-button radio-btn personnal-checkbox">
+            <Fragment key={elvl + 'enhance'}>
                 <input
+                    id={elvl + 'enhance'}
                     type="radio"
                     name="enhanceLevel"
                     value={elvl}
                     defaultChecked={elvl === this.state.enhanceLevel}
                     onClick={(e) => this.changeDefaultElvl(e)}
                 />
-                +{elvl}
-                <span className="checkmark"/>
-            </label>
+                <label
+                    htmlFor={elvl + 'enhance'}
+                    className="col-3 mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal">
+                    +{elvl}
+                </label>
+            </Fragment>
         ) : null;
     };
 
@@ -784,22 +799,24 @@ export default class App extends Component {
         const elvl = set.enhance_level ? set.enhance_level : 0;
         return (
             <div key={set.set_tech_name}>
-                <label className="text-center text-color personnal-checkbox">
+                <input
+                    id={set.set_name.replace(/ \(\dp\)/, '') + set.set_tech_name + set.setLevel}
+                    onClick={this.state.selectedList.includes(set) ?
+                        null : () => this.handleList(set, 'select', elvl, sets)}
+                    type="radio"
+                    name={set.set_name.replace(/ \(\dp\)/, '')}
+                    value={set.set_name}
+                    defaultChecked={this.state.selectedList.some(setx =>
+                        setx.set_name === set.set_name.replace(/ \(\dp\)/, '') &&
+                        setx.set_arts_number === set.set_arts_number &&
+                        setx.setLevel === set.setLevel
+                    )}
+                >
+                </input>
+                <label
+                    htmlFor={set.set_name.replace(/ \(\dp\)/, '') + set.set_tech_name + set.setLevel}
+                    className="text-center text-color personnal-checkbox green-check">
                     {set.set_arts_number}
-                    <input
-                        onClick={this.state.selectedList.includes(set) ?
-                            null : () => this.handleList(set, 'select', elvl, sets)}
-                        type="radio"
-                        name={set.set_name.replace(/ \(\dp\)/, '')}
-                        value={set.set_name}
-                        defaultChecked={this.state.selectedList.some(setx =>
-                            setx.set_name === set.set_name.replace(/ \(\dp\)/, '') &&
-                            setx.set_arts_number === set.set_arts_number &&
-                            setx.setLevel === set.setLevel
-                        )}
-                    >
-                    </input>
-                    <span className="checkmark"/>
                 </label>
             </div>
         )
@@ -839,7 +856,7 @@ export default class App extends Component {
             </div>
         );
 
-        this.setState({optimisedSets: [solutionMessage]});
+        this.setState({optimisedSets: [solutionMessage], optimisedResultSelectedIndex: 1});
 
         getResults.map(set => {
             return this.setState(prevState => ({optimisedSets: [...prevState.optimisedSets, set]}));
@@ -852,7 +869,6 @@ export default class App extends Component {
         this.resetSummaryState();
 
         return setsArray.sets.map(set => {
-            // set.enhance_level = (set.calculatedBonusMedals - set.bonusMedals) / (set.bonusMedals / 2);
             return this.setState(prevState => ({
                     selectedList: [...prevState.selectedList, set],
                     totalNumberOfArts: [...prevState.totalNumberOfArts, set.set_arts_number],
@@ -865,7 +881,7 @@ export default class App extends Component {
     };
 
     getArrayResult = (e) => {
-        const index = e.target.id;
+        const index = e.target.value;
         return this.pushInStates(this.state.optimisedSets[index], index)
     };
 

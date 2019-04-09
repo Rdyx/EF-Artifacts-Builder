@@ -22,28 +22,27 @@ export class ArtsBox extends Component {
     getOptimisedResults = () => {
         const resultLength = this.props.getOptimisedResults.length;
         let solutions = [];
-
         if (resultLength > 1 && this.props.getOptimisedResults[1].sets.length > 0) {
             this.props.getOptimisedResults.map((set, index) => {
                 // Index will start above 0 since index 0 is the solutionMessage
                 return index > 0 ?
                     solutions.push(
-                        <div key={index} className="col-12 col-sm-3 text-center">
-                            <label className="col text-color personnal-checkbox mb-2">
+                        <div key={index} className={`col-12 col-sm-3 text-center p-0 ${(index) % 3 !== 0 || index !== resultLength ? 'mr-2' : ''}`}>
+                            <input
+                                id={'solution' + index}
+                                onClick={this.props.getArrayResult}
+                                type="radio"
+                                name="autoBuilderResult"
+                                value={index}
+                                defaultChecked={index === this.props.optimisedResultSelectedIndex}
+                            >
+                            </input>
+                            <label htmlFor={'solution' + index}
+                                   className="col text-color personnal-checkbox mb-2 green-check solution">
                                 Solution {index}
-                                <input
-                                    id={index}
-                                    onClick={this.props.getArrayResult}
-                                    type="radio"
-                                    name="autoBuilderResult"
-                                    value={set.set_name}
-                                    defaultChecked={index === this.props.optimisedResultSelectedIndex}
-                                >
-                                </input>
-                                <span className="checkmark"/>
                             </label>
                             <table
-                                className={`col table table-bordered table-striped personnal-table ${(index) % 3 !== 0 || index !== resultLength ? 'mr-2' : ''}`}>
+                                className={`col table table-bordered table-striped personnal-table`}>
                                 <tbody>
                                 <tr className="result-background">
                                     <th>Artifacts</th>
