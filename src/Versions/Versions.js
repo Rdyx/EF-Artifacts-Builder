@@ -1,5 +1,14 @@
 export const versions = [
     {
+        number: '1.8.3',
+        date: '13 April 2019',
+        title: "Bug Fixes and minor UI improvements",
+        content: {
+            point1: "Fixed mobile UI bugs.",
+            point2: "Added Endless Frontier Backgrounds to add some color. :)"
+        },
+    },
+    {
         number: '1.8.2',
         date: '12 April 2019',
         title: "UI Reworking/Normalization",

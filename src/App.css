@@ -25,6 +25,8 @@
     --green-check-hover: 1px solid lime;
     --red-check: rgba(255, 0, 0, 0.45);
     --red-check-hover: 1px solid red;
+    --dark-low-transparency: rgba(0, 0, 0, 0.85);
+    --transparent: rgba(0, 0, 0, 0);
 }
 
 body {
@@ -33,6 +35,35 @@ body {
     font-family: 'Yanone Kaffeesatz', sans-serif !important;
     margin: 0 !important;
     padding: 0 !important;
+}
+
+#bg {
+    z-index: -1;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background-size: cover !important;
+    /*background-image: url('../images/compressed/background-mobile.png');*/
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important;
+}
+
+.arrow {
+    transition: 0.2s ease all;
+    margin: -10px auto 0;
+    border: 2px solid var(--set-name-border-color);
+    background-color: var(--main-bg-color);
+}
+
+.full-height {
+    transition: all 0.2s ease;
+    max-height: 85vh !important;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
 }
 
 .hidden {
@@ -76,7 +107,7 @@ label {
 }
 
 .screenstats {
-    background-color: var(--main-bg-color);
+    background-color: var(--dark-low-transparency) !important;
     color: var(--main-text-color);
     max-height: 180px;
     overflow-y: scroll;
@@ -115,7 +146,7 @@ a.efd[target="_blank"]:after {
 }
 
 .left-box {
-    background-color: var(--main-bg-color);
+    /*background-color: var(--main-bg-color);*/
 }
 
 .right-box {

@@ -1,5 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import './App.css';
+import './styles/randomBg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as html2canvas from 'html2canvas';
 import Set from './component/Set';

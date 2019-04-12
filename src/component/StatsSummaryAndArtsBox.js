@@ -78,8 +78,7 @@ export class StatsSummaryAndArtsBox extends Component {
                         {listContent}
                     </div>
                     <div
-                        className={`screenstats col-4 d-block d-sm-none arrow
-                            ${this.state.fullStatsMobile ? 'rotate-180' : ''}`}
+                        className={`col-4 d-block d-sm-none arrow ${this.state.fullStatsMobile ? 'rotate-180' : ''}`}
                         onClick={() => this.setState({fullStatsMobile: !this.state.fullStatsMobile})}>
                         <img src={arrow} alt={this.state.fullStatsMobile ? 'See Less' : 'See More'}/>
                     </div>

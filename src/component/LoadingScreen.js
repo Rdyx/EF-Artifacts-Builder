@@ -37,9 +37,10 @@ export class LoadingScreen extends Component {
             <div className="row">
                 <div className="loading bolded white-text">
                     <h1 className="col-12 mt-5">Loading...</h1>
-                    {/*<div className="col mt-5">
-                        {this.props.offline !== '' ? this.props.offline : this.randomVisitorSentence()}
-                    </div>*/}
+                    {this.props.offline !== '' ? (
+                        <div className="col mt-5">
+                            this.props.offline
+                        </div>) : null}
                 </div>
             </div>
         )

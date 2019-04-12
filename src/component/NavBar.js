@@ -64,9 +64,9 @@ export class NavBar extends Component {
                         enhancementLevels={this.props.enhancementLevels}
                     />
                 ) : null}
-                <nav className="row navbar navbar-dark bg-dark justify-content-center pt-0 pt-sm-2">
-                    <div className="navbar-brand mr-sm-auto">
-                        <button className="underlined mr-3 big btn-link text-white"
+                <nav className="row navbar navbar-dark bg-transparent justify-content-center pt-0 pt-sm-2">
+                    <div className="navbar-brand mr-sm-auto d-flex align-items-end">
+                        <button className="underlined mr-2 big btn-link text-white"
                                 onClick={() => this.setState({showInfoModal: true})}>EFAB
                         </button>
                         <button className="underlined small btn-link text-white"
