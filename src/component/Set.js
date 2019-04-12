@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Fragment, Component} from 'react';
 import Artifact from './Artifact';
 import PropTypes from 'prop-types';
 import {SetModal} from "../Modals/SetModal";
@@ -34,7 +34,7 @@ export default class Set extends Component {
     showArts = (art) => {
         if (art) {
             return (
-                <div key={art.artifact_number} className="container col-6 col-md-4">
+                <div key={art.artifact_number} className="col-4">
                     <Artifact artifact={art}/>
                 </div>
             );
@@ -48,7 +48,7 @@ export default class Set extends Component {
     render() {
         const regex = / \(\dp\)/;
         return (
-            <div>
+            <Fragment>
                 {this.state.showSetStats ? (
                     <SetModal
                         handler={this.closeSetStats}
@@ -61,11 +61,11 @@ export default class Set extends Component {
                     {this.props.set.set_tech_name.replace(regex, '')}
                 </div>
                 <div
-                    className={`text-center white-text mb-3`}>
+                    className={`text-center white-text mb-2`}>
                     {this.props.set.set_name.replace(regex, '')}
                 </div>
-                <div className="row">{this.state.artifacts.map(this.showArts)}</div>
-            </div>
+                <div className="row justify-content-center">{this.state.artifacts.map(this.showArts)}</div>
+            </Fragment>
         )
     }
 }

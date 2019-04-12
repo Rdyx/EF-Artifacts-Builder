@@ -21,12 +21,11 @@
     --version-border-bottom: 1px solid rgba(0, 0, 0, 0.8);
     --btn-filter-activated: rgba(0, 155, 0, 0.5);
     --btn-reset-filter: rgba(155, 0, 0, 0.5);
-    --green-check: rgba(0,255,0,0.45);
+    --green-check: rgba(0, 255, 0, 0.45);
     --green-check-hover: 1px solid lime;
-    --red-check: rgba(255,0,0,0.45);
+    --red-check: rgba(255, 0, 0, 0.45);
     --red-check-hover: 1px solid red;
 }
-
 
 body {
     background-color: var(--main-bg-color) !important;
@@ -55,11 +54,6 @@ body {
 .bordered {
     border-top: 1px solid var(--set-name-border-color);
     border-bottom: 1px solid var(--set-name-border-color);
-}
-
-.arrow {
-    margin: -10px auto 0;
-    border: 2px solid var(--set-name-border-color);
 }
 
 .loading {
@@ -130,7 +124,6 @@ a.efd[target="_blank"]:after {
     border-radius: 5px;
     max-height: 550px;
     margin-top: 7em;
-    /*background-color: rgba(250, 180, 50, 1);*/
     background-color: var(--right-box-bg);
     color: var(--right-box-text-color);
     border: var(--right-box-border);
@@ -187,9 +180,7 @@ a.efd[target="_blank"]:after {
     transition: all 0.2s ease;
     margin-top: 0.25em;
     background-color: var(--checkbox-bg);
-    /*background-color: #000;*/
-    cursor: pointer;
-    width: 2em;
+    cursor: pointer !important;
     height: 1.6em;
     border-radius: 5px;
 }
@@ -198,59 +189,6 @@ a.efd[target="_blank"]:after {
     position: absolute;
     opacity: 0;
     cursor: pointer;
-}
-
-/*input:checked+.personnal-checkbox {*/
-    /*background-color: lime !important;*/
-/*}*/
-
-/*.personnal-checkbox input:hover ~ .checkmark {*/
-    /*background-color: var(--checkbox-hover-bg);*/
-/*}*/
-
-/*.personnal-checkbox input:checked ~ .checkmark:after {*/
-    /*display: block;*/
-/*}*/
-
-/*.personnal-checkbox input:checked ~ .checkmark {*/
-    /*background-color: #2196F3;*/
-/*}*/
-
-/*.personnal-checkbox .checkmark {*/
-    /*position: relative;*/
-    /*top: 6px;*/
-    /*left: -10px;*/
-    /*height: 25px;*/
-    /*width: 23px;*/
-    /*background-color: var(--checkmark-color);*/
-/*}*/
-
-/*.checkmark:after {*/
-    /*content: "";*/
-    /*position: absolute;*/
-    /*display: none;*/
-/*}*/
-
-/*.checkmark:after {*/
-    /*left: 13px;*/
-    /*top: 4px;*/
-    /*width: 5px;*/
-    /*height: 15px;*/
-    /*border: solid var(--checkmark-color);*/
-    /*border-width: 0 3px 3px 0;*/
-    /*-webkit-transform: rotate(45deg);*/
-    /*-ms-transform: rotate(45deg);*/
-    /*transform: rotate(45deg);*/
-    /*background-color: #FFF;*/
-/*}*/
-
-.full-height {
-    transition: all 0.2s ease;
-    max-height: 85vh;
-}
-
-.rotate-180 {
-    transform: rotate(180deg);
 }
 
 .underlined {
@@ -287,14 +225,14 @@ label.personnal-checkbox {
     transition: all 0.2s ease;
     margin-top: 0.25em;
     background-color: var(--checkbox-bg);
-    /*background-color: #000;*/
     cursor: pointer;
-    width: 2em;
     height: 1.6em;
-    border-radius: 5px;}
+    border-radius: 5px;
+}
+
 input[type="radio"] {
     position: absolute;
-    opacity: 0;
+    display: none;
     cursor: pointer;
 }
 
@@ -380,11 +318,56 @@ table.personnal-table {
     border-right: 1px solid var(--main-text-color);
     border-radius: 5px;
 }
+
 .btn-link:hover {
     transition: all 0.3s ease;
 }
 
-/*Encoutered a weird bug in production: classes are not interpreted in the same order, making some divs not looking as they should*/
-/*[class*=col] {*/
-    /*width: 100% !important;*/
-/*}*/
+/*********************
+Keeping this code for checkmark on inputs in case re-enabling later
+
+input:checked+.personnal-checkbox {
+background-color: lime !important;
+}
+
+.personnal-checkbox input:hover ~ .checkmark {
+background-color: var(--checkbox-hover-bg);
+}
+
+.personnal-checkbox input:checked ~ .checkmark:after {
+display: block;
+}
+
+.personnal-checkbox input:checked ~ .checkmark {
+background-color: #2196F3;
+}
+
+.personnal-checkbox .checkmark {
+position: relative;
+top: 6px;
+left: -10px;
+height: 25px;
+width: 23px;
+background-color: var(--checkmark-color);
+}
+
+.checkmark:after {
+content: "";
+position: absolute;
+display: none;
+}
+
+.checkmark:after {
+left: 13px;
+top: 4px;
+width: 5px;
+height: 15px;
+border: solid var(--checkmark-color);
+border-width: 0 3px 3px 0;
+-webkit-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+background-color: #FFF;
+}
+
+******************************/

@@ -1,5 +1,13 @@
 export const versions = [
     {
+        number: '1.8.2',
+        date: '12 April 2019',
+        title: "UI Reworking/Normalization",
+        content: {
+            point1: "Normalized UI buttons size for better usage and readability on higher resolutions screens.",
+        },
+    },
+    {
         number: '1.8.1',
         date: '09 April 2019',
         title: "UI Modifications",

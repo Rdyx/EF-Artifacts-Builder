@@ -12,12 +12,11 @@ const base = {
         bottom: 'auto',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
-        width: '70%',
     }
 };
 
 export const customStyles = {
-    ...base
+    ...base,
 };
 
 export const headerModalStyle = {
@@ -27,6 +26,7 @@ export const headerModalStyle = {
         paddingLeft: '10px',
         paddingRight: '10px',
         height: '425px',
+        width: '70%',
     }
 };
 
@@ -39,6 +39,7 @@ export const versionModalStyle = {
         bottom: '-40%',
         paddingLeft: '30px',
         paddingRight: '30px',
+        width: '70%',
     }
 };
 
@@ -50,5 +51,6 @@ export const setsFilterModalStyle = {
         ...base.content,
         bottom: '-40%',
         height: '460px',
+        width: '70%',
     }
 };

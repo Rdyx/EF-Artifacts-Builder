@@ -20,6 +20,7 @@ export class NavBar extends Component {
         resetList: PropTypes.func.isRequired,
         enhancementMode: PropTypes.array.isRequired,
         enhancementLevels: PropTypes.array.isRequired,
+        connected: PropTypes.bool.isRequired,
     };
 
     constructor(props) {
@@ -73,11 +74,13 @@ export class NavBar extends Component {
                     </div>
                     <div className="col-1 d-none d-sm-block"/>
                     <div className="col-12 d-sm-none"/>
-                    <iframe
-                        src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FEFABuilder&layout=box_count&action=like&colorscheme=dark&size=small&show_faces=false&share=false&appId"
-                        style={{width: '63px', height: '40px', border: 'none', overflow: 'hidden'}} scrolling="no"
-                        frameBorder="0" title="EFAB's Facebook Page"
-                    className="mb-2 my-sm-0 ml-1"/>
+                    {this.props.connected ? (
+                        <iframe
+                            src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FEFABuilder&layout=box_count&action=like&colorscheme=dark&size=small&show_faces=false&share=false&appId"
+                            style={{width: '63px', height: '40px', border: 'none', overflow: 'hidden'}} scrolling="no"
+                            frameBorder="0" title="EFAB's Facebook Page"
+                            className="mb-2 my-sm-0 ml-1"/>
+                    ) : null}
                     <a href="https://www.paypal.me/rdyx" target="_blank" rel="noopener noreferrer">
                         <button
                             className="btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2"

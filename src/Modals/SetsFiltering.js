@@ -31,7 +31,7 @@ export class SetsFiltering extends Component {
                         <div className="col-12 col-sm-6 mt-3 mt-sm-0 justify-content-around">
                             <h3>Bonus Type</h3>
                             {this.props.bonusTypes}
-                            <h3 className="mt-3">Sets Enhancement</h3>
+                            <h3 className="mt-2">Sets Enhancement</h3>
                             <div className="row mx-auto">
                                 {this.props.enhancementMode}
                             </div>
@@ -40,7 +40,7 @@ export class SetsFiltering extends Component {
                             </div>
                             {this.props.optimiser ? (
                                 <Fragment>
-                                    <h3 className="mt-3">Sets Levels</h3>
+                                    <h3 className="mt-2">Sets Levels</h3>
                                     {this.props.setsLevels}
                                 </Fragment>
                             ) : null}

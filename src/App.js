@@ -48,6 +48,7 @@ export default class App extends Component {
             optimiserEightStarsLevel: 'T0',
             optimisedSets: [],
             optimisedResultSelectedIndex: 1,
+            connected: false,
         };
     }
 
@@ -71,6 +72,8 @@ export default class App extends Component {
                         return response.json()
                     })
                     .then(data => {
+                        // Used to show facebook button
+                        this.setState({connected: true});
                         // Sorting 2 dimensions array to sort arts by their names
                         localStorage.setItem('data', '');
                         localStorage.setItem('setTypes', '');
@@ -389,10 +392,10 @@ export default class App extends Component {
             <div
                 key={set.set_name}
                 className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? '' : 'd-none'}`}>
-                <div className="row justify-content-around mt-1">
+                <div className="row mt-1">
                     <div className="col-2 white-text child"/>
                     <div className="col-9">
-                        <div className="row justify-content-around">
+                        <div className="row container-fluid mx-auto">
                             <input
                                 id={set.set_name}
                                 onClick={() => this.handleList(set, 'remove')}
@@ -404,7 +407,7 @@ export default class App extends Component {
                             </input>
                             <label
                                 htmlFor={set.set_name}
-                                className="col-6 text-center text-color personnal-checkbox red-check">
+                                className="text-center text-color personnal-checkbox red-check w-100">
                                 X
                             </label>
                         </div>
@@ -415,13 +418,12 @@ export default class App extends Component {
                         // Setting if/else to get sets[0] in this case
                         return (
                             <Fragment key={sets[index] ? sets[index].set_name : sets[0].set_name + index}>
-                                <div
-                                    className="row">
+                                <div className="row align-items-center">
                                     <div className="col-2 white-text child">
                                         {sets[index] ? sets[index].setLevel : sets[0].setLevel}
                                     </div>
                                     <div className="col-9">
-                                        <div className="row justify-content-around">
+                                        <div className="row">
                                             {sets.map(set => this.artsNumber(set, sets))}
                                         </div>
                                     </div>
@@ -462,7 +464,7 @@ export default class App extends Component {
                         className="bordered white-text mt-2">
                         Enhancement
                     </div>
-                    <div>
+                    <div className="row p-0 mx-0 col align-items-center">
                         {elvls.map(elvl => {
                                 return (
                                     <Fragment key={elvl + 'enhance'}>
@@ -476,7 +478,7 @@ export default class App extends Component {
                                         />
                                         <label
                                             htmlFor={set.set_tech_name + elvl + 'enhance'}
-                                            className="col-3 p-0 mt-2 text-center text-color personnal-checkbox green-check">
+                                            className="col p-0 mt-2 text-center text-color personnal-checkbox green-check">
                                             +{elvl}
                                         </label>
                                     </Fragment>
@@ -491,7 +493,7 @@ export default class App extends Component {
                         className="text-bolded bordered white-text mt-2">
                         Enhancement
                     </div>
-                    <div>
+                    <div className="row p-0 mx-0 col align-items-center">
                         {elvls.map(elvl => {
                                 return (
                                     <Fragment key={elvl + 'enhance'}>
@@ -505,7 +507,7 @@ export default class App extends Component {
                                         />
                                         <label
                                             htmlFor={set.set_tech_name + elvl + 'enhance'}
-                                            className="col-3 p-0 mt-2 text-center text-color personnal-checkbox green-check">
+                                            className="col p-0 mt-2 text-center text-color personnal-checkbox green-check">
                                             +{elvl}
                                         </label>
                                     </Fragment>
@@ -545,7 +547,7 @@ export default class App extends Component {
                 <div
                     key={set.set_name}
                     className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? '' : 'd-none'}`}>
-                    <div className="offset-1 col-10 white-text child">
+                    <div className="col white-text child">
                         <div className="row justify-content-around">
                             <input
                                 id={set.set_name + 'x'}
@@ -556,7 +558,8 @@ export default class App extends Component {
                                 defaultChecked={isExcluded}
                             >
                             </input>
-                            <label htmlFor={set.set_name + 'x'} className="col text-center text-color personnal-checkbox red-check">
+                            <label htmlFor={set.set_name + 'x'}
+                                   className="col text-center text-color personnal-checkbox red-check">
                                 X
                             </label>
                             <input
@@ -568,7 +571,8 @@ export default class App extends Component {
                                 defaultChecked={!isExcluded}
                             >
                             </input>
-                            <label htmlFor={set.set_name + 'v'} className="col ml-2 text-center text-color personnal-checkbox green-check">
+                            <label htmlFor={set.set_name + 'v'}
+                                   className="col ml-2 text-center text-color personnal-checkbox green-check">
                                 V
                             </label>
                         </div>
@@ -660,7 +664,7 @@ export default class App extends Component {
                         onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
                     />
                     <label htmlFor={setLevel + artLevel + i}
-                           className="col-3 mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal">
+                           className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col'} mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
                         {setLevel} {artLevel}*
                     </label>
                     {newLine}
@@ -800,7 +804,7 @@ export default class App extends Component {
     artsNumber = (set, sets) => {
         const elvl = set.enhance_level ? set.enhance_level : 0;
         return (
-            <div key={set.set_tech_name}>
+            <div className="col p-0 ml-1" key={set.set_tech_name}>
                 <input
                     id={set.set_name.replace(/ \(\dp\)/, '') + set.set_tech_name + set.setLevel}
                     onClick={this.state.selectedList.includes(set) ?
@@ -817,7 +821,7 @@ export default class App extends Component {
                 </input>
                 <label
                     htmlFor={set.set_name.replace(/ \(\dp\)/, '') + set.set_tech_name + set.setLevel}
-                    className="text-center text-color personnal-checkbox green-check">
+                    className="text-center text-color personnal-checkbox green-check w-100">
                     {set.set_arts_number}
                 </label>
             </div>
@@ -921,6 +925,7 @@ export default class App extends Component {
                     resetList={() => this.resetSummaryState()}
                     enhancementMode={this.state.enhancementModes.map(this.enhancementMode)}
                     enhancementLevels={this.state.enhancementLevels.map(this.enhancementLevels)}
+                    connected={this.state.connected}
                 />
                 <StatsSummaryAndArtsBox
                     totalNumberOfArts={this.sum(this.state.totalNumberOfArts)}
