@@ -1,5 +1,12 @@
 export const versions = [
     {
+        number: '1.8.4',
+        date: '15 April 2019',
+        title: "Bug Fix",
+        content: {
+            point1: "Fixed a bug with enhancements and some sets (Nordic & Greek Gods)",
+        },
+    },    {
         number: '1.8.3',
         date: '13 April 2019',
         title: "Bug Fixes and minor UI improvements",

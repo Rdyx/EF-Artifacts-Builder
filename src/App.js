@@ -445,6 +445,7 @@ export default class App extends Component {
     };
 
     enhancementButtons = (set, globalArray) => {
+        const regex = / \(\dp\)/;
         const elvls = set.artifact1.art_level === '6*' ?
             this.state.enhancementLevels.filter(x => x !== 3) : this.state.enhancementLevels;
 
@@ -470,7 +471,7 @@ export default class App extends Component {
                                 return (
                                     <Fragment key={elvl + 'enhance'}>
                                         <input
-                                            id={set.set_tech_name + elvl + 'enhance'}
+                                            id={set.set_name.replace(regex, '') + elvl + 'enhance'}
                                             type="radio"
                                             name={set.set_name + 'enhance'}
                                             value={elvl}
@@ -478,7 +479,7 @@ export default class App extends Component {
                                             onClick={(e) => this.handleList(set, 'enhance', e.target.value, globalArray)}
                                         />
                                         <label
-                                            htmlFor={set.set_tech_name + elvl + 'enhance'}
+                                            htmlFor={set.set_name.replace(regex, '') + elvl + 'enhance'}
                                             className="col p-0 mt-2 text-center text-color personnal-checkbox green-check">
                                             +{elvl}
                                         </label>
