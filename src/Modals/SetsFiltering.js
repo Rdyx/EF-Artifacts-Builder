@@ -1,7 +1,7 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Modal from "react-modal";
-import {setsFilterModalStyle} from "../styles/ModalStyle";
+import { setsFilterModalStyle } from "../styles/ModalStyle";
 
 export class SetsFiltering extends Component {
     static propTypes = {
@@ -12,7 +12,7 @@ export class SetsFiltering extends Component {
         optimiser: PropTypes.bool.isRequired,
         enhancementMode: PropTypes.array.isRequired,
         enhancementLevels: PropTypes.array.isRequired,
-
+        totalArtsPerSet: PropTypes.array.isRequired,
     };
 
     render() {
@@ -24,11 +24,11 @@ export class SetsFiltering extends Component {
                     style={setsFilterModalStyle}
                 >
                     <div className="row text-center">
-                        <div className="col-12 col-sm-6">
+                        <div className="col-12 col-md-6">
                             <h3>Category</h3>
                             {this.props.setsTypes}
                         </div>
-                        <div className="col-12 col-sm-6 mt-3 mt-sm-0 justify-content-around">
+                        <div className="col-12 col-md-6 mt-3 mt-sm-0 justify-content-around">
                             <h3>Bonus Type</h3>
                             {this.props.bonusTypes}
                             <h3 className="mt-2">Sets Enhancement</h3>
@@ -44,6 +44,10 @@ export class SetsFiltering extends Component {
                                     {this.props.setsLevels}
                                 </Fragment>
                             ) : null}
+                            <div className="row mx-auto">
+                                <h3 className="col-12 mt-2">Arts per Set</h3>
+                                {this.props.totalArtsPerSet}
+                            </div>
                         </div>
                     </div>
                 </Modal>

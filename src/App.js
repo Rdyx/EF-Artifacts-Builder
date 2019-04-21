@@ -1,14 +1,14 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import './App.css';
 import './styles/randomBg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as html2canvas from 'html2canvas';
 import Set from './component/Set';
-import {ScreenshotModal} from "./Modals/ScreenshotModal";
-import {NavBar} from "./component/NavBar";
-import {StatsSummaryAndArtsBox} from "./component/StatsSummaryAndArtsBox";
-import {LoadingScreen} from "./component/LoadingScreen";
-import {calculateGSFromEnhancement, calculateMedalsFromEnhancement, knapsack} from "./optimiser/Optimiser";
+import { ScreenshotModal } from "./Modals/ScreenshotModal";
+import { NavBar } from "./component/NavBar";
+import { StatsSummaryAndArtsBox } from "./component/StatsSummaryAndArtsBox";
+import { LoadingScreen } from "./component/LoadingScreen";
+import { calculateGSFromEnhancement, calculateMedalsFromEnhancement, knapsack } from "./optimiser/Optimiser";
 
 
 export default class App extends Component {
@@ -29,6 +29,7 @@ export default class App extends Component {
             enhancementMode: 'All',
             enhancementLevels: [0, 1, 2, 3],
             enhanceLevel: 3,
+            maxArtsPerSet: 6,
             set: null,
             artifact: null,
             showScreenModal: false,
@@ -38,6 +39,7 @@ export default class App extends Component {
             searchBySetType: 'All',
             filterByBonusType: 'All',
             filterBySetLevel: 'All',
+            filterByTotalArtsNumber: 'All',
             loading: false,
             // visitorCount: null,
             offline: '',
@@ -59,7 +61,7 @@ export default class App extends Component {
         }
         const enhanceLevel = parseInt(localStorage.getItem('enhanceLevel'), 10);
 
-        this.setState({loading: true, enhanceLevel: enhanceLevel});
+        this.setState({ loading: true, enhanceLevel: enhanceLevel });
 
         fetch(process.env.REACT_APP_PING)
             .then(response => {
@@ -74,7 +76,7 @@ export default class App extends Component {
                     })
                     .then(data => {
                         // Used to show facebook button
-                        this.setState({connected: true});
+                        this.setState({ connected: true });
                         // Sorting 2 dimensions array to sort arts by their names
                         localStorage.setItem('data', '');
                         localStorage.setItem('setTypes', '');
@@ -262,10 +264,10 @@ export default class App extends Component {
             let array = this.state.excludedFromOptimiser;
             array.splice(index, 1);
 
-            this.setState({excludedFromOptimiser: array});
+            this.setState({ excludedFromOptimiser: array });
         }
         if (!status) {
-            this.setState(prevState => ({excludedFromOptimiser: [...prevState.excludedFromOptimiser, eventSetName]}));
+            this.setState(prevState => ({ excludedFromOptimiser: [...prevState.excludedFromOptimiser, eventSetName] }));
         }
     };
 
@@ -315,9 +317,9 @@ export default class App extends Component {
 
         return (
             <tr key={set.set_name + set.setLevel} className="text-center">
-                <th style={{width: '60%'}}>{elvl} {set.setLevel} {setTechName} - {set.set_arts_number}p</th>
-                <td style={{width: '15%'}}>{findGsBonus ? findGsBonus : 0}</td>
-                <td style={{width: '35%'}}>{findMedalBonus ? findMedalBonus : 0}</td>
+                <th style={{ width: '60%' }}>{elvl} {set.setLevel} {setTechName} - {set.set_arts_number}p</th>
+                <td style={{ width: '15%' }}>{findGsBonus ? findGsBonus : 0}</td>
+                <td style={{ width: '35%' }}>{findMedalBonus ? findMedalBonus : 0}</td>
             </tr>
         )
     };
@@ -325,20 +327,18 @@ export default class App extends Component {
     triggerScreenshot = () => {
         html2canvas(document.querySelector("#capture"))
             .then(canvas => {
-                this.setState({showScreenModal: true, canvas: canvas.toDataURL()});
+                this.setState({ showScreenModal: true, canvas: canvas.toDataURL() });
             })
     };
 
     showIfMatch = (set, optimised = true) => {
-        // Match set tech name and set types, if All, every set is shown
-        return optimised ? set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase()) &&
-            (set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) ||
-                this.state.searchBySetType === 'All') :
-            set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase()) &&
-            (set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) ||
-                this.state.searchBySetType === 'All') &&
-            (this.findBonus(set, this.state.filterByBonusType) ||
-                this.state.filterByBonusType === 'All');
+        const techName = set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase());
+        const setType = set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) || this.state.searchBySetType === 'All';
+        const bonus = this.findBonus(set, this.state.filterByBonusType) || this.state.filterByBonusType === 'All';
+        const matchTotalArtsNumber = set.set_total_arts_number.toString() === this.state.filterByTotalArtsNumber || this.state.filterByTotalArtsNumber === 'All';
+
+        // Match set tech name, set types and set total arts number, if All, every set is shown
+        return techName && setType && bonus && matchTotalArtsNumber;
     };
 
     filterSetsForStatsModal = (set) => {
@@ -394,7 +394,7 @@ export default class App extends Component {
                 key={set.set_name}
                 className={`col-md-3 col-6 set-border text-center hovered ${showIfMatch ? '' : 'd-none'}`}>
                 <div className="row mt-1">
-                    <div className="col-2 white-text child"/>
+                    <div className="col-2 white-text child" />
                     <div className="col-9">
                         <div className="row container-fluid mx-auto">
                             <input
@@ -415,24 +415,24 @@ export default class App extends Component {
                     </div>
                 </div>
                 {globalArray.map((sets, index) => {
-                        // Seems on sets with 1 pair of bonus can't be fetched by sets[index] so
-                        // Setting if/else to get sets[0] in this case
-                        return (
-                            <Fragment key={sets[index] ? sets[index].set_name : sets[0].set_name + index}>
-                                <div className="row align-items-center">
-                                    <div className="col-2 white-text child">
-                                        {sets[index] ? sets[index].setLevel : sets[0].setLevel}
-                                    </div>
-                                    <div className="col-9">
-                                        <div className="row">
-                                            {sets.map(set => this.artsNumber(set, sets))}
-                                        </div>
+                    // Seems on sets with 1 pair of bonus can't be fetched by sets[index] so
+                    // Setting if/else to get sets[0] in this case
+                    return (
+                        <Fragment key={sets[index] ? sets[index].set_name : sets[0].set_name + index}>
+                            <div className="row align-items-center">
+                                <div className="col-2 white-text child">
+                                    {sets[index] ? sets[index].setLevel : sets[0].setLevel}
+                                </div>
+                                <div className="col-9">
+                                    <div className="row">
+                                        {sets.map(set => this.artsNumber(set, sets))}
                                     </div>
                                 </div>
-                                {sets.map(set => this.enhancementButtons(set, globalArray))}
-                            </Fragment>
-                        )
-                    }
+                            </div>
+                            {sets.map(set => this.enhancementButtons(set, globalArray))}
+                        </Fragment>
+                    )
+                }
                 )}
                 <div>
                     <Set
@@ -468,35 +468,35 @@ export default class App extends Component {
                     </div>
                     <div className="row p-0 mx-0 col align-items-center">
                         {elvls.map(elvl => {
-                                return (
-                                    <Fragment key={elvl + 'enhance'}>
-                                        <input
-                                            id={set.set_name.replace(regex, '') + elvl + 'enhance'}
-                                            type="radio"
-                                            name={set.set_name + 'enhance'}
-                                            value={elvl}
-                                            defaultChecked={elvl === set.enhance_level}
-                                            onClick={(e) => this.handleList(set, 'enhance', e.target.value, globalArray)}
-                                        />
-                                        <label
-                                            htmlFor={set.set_name.replace(regex, '') + elvl + 'enhance'}
-                                            className="col p-0 mt-2 text-center text-color personnal-checkbox green-check">
-                                            +{elvl}
-                                        </label>
-                                    </Fragment>
-                                )
-                            }
+                            return (
+                                <Fragment key={elvl + 'enhance'}>
+                                    <input
+                                        id={set.set_name.replace(regex, '') + elvl + 'enhance'}
+                                        type="radio"
+                                        name={set.set_name + 'enhance'}
+                                        value={elvl}
+                                        defaultChecked={elvl === set.enhance_level}
+                                        onClick={(e) => this.handleList(set, 'enhance', e.target.value, globalArray)}
+                                    />
+                                    <label
+                                        htmlFor={set.set_name.replace(regex, '') + elvl + 'enhance'}
+                                        className="col p-0 mt-2 text-center text-color personnal-checkbox green-check">
+                                        +{elvl}
+                                    </label>
+                                </Fragment>
+                            )
+                        }
                         )}
                     </div>
                 </div>
             ) : (
-                <div key={set + 'A'}>
-                    <div
-                        className="text-bolded bordered white-text mt-2">
-                        Enhancement
+                    <div key={set + 'A'}>
+                        <div
+                            className="text-bolded bordered white-text mt-2">
+                            Enhancement
                     </div>
-                    <div className="row p-0 mx-0 col align-items-center">
-                        {elvls.map(elvl => {
+                        <div className="row p-0 mx-0 col align-items-center">
+                            {elvls.map(elvl => {
                                 return (
                                     <Fragment key={elvl + 'enhance'}>
                                         <input
@@ -515,10 +515,10 @@ export default class App extends Component {
                                     </Fragment>
                                 )
                             }
-                        )}
+                            )}
+                        </div>
                     </div>
-                </div>
-            ) : null;
+                ) : null;
     };
 
     getOptimizedSets = (sets) => {
@@ -561,7 +561,7 @@ export default class App extends Component {
                             >
                             </input>
                             <label htmlFor={set.set_name + 'x'}
-                                   className="col text-center text-color personnal-checkbox red-check">
+                                className="col text-center text-color personnal-checkbox red-check">
                                 X
                             </label>
                             <input
@@ -574,7 +574,7 @@ export default class App extends Component {
                             >
                             </input>
                             <label htmlFor={set.set_name + 'v'}
-                                   className="col ml-2 text-center text-color personnal-checkbox green-check">
+                                className="col ml-2 text-center text-color personnal-checkbox green-check">
                                 V
                             </label>
                         </div>
@@ -602,7 +602,7 @@ export default class App extends Component {
                     name="setType"
                     value={setType}
                     defaultChecked={setType === this.state.searchBySetType}
-                    onClick={(e) => this.setState({searchBySetType: e.target.value})}
+                    onClick={(e) => this.setState({ searchBySetType: e.target.value })}
                 />
                 <label
                     htmlFor={setType + 'setType'}
@@ -622,7 +622,7 @@ export default class App extends Component {
                     name="bonusType"
                     value={bonusType}
                     defaultChecked={bonusType === this.state.filterByBonusType}
-                    onClick={(e) => this.setState({filterByBonusType: e.target.value})}
+                    onClick={(e) => this.setState({ filterByBonusType: e.target.value })}
                 />
                 <label
                     htmlFor={bonusType + 'bonusType'}
@@ -638,13 +638,13 @@ export default class App extends Component {
         const setLevel = eValueSplited[0];
         const setTier = eValueSplited[1];
 
-        return setLevel === '6' ? this.setState({optimiserSixStarsLevel: setTier}) :
-            setLevel === '7' ? this.setState({optimiserSevenStarsLevel: setTier}) :
-                setLevel === '8' ? this.setState({optimiserSevenStarsLevel: setTier}) : null;
+        return setLevel === '6' ? this.setState({ optimiserSixStarsLevel: setTier }) :
+            setLevel === '7' ? this.setState({ optimiserSevenStarsLevel: setTier }) :
+                setLevel === '8' ? this.setState({ optimiserSevenStarsLevel: setTier }) : null;
     };
 
     getSetLevels = (artLevel) => {
-        let setLevelBoxes = [];
+        const setLevelBoxes = [];
         // Lvl 8 is here to be available easier later
         const setSetsLevel = artLevel === 6 ? 3 : artLevel === 7 ? 2 : artLevel === 8 ? 0 : 0;
         const setTier = artLevel === 6 ? this.state.optimiserSixStarsLevel :
@@ -653,7 +653,7 @@ export default class App extends Component {
 
         for (let i = 0; i <= setSetsLevel; i++) {
             const setLevel = this.state.setsLevels[i];
-            const newLine = i === setSetsLevel ? (<br/>) : null;
+            const newLine = i === setSetsLevel ? (<br />) : null;
 
             setLevelBoxes.push(
                 <Fragment key={artLevel + i}>
@@ -666,7 +666,7 @@ export default class App extends Component {
                         onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
                     />
                     <label htmlFor={setLevel + artLevel + i}
-                           className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col'} mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col'} mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
                         {setLevel} {artLevel}*
                     </label>
                     {newLine}
@@ -677,6 +677,48 @@ export default class App extends Component {
         return setLevelBoxes
     };
 
+    getArtsPerSet = () => {
+        const boxes = [];
+
+        for (let i = 1; i <= this.state.maxArtsPerSet; i++) {
+            boxes.push(
+                <Fragment key={i + 'total arts'}>
+                    <input
+                        id={i + 'total arts'}
+                        type="radio"
+                        name={'totalArtsPerSet'}
+                        value={i}
+                        defaultChecked={i.toString() === this.state.filterByTotalArtsNumber}
+                        onClick={(e) => this.setState({ filterByTotalArtsNumber: e.target.value })}
+                    />
+                    <label htmlFor={i + 'total arts'}
+                        className={`col mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                        {i}
+                    </label>
+                </Fragment>
+            )
+        }
+
+        // All button
+        boxes.push(
+            <Fragment key={'All total arts'}>
+                <input
+                    id={'All total arts'}
+                    type="radio"
+                    name={'totalArtsPerSet'}
+                    value={'All'}
+                    defaultChecked={'All' === this.state.filterByTotalArtsNumber}
+                    onClick={(e) => this.setState({ filterByTotalArtsNumber: e.target.value })}
+                />
+                <label htmlFor={'All total arts'}
+                    className={`col mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                    All
+                        </label>
+            </Fragment>
+        );
+
+        return boxes;
+    }
     enhancementMode = (type) => {
         return (
             <Fragment key={type + 'enhance'}>
@@ -686,7 +728,7 @@ export default class App extends Component {
                     name='enhancementMode'
                     value={type}
                     defaultChecked={type === this.state.enhancementMode}
-                    onClick={(e) => this.setState({enhancementMode: e.target.value})}
+                    onClick={(e) => this.setState({ enhancementMode: e.target.value })}
                 />
                 <label
                     htmlFor={type + 'enhance'}
@@ -703,7 +745,7 @@ export default class App extends Component {
 
         const elvl = parseInt(event.target.value, 10);
         localStorage.setItem('enhanceLevel', elvl);
-        this.setState({enhanceLevel: elvl});
+        this.setState({ enhanceLevel: elvl });
 
 
         if (this.state.enhancementMode === 'All') {
@@ -779,7 +821,7 @@ export default class App extends Component {
         });
         if (indexOf !== -1) {
             list[indexOf].enhance_level = this.adaptElvl(list[indexOf], elvl);
-            this.setState({selectedList: list})
+            this.setState({ selectedList: list })
         }
     };
 
@@ -854,20 +896,20 @@ export default class App extends Component {
                 {
                     nbArtsWanted > 1 && getResults[0].totalArts > 0 ?
                         (<Fragment>
-                                <span>Solution(s) found</span>
-                                <br/>
-                                <span>Don't forget to adapt for race optimisation if needed</span>
-                            </Fragment>
+                            <span>Solution(s) found</span>
+                            <br />
+                            <span>Don't forget to adapt for race optimisation if needed</span>
+                        </Fragment>
                         ) :
                         'No solution found'
                 }
             </div>
         );
 
-        this.setState({optimisedSets: [solutionMessage], optimisedResultSelectedIndex: 1});
+        this.setState({ optimisedSets: [solutionMessage], optimisedResultSelectedIndex: 1 });
 
         getResults.map(set => {
-            return this.setState(prevState => ({optimisedSets: [...prevState.optimisedSets, set]}));
+            return this.setState(prevState => ({ optimisedSets: [...prevState.optimisedSets, set] }));
         });
 
         return getResults[0] && getResults[0].sets.length > 0 ? this.pushInStates(getResults[0]) : this.resetSummaryState();
@@ -878,12 +920,12 @@ export default class App extends Component {
 
         return setsArray.sets.map(set => {
             return this.setState(prevState => ({
-                    selectedList: [...prevState.selectedList, set],
-                    totalNumberOfArts: [...prevState.totalNumberOfArts, set.set_arts_number],
-                    gameSpeedBonuses: [...prevState.gameSpeedBonuses, set.calculatedBonusGS],
-                    bonusMedals: [...prevState.bonusMedals, set.calculatedBonusMedals],
-                    optimisedResultSelectedIndex: index ? parseInt(index, 10) : 1,
-                })
+                selectedList: [...prevState.selectedList, set],
+                totalNumberOfArts: [...prevState.totalNumberOfArts, set.set_arts_number],
+                gameSpeedBonuses: [...prevState.gameSpeedBonuses, set.calculatedBonusGS],
+                bonusMedals: [...prevState.bonusMedals, set.calculatedBonusMedals],
+                optimisedResultSelectedIndex: index ? parseInt(index, 10) : 1,
+            })
             );
         });
     };
@@ -894,7 +936,7 @@ export default class App extends Component {
     };
 
     closeScreenModal = () => {
-        this.setState({showScreenModal: false, canvas: null})
+        this.setState({ showScreenModal: false, canvas: null })
     };
 
     render() {
@@ -914,20 +956,21 @@ export default class App extends Component {
                     />
                 ) : null}
                 <NavBar
-                    swapManualToAutomaticBuilder={() => this.setState({optimiser: !this.state.optimiser})}
+                    swapManualToAutomaticBuilder={() => this.setState({ optimiser: !this.state.optimiser })}
                     triggerScreenshot={this.triggerScreenshot}
-                    searchBySetName={(e) => this.setState({searchBySetName: e.target.value.replace(/[°"§%()[]{}=\\?´`'#<>|,;.:+_-]+/g, '')})}
+                    searchBySetName={(e) => this.setState({ searchBySetName: e.target.value.replace(/[°"§%()[]{}=\\?´`'#<>|,;.:+_-]+/g, '') })}
                     setFiltering={this.state.searchBySetType !== 'All' || this.state.filterByBonusType !== 'All'}
                     setsTypes={this.state.setTypes.map(this.getSetsTypes)}
                     bonusTypes={this.state.bonusTypes.map(this.getBonusTypes)}
                     optimiser={this.state.optimiser}
                     setsLevels={this.state.artsLevels.map(this.getSetLevels)}
-                    resetFilters={() => this.setState({searchBySetType: 'All', filterByBonusType: 'All'})}
+                    resetFilters={() => this.setState({ searchBySetType: 'All', filterByBonusType: 'All' })}
                     listLength={this.state.selectedList.length}
                     resetList={() => this.resetSummaryState()}
                     enhancementMode={this.state.enhancementModes.map(this.enhancementMode)}
                     enhancementLevels={this.state.enhancementLevels.map(this.enhancementLevels)}
                     connected={this.state.connected}
+                    totalArtsPerSet={this.getArtsPerSet()}
                 />
                 <StatsSummaryAndArtsBox
                     totalNumberOfArts={this.sum(this.state.totalNumberOfArts)}

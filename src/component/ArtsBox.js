@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 export class ArtsBox extends Component {
@@ -21,39 +21,42 @@ export class ArtsBox extends Component {
 
     getOptimisedResults = () => {
         const resultLength = this.props.getOptimisedResults.length;
-        let solutions = [];
+
+        const solutions = [];
         if (resultLength > 1 && this.props.getOptimisedResults[1].sets.length > 0) {
             this.props.getOptimisedResults.map((set, index) => {
                 // Index will start above 0 since index 0 is the solutionMessage
                 return index > 0 ?
                     solutions.push(
-                        <div key={index} className={`col-12 col-sm-3 text-center p-0 ${(index) % 3 !== 0 || index !== resultLength ? 'mr-2' : ''}`}>
+                        <div
+                            key={index}
+                            className={`col-12 col-sm-3 text-center p-0 ml-1 mr-1`}>
                             <input
                                 id={'solution' + index}
-                                onClick={this.props.getArrayResult}
+                                onChange={this.props.getArrayResult}
                                 type="radio"
                                 name="autoBuilderResult"
                                 value={index}
-                                defaultChecked={index === this.props.optimisedResultSelectedIndex}
+                                checked={index === this.props.optimisedResultSelectedIndex}
                             >
                             </input>
                             <label htmlFor={'solution' + index}
-                                   className="col text-color personnal-checkbox mb-2 green-check solution">
+                                className="col text-color personnal-checkbox mb-2 green-check solution">
                                 Solution {index}
                             </label>
                             <table
                                 className={`col table table-bordered table-striped personnal-table`}>
                                 <tbody>
-                                <tr className="result-background">
-                                    <th>Artifacts</th>
-                                    <th>Game speed</th>
-                                    <th>Medals</th>
-                                </tr>
-                                <tr className="text-center result-background">
-                                    <th>{set.totalArts}</th>
-                                    <td>{set.gameSpeed ? set.gameSpeed : 0}</td>
-                                    <td>{set.medalsBonus ? set.medalsBonus : 0}</td>
-                                </tr>
+                                    <tr className="result-background">
+                                        <th>Artifacts</th>
+                                        <th>Game speed</th>
+                                        <th>Medals</th>
+                                    </tr>
+                                    <tr className="text-center result-background">
+                                        <th>{set.totalArts}</th>
+                                        <td>{set.gameSpeed ? set.gameSpeed : 0}</td>
+                                        <td>{set.medalsBonus ? set.medalsBonus : 0}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

@@ -21,6 +21,7 @@ export class NavBar extends Component {
         enhancementMode: PropTypes.array.isRequired,
         enhancementLevels: PropTypes.array.isRequired,
         connected: PropTypes.bool.isRequired,
+        totalArtsPerSet: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -62,6 +63,7 @@ export class NavBar extends Component {
                         optimiser={this.props.optimiser}
                         enhancementMode={this.props.enhancementMode}
                         enhancementLevels={this.props.enhancementLevels}
+                        totalArtsPerSet={this.props.totalArtsPerSet}
                     />
                 ) : null}
                 <nav className="row navbar navbar-dark bg-transparent justify-content-center pt-0 pt-sm-2">

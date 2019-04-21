@@ -1,12 +1,25 @@
 export const versions = [
     {
+        number: '1.9.0',
+        date: '21 April 2019',
+        title: "New Filter, Mobile Landscape UI fixes, new Reddit link, Modals colors",
+        content: {
+            point1: "New filter available! You can now filter sets by their number of artifacts. I found that sometimes it was annoying to find a specific number of artifacts so this filter should help you (and me) about it! ;D",
+            point2: "Fixed some UI problems if EFAB was used in landscape mode on some mobiles.",
+            point3: "Fixed a bug if you selected a solution N°2 (or more) with auto-builder, was not showing the default selection anymore after it.",
+            point4: "Created a new thread on Reddit since the old one went in archived mode, new links available.",
+            point5: "Changed background and modals colors to be more compliant with overall design."
+        },
+    },
+    {
         number: '1.8.4',
         date: '15 April 2019',
         title: "Bug Fix",
         content: {
             point1: "Fixed a bug with enhancements and some sets (Nordic & Greek Gods)",
         },
-    },    {
+    },
+    {
         number: '1.8.3',
         date: '13 April 2019',
         title: "Bug Fixes and minor UI improvements",

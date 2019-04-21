@@ -2,6 +2,7 @@ const base = {
     overlay: {
         zIndex: 1045,
         overflow: 'scroll',
+        background: 'rgba(0, 0, 0, 0.75)',
     },
     content: {
         position: 'absolute',
@@ -12,6 +13,9 @@ const base = {
         bottom: 'auto',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
+        background: 'black',
+        color: 'white',
+        maxHeight: '85%',
     }
 };
 
@@ -25,7 +29,6 @@ export const headerModalStyle = {
         ...base.content,
         paddingLeft: '10px',
         paddingRight: '10px',
-        height: '425px',
         width: '70%',
     }
 };
@@ -49,8 +52,6 @@ export const setsFilterModalStyle = {
     },
     content: {
         ...base.content,
-        bottom: '-40%',
-        height: '460px',
         width: '70%',
     }
 };
