@@ -44,7 +44,7 @@ export const versionModalStyle = {
     }
 };
 
-export const setsFilterModalStyle = {
+export const optionsModalStyle = {
     ...base,
     content: {
         ...base.content,

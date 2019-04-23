@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { HeaderModal } from "../Modals/HeaderModal";
 import { VersionModal } from "../Modals/VersionModal";
 import { versions } from "../Versions/Versions";
-import { SetsFiltering } from "../Modals/SetsFiltering";
+import { OptionsModal } from "../Modals/OptionsModal";
 import { HowToUseModal } from '../Modals/HowToUseModal';
 
 export class NavBar extends Component {
@@ -30,7 +30,7 @@ export class NavBar extends Component {
         this.state = {
             showInfoModal: false,
             versionModal: false,
-            setsFiltering: false,
+            optionsModal: false,
             howToUse: false,
         }
     };
@@ -43,8 +43,8 @@ export class NavBar extends Component {
         this.setState({ versionModal: false })
     };
 
-    closeSetsFiltering = () => {
-        this.setState({ setsFiltering: false })
+    closeOptionsModal = () => {
+        this.setState({ optionsModal: false })
     };
 
     closeHowToUse = () => {
@@ -60,9 +60,9 @@ export class NavBar extends Component {
                 {this.state.versionModal ? (
                     <VersionModal handler={this.closeVersionModal} />
                 ) : null}
-                {this.state.setsFiltering ? (
-                    <SetsFiltering
-                        handler={this.closeSetsFiltering}
+                {this.state.optionsModal ? (
+                    <OptionsModal
+                        handler={this.closeOptionsModal}
                         setsTypes={this.props.setsTypes}
                         bonusTypes={this.props.bonusTypes}
                         setsLevels={this.props.setsLevels}
@@ -110,7 +110,7 @@ export class NavBar extends Component {
                     </button>
                     <button
                         className={`btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2 ${this.props.setFiltering ? 'btn-success' : ''}`}
-                        onClick={() => this.setState({ setsFiltering: true })}>
+                        onClick={() => this.setState({ optionsModal: true })}>
                         Options
                     </button>
                     <button

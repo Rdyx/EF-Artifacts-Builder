@@ -2,7 +2,7 @@
 // https://gist.github.com/lqt0223/21f033450a9d762ce8aee4da336363b1
 
 export const calculateMedalsFromEnhancement = (bonusMedals, elvl) => {
-    return bonusMedals+((bonusMedals/2)*elvl);
+    return bonusMedals + ((bonusMedals / 2) * elvl);
 };
 
 export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
@@ -69,7 +69,7 @@ export const filterSets = (
                         excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) :
                         (setLevel === EightStarsLevel &&
                             artLevel === '8' &&
-                            excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) :null;
+                            excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) : null;
         })
     });
 
@@ -80,8 +80,7 @@ export const filterSets = (
     unifiedArray.map(set => {
         const bonusGSValue = findBonus(set, /Game Speed/) ? findBonus(set, /Game Speed/) : 0;
         const bonusMedalsValue = findBonus(set, /Increase Additional Medals Obtained/) ? findBonus(set, /Increase Additional Medals Obtained/) : 0;
-        // const bonusGSValue = testGSValue ? testGSValue : 0;
-        // const bonusMedalsValue = testMedalsValue ? testMedalsValue : 0;
+
         const avgGSByNBArts = bonusGSValue / set.set_arts_number;
         const fullSet = set.set_arts_number === set.set_total_arts_number;
 
@@ -117,7 +116,7 @@ export const knapsack = (
     sets, maxArts, maxGS, minMedalsPerSet, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, EightStarsLevel
 ) => {
     function getSolution(row, nbArts, maxGS, minMedalsPerSet, memo) {
-        const NO_SOLUTION = {totalArts: 0, gameSpeed: 0, medalsBonus: 0, sets: []};
+        const NO_SOLUTION = { totalArts: 0, gameSpeed: 0, medalsBonus: 0, sets: [] };
 
         const col = nbArts - 1;
         const lastItem = sets[row];
@@ -169,7 +168,7 @@ export const knapsack = (
         if ((newGSValue >= lastGSValue && newMedalsValue > lastMedalsValue && newGSValue <= maxGS && lastItemMedals >= minMedalsPerSet)) {
             const _lastSets = lastSubSolution.sets.slice();
             _lastSets.push(lastItem);
-            return {totalArts: newMaxArts, gameSpeed: newGSValue, medalsBonus: newMedalsValue, sets: _lastSets};
+            return { totalArts: newMaxArts, gameSpeed: newGSValue, medalsBonus: newMedalsValue, sets: _lastSets };
         } else {
             return lastSolution;
         }
@@ -182,7 +181,7 @@ export const knapsack = (
         const memoResults = [];
 
         memo.map(memoArray => {
-            return memoResults.push(memoArray[memoArray.length-1]);
+            return memoResults.push(memoArray[memoArray.length - 1]);
         });
 
         memoResults.sort((r1, r2) => r1.totalArts >= r2.totalArts && r1.gameSpeed >= r2.gameSpeed && r1.medalsBonus >= r2.medalsBonus ? -1 : 1);

@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Modal from "react-modal";
-import { setsFilterModalStyle } from "../styles/ModalStyle";
+import { optionsModalStyle } from "../styles/ModalStyle";
 
-export class SetsFiltering extends Component {
+export class OptionsModal extends Component {
     static propTypes = {
         handler: PropTypes.func.isRequired,
         setsTypes: PropTypes.array.isRequired,
@@ -21,7 +21,7 @@ export class SetsFiltering extends Component {
                 <Modal
                     isOpen={true}
                     onRequestClose={this.props.handler}
-                    style={setsFilterModalStyle}
+                    style={optionsModalStyle}
                 >
                     <div className="row text-center">
                         <div className="col-12 col-md-6">

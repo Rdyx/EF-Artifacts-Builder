@@ -27,7 +27,7 @@ export default class App extends Component {
             setsLevels: ['T0', 'T1', 'T2', 'T3'],
             enhancementModes: ['Manual', 'All'],
             enhancementMode: 'All',
-            enhancementLevels: [0, 1, 2, 3],
+            enhancementLevels: [0, 1, 2, 3, 4],
             enhanceLevel: 3,
             maxArtsPerSet: 6,
             set: null,
@@ -86,9 +86,8 @@ export default class App extends Component {
                         let i = 0;
                         while (i < data.length) {
                             let setType = data[i].setType.replace(/\d+ /, '');
-                            if (data[i].artifact1.art_level !== '8*') {
-                                data[i].enhance_level = this.adaptElvl(data[i], enhanceLevel);
-                            }
+
+                            data[i].enhance_level = this.adaptElvl(data[i], enhanceLevel);
 
                             if (!setTypesArray.includes(setType)) {
                                 setTypesArray.push(setType);
@@ -446,15 +445,20 @@ export default class App extends Component {
 
     enhancementButtons = (set, globalArray) => {
         const regex = / \(\dp\)/;
-        const elvls = set.artifact1.art_level === '6*' ?
-            this.state.enhancementLevels.filter(x => x !== 3) : this.state.enhancementLevels;
+        const artLevel = set.artifact1.art_level;
+        const setLevel = set.setLevel;
+
+        const elvls = artLevel === '6*' ?
+            this.state.enhancementLevels.filter(x => x !== 3 && x !== 4) : artLevel === '7*' ?
+                this.state.enhancementLevels.filter(x => x !== 4) : this.state.enhancementLevels;
 
         const enhanceLevel = this.adaptElvl(set, this.state.enhanceLevel);
 
         const showElvls = set.hasOwnProperty('enhance_level') &&
             (
-                (set.artifact1.art_level === '6*' && set.setLevel === 'T3') ||
-                (set.artifact1.art_level === '7*' && set.setLevel === 'T2')
+                (artLevel === '6*' && setLevel === 'T3') ||
+                (artLevel === '7*' && setLevel === 'T2') ||
+                (artLevel === '8*' && setLevel === 'T0')
             ) && set.set_arts_number === set.set_total_arts_number;
 
         // Must get the whole div in condition and rewrite it completely depending on state
@@ -811,7 +815,24 @@ export default class App extends Component {
 
     adaptElvl = (set, elvl) => {
         const artLevel = set.artifact1.art_level;
-        return artLevel === '8*' ? 0 : artLevel === '6*' && elvl === 3 ? elvl - 1 : elvl;
+
+        if (elvl === 4) {
+            if (artLevel === '8*') {
+                return elvl;
+            } else if (artLevel === '7*') {
+                return elvl - 1;
+            } else {
+                return elvl - 2;
+            }
+        } else if (elvl === 3) {
+            if (artLevel === ('7*' || '8*')) {
+                return elvl
+            } else {
+                return elvl - 1;
+            }
+        } else {
+            return elvl;
+        }
     };
 
     modifySelectedSet = (list, set, elvl) => {
@@ -838,7 +859,7 @@ export default class App extends Component {
                 />
                 <label
                     htmlFor={elvl + 'enhance'}
-                    className="col-3 mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal">
+                    className="col mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal">
                     +{elvl}
                 </label>
             </Fragment>
