@@ -20,6 +20,7 @@ export class StatsSummaryAndArtsBox extends Component {
         getOptimisedResults: PropTypes.array.isRequired,
         getArrayResult: PropTypes.func.isRequired,
         optimisedResultSelectedIndex: PropTypes.number.isRequired,
+        connected: PropTypes.bool.isRequired,
     };
 
     constructor(props) {
@@ -96,15 +97,15 @@ export class StatsSummaryAndArtsBox extends Component {
                         getArrayResult={this.props.getArrayResult}
                         optimisedResultSelectedIndex={this.props.optimisedResultSelectedIndex}
                     />
-                    <div className="not-connected d-none d-md-block">
+                    <div className="not-connected d-none d-md-block" style={{ marginTop: this.props.connected ? '' : '8em' }}>
                         {offline}
                     </div>
                 </div>
-                <div id="capture" className="right-box d-none d-md-block pt-1">
+                <div id="capture" className="right-box d-none d-md-block pt-1" style={{ marginTop: this.props.connected ? '8em' : '10em' }}>
                     <h1 className="bolded pr-2 pl-2">Stats Summary</h1>
                     {listContent}
                 </div>
-            </Fragment>
+            </Fragment >
         )
     }
 }

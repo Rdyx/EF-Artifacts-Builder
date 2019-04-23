@@ -34,9 +34,7 @@ export const headerModalStyle = {
 };
 
 export const versionModalStyle = {
-    overlay: {
-        ...base.overlay,
-    },
+    ...base,
     content: {
         ...base.content,
         bottom: '-40%',
@@ -47,11 +45,18 @@ export const versionModalStyle = {
 };
 
 export const setsFilterModalStyle = {
-    overlay: {
-        ...base.overlay,
-    },
+    ...base,
     content: {
         ...base.content,
+        width: '70%',
+    }
+};
+
+export const howToUseModalStyle = {
+    ...base,
+    content: {
+        ...base.content,
+        paddingTop: '5px',
         width: '70%',
     }
 };

@@ -114,7 +114,7 @@ label {
 .screenstats {
     background-color: var(--dark-low-transparency) !important;
     color: var(--main-text-color);
-    max-height: 150px;
+    max-height: 175px;
     overflow-y: scroll;
     text-align: center;
     transition: all 0.2s ease;
@@ -151,16 +151,15 @@ a.efd, a.efd:link, a.efd:visited, a.efd:hover, a.efd:active {
     cursor: pointer;
 }
 
-.left-box {
-    /*background-color: var(--main-bg-color);*/
-}
+/* .left-box {
+    background-color: var(--main-bg-color);
+} */
 
 .right-box {
     transition: all 0.2s ease;
     overflow-y: scroll;
     border-radius: 5px;
-    max-height: 550px;
-    margin-top: 7em;
+    max-height: 80vh;
     background-color: var(--right-box-bg);
     color: var(--right-box-text-color);
     border: var(--right-box-border);
@@ -283,9 +282,9 @@ input[type="radio"]:checked + label.red-check {
     border: var(--red-check-hover);
 }
 
-input[type="radio"]:checked + label.green-check.filter-modal {
-    /* color: black; */
-}
+/* input[type="radio"]:checked + label.green-check.filter-modal {
+    color: black; 
+} */
 
 .big {
     font-size: 125%;
@@ -319,7 +318,7 @@ input[type="radio"]:checked + label.green-check.filter-modal {
     position: fixed !important;
     top: 0;
     right: 0;
-    margin-top: 5em;
+    /* margin-top: 5em; */
     width: 25%;
 }
 
@@ -361,6 +360,13 @@ table.personnal-table {
 
 .btn-link:hover {
     transition: all 0.3s ease;
+}
+
+.info-btn {
+    vertical-align: middle;
+    height: 35px;
+    width: 35px;
+    border-radius: 100px !important;
 }
 
 /*********************

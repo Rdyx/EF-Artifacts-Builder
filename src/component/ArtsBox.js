@@ -107,7 +107,7 @@ export class ArtsBox extends Component {
                             </label>
                             <button
                                 id="submitBuild"
-                                className="col-2 btn btn-outline-warning p-2"
+                                className="col-2 col-sm-3 btn btn-outline-warning"
                                 onClick={this.props.startBuild}>
                                 Build !
                             </button>

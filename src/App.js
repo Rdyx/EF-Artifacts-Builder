@@ -409,7 +409,7 @@ export default class App extends Component {
                             <label
                                 htmlFor={set.set_name}
                                 className="text-center text-color personnal-checkbox red-check w-100">
-                                X
+                                <i>X</i>
                             </label>
                         </div>
                     </div>
@@ -562,7 +562,7 @@ export default class App extends Component {
                             </input>
                             <label htmlFor={set.set_name + 'x'}
                                 className="col text-center text-color personnal-checkbox red-check">
-                                X
+                                <i>X</i>
                             </label>
                             <input
                                 id={set.set_name + 'v'}
@@ -575,7 +575,7 @@ export default class App extends Component {
                             </input>
                             <label htmlFor={set.set_name + 'v'}
                                 className="col ml-2 text-center text-color personnal-checkbox green-check">
-                                V
+                                <i>V</i>
                             </label>
                         </div>
                     </div>
@@ -994,6 +994,7 @@ export default class App extends Component {
                     getOptimisedResults={this.state.optimisedSets}
                     getArrayResult={(e) => this.getArrayResult(e)}
                     optimisedResultSelectedIndex={this.state.optimisedResultSelectedIndex}
+                    connected={this.state.connected}
                 />
             </div>
         );
