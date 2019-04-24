@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import { HeaderModal } from "../Modals/HeaderModal";
 import { VersionModal } from "../Modals/VersionModal";
 import { versions } from "../Versions/Versions";
-import { OptionsModal } from "../Modals/OptionsModal";
+import { SettingsModal } from "../Modals/SettingsModal";
 import { HowToUseModal } from '../Modals/HowToUseModal';
+
+// Used to show modal when new version has been released, localstorage value is set in service worker
+const showLastPatchNote = JSON.parse(localStorage.getItem('showLastPatchNote'));
 
 export class NavBar extends Component {
     static propTypes = {
@@ -30,10 +33,15 @@ export class NavBar extends Component {
         this.state = {
             showInfoModal: false,
             versionModal: false,
-            optionsModal: false,
+            settingsModal: false,
             howToUse: false,
+            showLastPatchNote: true,
         }
     };
+
+    componentWillMount = () => {
+        this.setState({ showLastPatchNote: showLastPatchNote })
+    }
 
     closeInfoModal = () => {
         this.setState({ showInfoModal: false })
@@ -43,8 +51,13 @@ export class NavBar extends Component {
         this.setState({ versionModal: false })
     };
 
-    closeOptionsModal = () => {
-        this.setState({ optionsModal: false })
+    dontShowUntillNextUpdate = () => {
+        localStorage.setItem('showLastPatchNote', false)
+        this.setState({ showLastPatchNote: false })
+    };
+
+    closeSettingsModal = () => {
+        this.setState({ settingsModal: false })
     };
 
     closeHowToUse = () => {
@@ -58,11 +71,14 @@ export class NavBar extends Component {
                     <HeaderModal handler={this.closeInfoModal} />
                 ) : null}
                 {this.state.versionModal ? (
-                    <VersionModal handler={this.closeVersionModal} />
+                    <VersionModal handler={this.closeVersionModal} versions={versions} />
                 ) : null}
-                {this.state.optionsModal ? (
-                    <OptionsModal
-                        handler={this.closeOptionsModal}
+                {this.state.showLastPatchNote ? (
+                    <VersionModal handler={this.dontShowUntillNextUpdate} versions={[versions[0]]} />
+                ) : null}
+                {this.state.settingsModal ? (
+                    <SettingsModal
+                        handler={this.closeSettingsModal}
                         setsTypes={this.props.setsTypes}
                         bonusTypes={this.props.bonusTypes}
                         setsLevels={this.props.setsLevels}
@@ -110,8 +126,8 @@ export class NavBar extends Component {
                     </button>
                     <button
                         className={`btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2 ${this.props.setFiltering ? 'btn-success' : ''}`}
-                        onClick={() => this.setState({ optionsModal: true })}>
-                        Options
+                        onClick={() => this.setState({ settingsModal: true })}>
+                        Settings
                     </button>
                     <button
                         className={`btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2 ${this.props.listLength === 0 ? 'mr-0 mr-sm-1' : ''}`}

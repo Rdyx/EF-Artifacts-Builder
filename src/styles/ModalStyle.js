@@ -1,4 +1,7 @@
-const base = {
+import { randomNumber } from './randomBg';
+
+
+export var baseStyle = {
     overlay: {
         zIndex: 1045,
         overflow: 'scroll',
@@ -7,56 +10,34 @@ const base = {
     content: {
         position: 'absolute',
         zIndex: 1050,
-        top: '50%',
-        left: '50%',
+        top: 0,
+        left: 0,
         right: 'auto',
         bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        background: 'black',
+        transform: 'translate(12.5%, 7.5vh)',
         color: 'white',
-        maxHeight: '85%',
+        height: 'auto',
+        maxHeight: '85vh',
+        width: '80%',
+        padding: '10px 20px',
+        // Just having fun with bg image
+        background: 'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(\'' + process.env.REACT_APP_BG_IMG + 'lvl-bgs/' + randomNumber() + '.jpg\')',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'scroll',
     }
 };
 
 export const customStyles = {
-    ...base,
-};
-
-export const headerModalStyle = {
-    ...base,
+    ...baseStyle,
     content: {
-        ...base.content,
-        paddingLeft: '10px',
-        paddingRight: '10px',
-        width: '70%',
-    }
-};
-
-export const versionModalStyle = {
-    ...base,
-    content: {
-        ...base.content,
-        bottom: '-40%',
-        paddingLeft: '30px',
-        paddingRight: '30px',
-        width: '70%',
-    }
-};
-
-export const optionsModalStyle = {
-    ...base,
-    content: {
-        ...base.content,
-        width: '70%',
-    }
-};
-
-export const howToUseModalStyle = {
-    ...base,
-    content: {
-        ...base.content,
-        paddingTop: '5px',
-        width: '70%',
+        ...baseStyle.content,
+        width: 'auto',
+        maxWidth: '80%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, 7.5vh)',
     }
 };

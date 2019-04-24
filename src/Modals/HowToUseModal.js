@@ -1,12 +1,13 @@
-import React, { Component, Fragment } from 'react';
-import { howToUseModalStyle } from "../styles/ModalStyle";
+import React, { Component } from 'react';
+import { baseStyle } from "../styles/ModalStyle";
 import PropTypes from 'prop-types';
 import Modal from "react-modal";
 import { AutomaticBuilderInfo } from './HowToUseContent/AutomaticBuilderInfo';
 import { ManualBuilderInfo } from './HowToUseContent/ManualBuilderInfo';
 import { MiscInfo } from './HowToUseContent/MiscInfo';
-import { OptionsInfo } from './HowToUseContent/OptionsInfo';
+import { SettingsInfo } from './HowToUseContent/SettingsInfo';
 import { ShareInfo } from './HowToUseContent/ShareInfo';
+import { setButtons } from './ModalsComponents/ButtonsModalComponent';
 
 export class HowToUseModal extends Component {
     static propTypes = {
@@ -16,25 +17,12 @@ export class HowToUseModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            infoTabs: ['Builders', 'Share', 'Options', 'Misc'],
+            infoTabs: ['Builders', 'Share List', 'Settings', 'Misc'],
             selectedInfo: 'Builders',
             buildersTabs: ['Automatic Builder', 'Manual Builder'],
             selectedBuilder: 'Automatic Builder',
 
         }
-    }
-
-    // Depth is used to know if there are sub-buttons
-    setButtons = (title, arrayLength, depth = 0) => {
-        return (
-            <button
-                key={title + 'HowToUse' + depth}
-                className={`col-${Math.round(12 / arrayLength)} btn btn-outline-warning mb-2 ${this.state.selectedInfo === title || this.state.selectedBuilder === title ? 'btn-success' : ''}`}
-                onClick={depth === 0 ? () => this.setState({ selectedInfo: title }) : () => this.setState({ selectedBuilder: title })}>
-                {title}
-            </button>
-
-        )
     }
 
     render() {
@@ -46,17 +34,31 @@ export class HowToUseModal extends Component {
                 <Modal
                     isOpen={true}
                     onRequestClose={this.props.handler}
-                    style={howToUseModalStyle}
+                    style={baseStyle}
                 >
-                    <div className="row">
-                        {this.state.infoTabs.map(tab => this.setButtons(tab, infoTabsLength))}
+                    <div className="row mb-1 version-underline pb-2">
+                        <h2 className="col-12 version-underline pb-2 text-center">How to use EFAB?</h2>
+                        {this.state.infoTabs.map(tab => setButtons(
+                            tab,
+                            infoTabsLength,
+                            this.state.selectedInfo,
+                            () => this.setState({ selectedInfo: tab })
+                        ))}
                         {this.state.selectedInfo === 'Builders' ?
-                            (<Fragment>
-                                <br />
-                                {this.state.buildersTabs.map((tab) => this.setButtons(tab, buildersTabsLenth, 1))}
-                            </Fragment>)
+                            this.state.buildersTabs.map((tab) => setButtons(
+                                tab,
+                                buildersTabsLenth,
+                                this.state.selectedBuilder,
+                                () => this.setState({ selectedBuilder: tab })
+                            ))
                             : null}
                     </div>
+                    {this.state.selectedInfo === 'Builders' ?
+                        this.state.selectedBuilder === 'Automatic Builder' ?
+                            AutomaticBuilderInfo : ManualBuilderInfo :
+                        this.state.selectedInfo === 'Share List' ?
+                            ShareInfo : this.state.selectedInfo === 'Settings' ?
+                                SettingsInfo : MiscInfo}
                 </Modal>
             </div>
         )
