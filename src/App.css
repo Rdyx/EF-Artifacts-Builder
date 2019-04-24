@@ -4,7 +4,7 @@
     --table-dark-text: #000;
     --set-name-border-color: #FFF;
     --external-link: rgb(31, 169, 255);
-    --set-checkbox-text-color: rgba(250, 0, 0, 0.5);
+    --set-checkbox-text-color: rgba(250, 180, 50, 0.8);
     --checkbox-bg: rgba(255, 255, 255, 0.2);
     --checkbox-reverted-bg: rgba(255, 255, 255, 0.3);
     --checkbox-hover-bg: rgba(250, 180, 50, 1);
@@ -46,7 +46,6 @@ body {
     height: 100vh;
     width: 100%;
     background-size: cover !important;
-    /*background-image: url('../images/compressed/background-mobile.png');*/
     background-repeat: no-repeat !important;
     background-attachment: scroll !important;
 }

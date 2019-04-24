@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Modal from "react-modal";
 import PropTypes from 'prop-types';
-import { headerModalStyle } from "../styles/ModalStyle";
+import { baseStyle } from "../styles/ModalStyle";
 import reddit from '../img/reddit.svg';
 import paypal from '../img/paypal.svg';
 import github from '../img/github-icon.svg';
@@ -35,7 +35,7 @@ export class HeaderModal extends Component {
                 <Modal
                     isOpen={true}
                     onRequestClose={this.props.handler}
-                    style={headerModalStyle}
+                    style={baseStyle}
                 >
                     <div className="text-center">
                         <ul className="list-inline mb-1 col px-0">
@@ -60,14 +60,14 @@ export class HeaderModal extends Component {
                             to <a className="efd"
                                 href="https://www.endlessfrontierdata.com/" target="_blank"
                                 rel="noopener noreferrer">Endless Frontier Data</a> for
-                            their data about arts and their artifacts images.
+                        their data about arts and their artifacts images.
                         </p>
                         <p className="col-12">
-                            Feel free to like EFAB 
+                            Feel free to like EFAB
                             on <a className="efd"
                                 href="https://www.facebook.com/EFABuilder/"
                                 target="_blank"
-                                rel="noopener noreferrer">Facebook</a> to 
+                                rel="noopener noreferrer">Facebook</a> to
                                 stay updated about last releases and to contact me.</p>
                         <p className="col-12">
                             You can also give feedback on <a className="efd"

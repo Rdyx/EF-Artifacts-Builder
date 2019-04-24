@@ -330,7 +330,7 @@ export default class App extends Component {
             })
     };
 
-    showIfMatch = (set, optimised = true) => {
+    showIfMatch = (set) => {
         const techName = set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase());
         const setType = set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) || this.state.searchBySetType === 'All';
         const bonus = this.findBonus(set, this.state.filterByBonusType) || this.state.filterByBonusType === 'All';
@@ -670,7 +670,7 @@ export default class App extends Component {
                         onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
                     />
                     <label htmlFor={setLevel + artLevel + i}
-                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col'} mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col'} mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
                         {setLevel} {artLevel}*
                     </label>
                     {newLine}
@@ -681,48 +681,38 @@ export default class App extends Component {
         return setLevelBoxes
     };
 
+    artsPerSetButtons = (i, filterBy) => {
+        return (
+            <Fragment key={i + 'total arts'}>
+                <input
+                    id={i + 'total arts'}
+                    type="radio"
+                    name={'totalArtsPerSet'}
+                    value={i}
+                    defaultChecked={i.toString() === this.state.filterByTotalArtsNumber}
+                    onClick={(e) => this.setState({ filterByTotalArtsNumber: e.target.value })}
+                />
+                <label htmlFor={i + 'total arts'}
+                    className={`col mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                    {i}
+                </label>
+            </Fragment>
+        )
+    };
+
     getArtsPerSet = () => {
         const boxes = [];
 
         for (let i = 1; i <= this.state.maxArtsPerSet; i++) {
-            boxes.push(
-                <Fragment key={i + 'total arts'}>
-                    <input
-                        id={i + 'total arts'}
-                        type="radio"
-                        name={'totalArtsPerSet'}
-                        value={i}
-                        defaultChecked={i.toString() === this.state.filterByTotalArtsNumber}
-                        onClick={(e) => this.setState({ filterByTotalArtsNumber: e.target.value })}
-                    />
-                    <label htmlFor={i + 'total arts'}
-                        className={`col mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
-                        {i}
-                    </label>
-                </Fragment>
-            )
+            boxes.push(this.artsPerSetButtons(i))
         }
 
         // All button
-        boxes.push(
-            <Fragment key={'All total arts'}>
-                <input
-                    id={'All total arts'}
-                    type="radio"
-                    name={'totalArtsPerSet'}
-                    value={'All'}
-                    defaultChecked={'All' === this.state.filterByTotalArtsNumber}
-                    onClick={(e) => this.setState({ filterByTotalArtsNumber: e.target.value })}
-                />
-                <label htmlFor={'All total arts'}
-                    className={`col mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
-                    All
-                        </label>
-            </Fragment>
-        );
+        boxes.push(this.artsPerSetButtons('All'));
 
         return boxes;
-    }
+    };
+
     enhancementMode = (type) => {
         return (
             <Fragment key={type + 'enhance'}>
@@ -825,7 +815,7 @@ export default class App extends Component {
                 return elvl - 2;
             }
         } else if (elvl === 3) {
-            if (artLevel === ('7*' || '8*')) {
+            if (artLevel === '7*' || artLevel === '8*') {
                 return elvl
             } else {
                 return elvl - 1;

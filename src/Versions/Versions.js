@@ -1,5 +1,18 @@
 export const versions = [
     {
+        number: '1.10.0',
+        date: '24 April 2019',
+        title: "Added documentation client side, revamped and normalized Modals (styles, content), added patch node modal after update.",
+        content: {
+            point1: "As requested more and more, a freshly new documentation has been added under the \"Help\" button. Reading it should help you to understand many things about EFAB! ;)",
+            point2: "Revamped and normalized Modals. For easier usage and more aesthetic design.",
+            point4: "Buttons available into documentation to help you find what you want faster.",
+            point3: "Options button has been renamed to Settings. Settings has been separated into tabs, simply click on a button to show which settings are available in it.",
+            point5: "Added a Path Note modal that will appear after each update. Closing it will hide it untill next update. You will now be aware of changes without even searching for it! :P",
+            point6: "Bug Fixes.",
+        },
+    },
+    {
         number: '1.9.0',
         date: '21 April 2019',
         title: "New Filter, Mobile Landscape UI fixes, new Reddit link, Modals colors",
