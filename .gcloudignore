@@ -1,0 +1,11 @@
+node_modules/
+public/
+src/
+.git
+.gitignore
+README.md
+cloudbuild.yaml
+package-lock.json
+package.json
+yarn.lock
+.env.development
