@@ -1,5 +1,15 @@
 export const versions = [
     {
+        number: '1.10.1',
+        date: '25 April 2019',
+        title: "Changed old domain main page, fixed regex bug in search bar, changed splash screen bg color.",
+        content: {
+            point1: "Old URL index has been updated to redirect here automatically (If you have already visited it before, cache and service worker should block it though...).",
+            point2: "Fixed bug while using special characters in search bar.",
+            point3: "Splash screen color (loading screen in app mode on Android) background has been changed to EFAB theme colors."
+        },
+    },
+    {
         number: '1.10.0',
         date: '24 April 2019',
         title: "Added documentation client side, revamped and normalized Modals (styles, content), added patch node modal after update.",

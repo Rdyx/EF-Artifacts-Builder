@@ -969,7 +969,7 @@ export default class App extends Component {
                 <NavBar
                     swapManualToAutomaticBuilder={() => this.setState({ optimiser: !this.state.optimiser })}
                     triggerScreenshot={this.triggerScreenshot}
-                    searchBySetName={(e) => this.setState({ searchBySetName: e.target.value.replace(/[°"§%()[]{}=\\?´`'#<>|,;.:+_-]+/g, '') })}
+                    searchBySetName={(e) => this.setState({ searchBySetName: e.target.value.replace(/[^a-zA-Z0-9 ]/g, '') })}
                     setFiltering={this.state.searchBySetType !== 'All' || this.state.filterByBonusType !== 'All'}
                     setsTypes={this.state.setTypes.map(this.getSetsTypes)}
                     bonusTypes={this.state.bonusTypes.map(this.getBonusTypes)}

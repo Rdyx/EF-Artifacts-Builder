@@ -11,12 +11,12 @@ handlers:
   http_headers:
     Access-Control-Allow-Origin: '*'
 skip_files:
-- node_modules
-- public
-- src
-- .gitignore
-- README.md
-- cloudbuild.yaml
-- package-lock.json
-- package.json
-- yarn.lock
+- ^node_modules$
+- ^public$
+- ^src$
+- ^.gitignore
+- ^README.md
+- ^cloudbuild.yaml
+- ^package-lock.json
+- ^package.json
+- ^yarn.lock
