@@ -1,7 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import './App.css';
-import './styles/randomBg';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import * as html2canvas from 'html2canvas';
 import Set from './component/Set';
 import { ScreenshotModal } from "./Modals/ScreenshotModal";
@@ -59,6 +56,7 @@ export default class App extends Component {
         if (!localStorage.getItem('enhanceLevel')) {
             localStorage.setItem('enhanceLevel', 3);
         }
+
         const enhanceLevel = parseInt(localStorage.getItem('enhanceLevel'), 10);
 
         this.setState({ loading: true, enhanceLevel: enhanceLevel });

@@ -7,7 +7,8 @@ import { SettingsModal } from "../Modals/SettingsModal";
 import { HowToUseModal } from '../Modals/HowToUseModal';
 
 // Used to show modal when new version has been released, localstorage value is set in service worker
-const showLastPatchNote = JSON.parse(localStorage.getItem('showLastPatchNote'));
+// If never have been set, set default to true, then use localStorage value
+const showLastPatchNote = localStorage.getItem('showLastPatchNote') === null ? true : JSON.parse(localStorage.getItem('showLastPatchNote'));
 
 export class NavBar extends Component {
     static propTypes = {
@@ -40,6 +41,7 @@ export class NavBar extends Component {
     };
 
     componentWillMount = () => {
+        localStorage.setItem('showLastPatchNote', showLastPatchNote)
         this.setState({ showLastPatchNote: showLastPatchNote })
     }
 
