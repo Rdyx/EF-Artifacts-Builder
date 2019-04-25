@@ -43,7 +43,7 @@ export class NavBar extends Component {
     componentWillMount = () => {
         localStorage.setItem('showLastPatchNote', showLastPatchNote)
         this.setState({ showLastPatchNote: showLastPatchNote })
-    }
+    };
 
     closeInfoModal = () => {
         this.setState({ showInfoModal: false })
@@ -64,13 +64,39 @@ export class NavBar extends Component {
 
     closeHowToUse = () => {
         this.setState({ howToUse: false })
-    }
+    };
+
+    testFBApp = () => {
+        var now = new Date().valueOf();
+        setTimeout(function () {
+            if (new Date().valueOf() - now > 1000) return;
+            window.location = "https://www.facebook.com/EFABuilder/";
+        }, 950);
+        window.location = "fb://page/270195490537651";
+    };
 
     render() {
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent
+        const isMobile = navigator.maxTouchPoints > 0;
+        const FBLink = 'https://www.facebook.com/EFABuilder/';
+        const fbButtonStyle = { zIndex: 2, width: '63px', height: '40px', border: 'none', overflow: 'hidden', display: 'block' };
+
+        const FBIFrame = (
+            <iframe
+                src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FEFABuilder&layout=box_count&action=like&colorscheme=dark&size=small&show_faces=false&share=false&appId"
+                style={{ zIndex: 0, width: '63px', height: '40px', border: 'none', overflow: 'hidden' }} scrolling="no"
+                frameBorder="0" title="EFAB's Facebook Page"
+            />
+        );
+
         return (
             <div>
                 {this.state.showInfoModal ? (
-                    <HeaderModal handler={this.closeInfoModal} />
+                    <HeaderModal
+                        handler={this.closeInfoModal}
+                        isMobile={isMobile}
+                        FBLink={FBLink}
+                        testFBApp={() => this.testFBApp()} />
                 ) : null}
                 {this.state.versionModal ? (
                     <VersionModal handler={this.closeVersionModal} versions={versions} />
@@ -102,13 +128,22 @@ export class NavBar extends Component {
                             onClick={() => this.setState({ versionModal: true })}>{versions[0].number}</button>
                     </div>
                     <div className="col-12 d-lg-none" />
-                    {this.props.connected ? (
-                        <iframe
-                            src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FEFABuilder&layout=box_count&action=like&colorscheme=dark&size=small&show_faces=false&share=false&appId"
-                            style={{ width: '63px', height: '40px', border: 'none', overflow: 'hidden' }} scrolling="no"
-                            frameBorder="0" title="EFAB's Facebook Page"
-                            className="mb-2 my-sm-0 ml-1" />
-                    ) : null}
+                    {this.props.connected ? isMobile ? (
+                        <div className="mb-2 my-sm-0 ml-1 fb-buttons"
+                            style={fbButtonStyle}
+                            onClick={() => this.testFBApp()}>
+                            {FBIFrame}
+                        </div>
+                    ) : (
+                            <a className="mb-2 my-sm-0 ml-1 fb-buttons"
+                                style={fbButtonStyle}
+                                scrolling="no"
+                                href={FBLink}
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                {FBIFrame}
+                            </a>
+                        ) : null}
                     <a href="https://www.paypal.me/rdyx" target="_blank" rel="noopener noreferrer">
                         <button
                             className="btn btn-outline-warning mb-2 my-sm-0 ml-1 p-2"

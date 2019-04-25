@@ -13,19 +13,29 @@ Modal.setAppElement('#root');
 export class HeaderModal extends Component {
     static propTypes = {
         handler: PropTypes.func.isRequired,
+        isMobile: PropTypes.bool.isRequired,
+        FBLink: PropTypes.string.isRequired,
+        testFBApp: PropTypes.func.isRequired,
     };
 
     logoUrl = (url, logo, alt) => {
-        return (
+        return this.props.isMobile ? (
             <li className={`list-inline-item ${alt !== 'Paypal' ? 'mr-2' : ''}`}>
-                <a className="efd"
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer">
+                <div className="efd"
+                    onClick={this.props.testFBApp}>
                     <img className="logo align-bottom" src={logo} alt={alt} />
-                </a>
+                </div>
             </li>
-        );
+        ) : (
+                <li className={`list-inline-item ${alt !== 'Paypal' ? 'mr-2' : ''}`}>
+                    <a className="efd"
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        <img className="logo align-bottom" src={logo} alt={alt} />
+                    </a>
+                </li>
+            );
     };
 
     render() {
@@ -45,7 +55,7 @@ export class HeaderModal extends Component {
                                     rel="noopener noreferrer">EFD</a>
                             </li>
                             {this.logoUrl(redditLink, reddit, 'Reddit')}
-                            {this.logoUrl('https://www.facebook.com/EFABuilder/', facebook, 'Facebook')}
+                            {this.logoUrl(this.props.FBLink, facebook, 'Facebook')}
                             {this.logoUrl('https://github.com/Rdyx/EF-Artifacts-Builder', github, 'Github')}
                             {this.logoUrl('https://www.paypal.me/rdyx', paypal, 'Paypal')}
                         </ul>
@@ -60,7 +70,7 @@ export class HeaderModal extends Component {
                             to <a className="efd"
                                 href="https://www.endlessfrontierdata.com/" target="_blank"
                                 rel="noopener noreferrer">Endless Frontier Data</a> for
-                        their data about arts and their artifacts images.
+their data about arts and their artifacts images.
                         </p>
                         <p className="col-12">
                             Feel free to like EFAB

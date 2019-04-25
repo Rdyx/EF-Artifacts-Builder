@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export class LoadingScreen extends Component {
@@ -39,7 +39,7 @@ export class LoadingScreen extends Component {
                     <h1 className="col-12 mt-5">Loading...</h1>
                     {this.props.offline !== '' ? (
                         <div className="col mt-5">
-                            this.props.offline
+                            {this.props.offline}
                         </div>) : null}
                 </div>
             </div>

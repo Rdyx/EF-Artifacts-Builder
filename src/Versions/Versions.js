@@ -1,5 +1,14 @@
 export const versions = [
     {
+        number: '1.10.2',
+        date: '26 April 2019',
+        title: "Modified FB Button behavior, fixed message when offline.",
+        content: {
+            point1: "Facebook button will now redirect directly the the FB page on the app. Thumbs up for it ! (Safari not supporting it tho...).",
+            point2: "Fixed error message when first time connect and can't get the sets data."
+        },
+    },
+    {
         number: '1.10.1',
         date: '25 April 2019',
         title: "Changed old domain main page, fixed regex bug in search bar, changed splash screen bg color.",

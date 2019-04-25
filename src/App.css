@@ -368,6 +368,10 @@ table.personnal-table {
     border-radius: 100px !important;
 }
 
+iframe {
+    pointer-events: none;
+}
+
 /*********************
 Keeping this code for checkmark on inputs in case re-enabling later
 
