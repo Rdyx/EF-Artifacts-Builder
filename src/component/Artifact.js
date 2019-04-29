@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import PropTypes from "prop-types";
-import {ArtifactModal} from "../Modals/ArtifactModal";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { ArtifactModal } from '../Modals/ArtifactModal';
 
 
 export default class Artifact extends Component {
@@ -17,7 +17,7 @@ export default class Artifact extends Component {
     }
 
     closeArtStats = () => {
-        this.setState({showArtStats: false})
+        this.setState({ showArtStats: false })
     };
 
     render() {
@@ -30,7 +30,7 @@ export default class Artifact extends Component {
                     />
                 ) : null}
                 <img
-                    onClick={() => this.setState({showArtStats: true})}
+                    onClick={() => this.setState({ showArtStats: true })}
                     className="art-image"
                     src={this.props.artifact.artifact_img}
                     alt={this.props.artifact.artifact_name}

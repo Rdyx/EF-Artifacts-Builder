@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { ArtsBox } from "./ArtsBox";
-import arrow from "../img/arrow.svg";
+import { ArtsBox } from './ArtsBox';
+import arrow from '../img/arrow.svg';
 
 export class StatsSummaryAndArtsBox extends Component {
     static propTypes = {

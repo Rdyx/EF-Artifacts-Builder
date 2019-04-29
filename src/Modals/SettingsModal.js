@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import Modal from "react-modal";
-import { baseStyle } from "../styles/ModalStyle";
-import { setButtons } from "./ModalsComponents/ButtonsModalComponent";
+import Modal from 'react-modal';
+import { baseStyle } from '../styles/ModalStyle';
+import { setButtons } from './ModalsComponents/ButtonsModalComponent';
 
 export class SettingsModal extends Component {
     static propTypes = {

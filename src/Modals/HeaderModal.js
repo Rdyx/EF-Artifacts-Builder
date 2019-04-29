@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Modal from "react-modal";
+import Modal from 'react-modal';
 import PropTypes from 'prop-types';
-import { baseStyle } from "../styles/ModalStyle";
+import { baseStyle } from '../styles/ModalStyle';
 import reddit from '../img/reddit.svg';
 import paypal from '../img/paypal.svg';
 import github from '../img/github-icon.svg';

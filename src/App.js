@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import * as html2canvas from 'html2canvas';
 import Set from './component/Set';
-import { ScreenshotModal } from "./Modals/ScreenshotModal";
-import { NavBar } from "./component/NavBar";
-import { StatsSummaryAndArtsBox } from "./component/StatsSummaryAndArtsBox";
-import { LoadingScreen } from "./component/LoadingScreen";
-import { calculateGSFromEnhancement, calculateMedalsFromEnhancement, knapsack } from "./optimiser/Optimiser";
+import { ScreenshotModal } from './Modals/ScreenshotModal';
+import { NavBar } from './component/NavBar';
+import { StatsSummaryAndArtsBox } from './component/StatsSummaryAndArtsBox';
+import { LoadingScreen } from './component/LoadingScreen';
+import { calculateGSFromEnhancement, calculateMedalsFromEnhancement, knapsack } from './optimiser/Optimiser';
 
 
 export default class App extends Component {
@@ -25,7 +25,7 @@ export default class App extends Component {
             enhancementModes: ['Manual', 'All'],
             enhancementMode: 'All',
             enhancementLevels: [0, 1, 2, 3, 4],
-            enhanceLevel: 3,
+            enhanceLevel: 4,
             maxArtsPerSet: 6,
             set: null,
             artifact: null,
@@ -54,7 +54,7 @@ export default class App extends Component {
 
     componentWillMount() {
         if (!localStorage.getItem('enhanceLevel')) {
-            localStorage.setItem('enhanceLevel', 3);
+            localStorage.setItem('enhanceLevel', 4);
         }
 
         const enhanceLevel = parseInt(localStorage.getItem('enhanceLevel'), 10);

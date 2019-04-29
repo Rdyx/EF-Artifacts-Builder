@@ -1,8 +1,8 @@
-import React, {Component, Fragment} from 'react';
-import {customStyles} from "../styles/ModalStyle";
+import React, { Component, Fragment } from 'react';
+import { customStyles } from '../styles/ModalStyle';
 import PropTypes from 'prop-types';
-import Modal from "react-modal";
-import {ArtifactModal} from "./ArtifactModal";
+import Modal from 'react-modal';
+import { ArtifactModal } from './ArtifactModal';
 
 export class SetModal extends Component {
     static propTypes = {
@@ -32,7 +32,7 @@ export class SetModal extends Component {
     }
 
     closeArtStats = () => {
-        this.setState({showArtStats: false})
+        this.setState({ showArtStats: false })
     };
 
     showArts = (art) => {
@@ -46,7 +46,7 @@ export class SetModal extends Component {
                         />
                     ) : null}
                     <img
-                        onClick={() => this.setState({showArtStats: true})}
+                        onClick={() => this.setState({ showArtStats: true })}
                         className="art-image mt-2"
                         src={art.artifact_img}
                         alt={art.artifact_name}
@@ -107,23 +107,23 @@ export class SetModal extends Component {
             const bonusStep =
                 // Create <th> only if index is 0 or ('even' and setArtsNumber is 3)
                 index === 0 || (index % 2 === 0 && setArtsNumber !== 3) ? (
-                        // Defining rowSpan size depending on setArtsNumber and its content
-                        // If set is 3 parts set, 3/3 is shown
-                        // If set has more than 3 parts, it means it got bonus every 2 arts steps
-                        // So we create a <th> every 2 lines to show which step is required for the bonus (i.e 2/4)
-                        // For 'odd' sets (5 parts) we check the index+2 value to fix the case where we got 6/5 (last bonus step)
-                        <th
-                            rowSpan={setArtsNumber === 3 && index === 0 ? 3 : 2}
-                            className="align-middle table-light"
-                        >
-                            {
-                                setArtsNumber === 3 && index === 0 ? setArtsNumber + '/' + setArtsNumber :
-                                    index % 2 === 0 ?
-                                        index + 2 > setArtsNumber ?
-                                            setArtsNumber + '/' + setArtsNumber : index + 2 + '/' + setArtsNumber : null
-                            }
-                        </th>
-                    )
+                    // Defining rowSpan size depending on setArtsNumber and its content
+                    // If set is 3 parts set, 3/3 is shown
+                    // If set has more than 3 parts, it means it got bonus every 2 arts steps
+                    // So we create a <th> every 2 lines to show which step is required for the bonus (i.e 2/4)
+                    // For 'odd' sets (5 parts) we check the index+2 value to fix the case where we got 6/5 (last bonus step)
+                    <th
+                        rowSpan={setArtsNumber === 3 && index === 0 ? 3 : 2}
+                        className="align-middle table-light"
+                    >
+                        {
+                            setArtsNumber === 3 && index === 0 ? setArtsNumber + '/' + setArtsNumber :
+                                index % 2 === 0 ?
+                                    index + 2 > setArtsNumber ?
+                                        setArtsNumber + '/' + setArtsNumber : index + 2 + '/' + setArtsNumber : null
+                        }
+                    </th>
+                )
                     : null;
 
             return (
@@ -133,14 +133,14 @@ export class SetModal extends Component {
                         {this.setDefaultValue(bonus)}
                     </td>
                     {bonuses.map((bonusArray, indexArray) => {
-                            return (
-                                <td key={bonusArray}
-                                    className={`${rowColor} align-middle bolded`}>
-                                    {indexArray !== 0 ?
-                                        this.setDefaultValue(bonusArray[index][0]) : this.setDefaultValue(bonusArray[index][1])}
-                                </td>
-                            )
-                        }
+                        return (
+                            <td key={bonusArray}
+                                className={`${rowColor} align-middle bolded`}>
+                                {indexArray !== 0 ?
+                                    this.setDefaultValue(bonusArray[index][0]) : this.setDefaultValue(bonusArray[index][1])}
+                            </td>
+                        )
+                    }
                     )}
                     {fillArray(rowColor)}
                 </tr>
@@ -152,28 +152,28 @@ export class SetModal extends Component {
         return (
             <Fragment>
 
-            <table className="table table-striped table-bordered table-dark black-text mt-2">
-                <tbody>
-                <tr className="table-light align-middle">
-                    <th style={{width: '10%'}}/>
-                    <th style={{width: '50%'}}>Bonus</th>
-                    <th style={{width: '10%'}}>T0</th>
-                    <th style={{width: '10%'}}>T1</th>
-                    <th style={{width: '10%'}}>T2</th>
-                    <th style={{width: '10%'}}>T3</th>
-                </tr>
-                {this.setRows(setArtsNumber, bonusValues)}
-                </tbody>
-            </table>
+                <table className="table table-striped table-bordered table-dark black-text mt-2">
+                    <tbody>
+                        <tr className="table-light align-middle">
+                            <th style={{ width: '10%' }} />
+                            <th style={{ width: '50%' }}>Bonus</th>
+                            <th style={{ width: '10%' }}>T0</th>
+                            <th style={{ width: '10%' }}>T1</th>
+                            <th style={{ width: '10%' }}>T2</th>
+                            <th style={{ width: '10%' }}>T3</th>
+                        </tr>
+                        {this.setRows(setArtsNumber, bonusValues)}
+                    </tbody>
+                </table>
                 <table className="table table-bordered table-dark black-text">
                     <tbody>
-                    <tr>
-                        <th className="table-success">GS/Medals</th>
-                        <th className="table-danger">Attack</th>
-                        <th className="table-warning">Economy</th>
-                        <th className="table-secondary">Defense</th>
-                        <th className="table-info">Others</th>
-                    </tr>
+                        <tr>
+                            <th className="table-success">GS/Medals</th>
+                            <th className="table-danger">Attack</th>
+                            <th className="table-warning">Economy</th>
+                            <th className="table-secondary">Defense</th>
+                            <th className="table-info">Others</th>
+                        </tr>
                     </tbody>
                 </table>
             </Fragment>

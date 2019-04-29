@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { baseStyle } from "../styles/ModalStyle";
+import { baseStyle } from '../styles/ModalStyle';
 import PropTypes from 'prop-types';
-import Modal from "react-modal";
+import Modal from 'react-modal';
 import { AutomaticBuilderInfo } from './HowToUseContent/AutomaticBuilderInfo';
 import { ManualBuilderInfo } from './HowToUseContent/ManualBuilderInfo';
 import { MiscInfo } from './HowToUseContent/MiscInfo';

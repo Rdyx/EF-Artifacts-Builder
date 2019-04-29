@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {customStyles} from "../styles/ModalStyle";
+import React, { Component } from 'react';
+import { customStyles } from '../styles/ModalStyle';
 import PropTypes from 'prop-types';
-import Modal from "react-modal";
+import Modal from 'react-modal';
 
 export class ScreenshotModal extends Component {
     static propTypes = {
@@ -21,7 +21,7 @@ export class ScreenshotModal extends Component {
                     <img
                         className="screenshot"
                         src={this.props.canvas ? this.props.canvas : this.props.canvasMobile}
-                        alt="Screenshot"/>
+                        alt="Screenshot" />
                 </Modal>
             </div>
         )

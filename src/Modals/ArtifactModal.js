@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {customStyles} from "../styles/ModalStyle";
+import React, { Component } from 'react';
+import { customStyles } from '../styles/ModalStyle';
 import PropTypes from 'prop-types';
-import Modal from "react-modal";
+import Modal from 'react-modal';
 
 export class ArtifactModal extends Component {
     static propTypes = {
@@ -23,8 +23,8 @@ export class ArtifactModal extends Component {
                                 <div className="text-center">
                                     <h1 className="text-center">{this.props.artifact.artifact_name}</h1>
                                     <img className="text-center"
-                                         src={this.props.artifact.artifact_img}
-                                         alt={this.props.artifact.artifact_name}/>
+                                        src={this.props.artifact.artifact_img}
+                                        alt={this.props.artifact.artifact_name} />
                                 </div>
                                 <p className="col-12">Artifact n° : {this.props.artifact.artifact_number}</p>
                                 <p className="col-12">Bonus 1

@@ -1,7 +1,7 @@
-import React, {Fragment, Component} from 'react';
+import React, { Fragment, Component } from 'react';
 import Artifact from './Artifact';
 import PropTypes from 'prop-types';
-import {SetModal} from "../Modals/SetModal";
+import { SetModal } from '../Modals/SetModal';
 
 export default class Set extends Component {
     static propTypes = {
@@ -35,14 +35,14 @@ export default class Set extends Component {
         if (art) {
             return (
                 <div key={art.artifact_number} className="col-4">
-                    <Artifact artifact={art}/>
+                    <Artifact artifact={art} />
                 </div>
             );
         }
     };
 
     closeSetStats = () => {
-        this.setState({showSetStats: false})
+        this.setState({ showSetStats: false })
     };
 
     render() {
@@ -56,7 +56,7 @@ export default class Set extends Component {
                     />
                 ) : null}
                 <div
-                    onClick={() => this.setState({showSetStats: true})}
+                    onClick={() => this.setState({ showSetStats: true })}
                     className={`text-center bolded bordered white-text mt-2 set-title`}>
                     {this.props.set.set_tech_name.replace(regex, '')}
                 </div>

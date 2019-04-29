@@ -9,3 +9,4 @@ package-lock.json
 package.json
 yarn.lock
 .env.development
+cors-data.json
