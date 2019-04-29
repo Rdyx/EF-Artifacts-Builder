@@ -16,4 +16,6 @@ npm start
 
 It's no more complicated ! :)
 
-If you want to use your personnal database don't forget to change fetch URLs in src/APP.js ;)
+If you want to use your personnal database don't forget to change fetch URLs in src/App.js ;)
+
+P.s: the data is located in the data branch!
