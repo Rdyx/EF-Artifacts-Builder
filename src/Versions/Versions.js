@@ -4,7 +4,7 @@ export const versions = [
         date: '29 April 2019',
         title: "Changed data storage system, auto-refresh after update.",
         content: {
-            point1: "The data storage has been changed, app won't be built with data directly in form now. Data is available directly on github (data branch) or in gcloud bucket storage (https://storage.googleapis.com/efab-data-storage/data.json), please notice you won't be able to directly fetch the bucket (in case you're dev').",
+            point1: "The data storage has been changed, app won't be built with data directly anymore. Data is available directly on github (data branch) or in gcloud bucket storage (https://storage.googleapis.com/efab-data-storage/data.json), please notice you won't be able to directly fetch the URL.",
             point2: "After a new version is out, app should automatically refresh."
         },
     },

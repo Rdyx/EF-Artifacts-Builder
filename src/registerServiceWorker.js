@@ -67,13 +67,21 @@ function registerValidSW(swUrl) {
               // available; please refresh." message in your web app.
               console.log('New content is available; please refresh.');
               localStorage.setItem('showLastPatchNote', true)
-              return installingWorker.postMessage('skipWaiting');
+              installingWorker.postMessage('skipWaiting');
+              // reload once when the new Service Worker starts activating
+              var refreshing;
+              navigator.serviceWorker.addEventListener('controllerchange',
+                function () {
+                  if (refreshing) return;
+                  refreshing = true;
+                  window.location.reload();
+                }
+              );
             } else {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
               console.log('Content is cached for offline use.');
-              return localStorage.setItem('showLastPatchNote', true)
             }
           }
         };
@@ -82,16 +90,6 @@ function registerValidSW(swUrl) {
     .catch(error => {
       console.error('Error during service worker registration:', error);
     });
-
-  // reload once when the new Service Worker starts activating
-  var refreshing;
-  navigator.serviceWorker.addEventListener('controllerchange',
-    function () {
-      if (refreshing) return;
-      refreshing = true;
-      window.location.reload();
-    }
-  );
 }
 
 function checkValidServiceWorker(swUrl) {
