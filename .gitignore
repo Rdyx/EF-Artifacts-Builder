@@ -3,4 +3,4 @@
 # Ignoring all but data.json file
 *
 !*/
-!data.json
+!public/data/data.json
