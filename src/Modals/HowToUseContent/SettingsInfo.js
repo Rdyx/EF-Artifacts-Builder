@@ -1,12 +1,8 @@
 import React from 'react';
 
-export const SettingsInfo = (
+export const FiltersInfo = (
     <div className="row">
-        <h2 className="col-12 version-underline pb-2 text-center">Settings Button</h2>
-        <ul>
-            <li>This is the place where you can filter sets, set the enhancement level for all sets and more...</li>
-        </ul>
-        <h4 className="col-12 pb-2"><u>Filters</u></h4>
+        <h2 className="col-12 version-underline pb-2 text-center">Filters</h2>
         <ul>
             <li>You will find 3 filters: Category, Bonus Type and Arts per Set. <ul>
                 <li>Selecting a Category means only sets in this category will be shown in the list.</li>
@@ -16,7 +12,12 @@ export const SettingsInfo = (
             </ul>
             </li>
         </ul>
-        <h4 className="col-12 pb-2"><u>Enhancement</u></h4>
+    </div>
+);
+
+export const EnhancementsInfo = (
+    <div className="row">
+        <h2 className="col-12 version-underline pb-2 text-center">Enhancement</h2>
         <ul>
             <li>There are 2 mods to apply enhancements:
                 <ul>
@@ -27,11 +28,48 @@ export const SettingsInfo = (
             </li>
             <li>Please notice that if you select +4 in "All" mode, every set will adjust in accordance to its max enhancement possible.</li>
         </ul>
-        <h4 className="col-12 pb-2"><u>Sets Levels</u></h4>
+    </div>
+);
+
+export const SetsLevelsInfo = (
+    <div className="row">
+        <h2 className="col-12 version-underline pb-2 text-center">Sets Levels</h2>
         <ul>
             <li>This button will appear only in auto-buider mode.</li>
             <li>It will let you chose with which sets levels the auto-builder should work.</li>
             <li>Please notice that you can't change each set level manually.</li>
         </ul>
-    </div>
+    </div >
+);
+
+export const SortingInfo = (
+    <div className="row">
+        <h2 className="col-12 version-underline pb-2 text-center">Sorting</h2>
+        <ul>
+            <li>You can sort sets by certain values:
+                <ul>
+                    <li>Arts per Set: Number of art per set.</li>
+                    <li>Alphabetical: Alphabetical order based on sets' technical names.</li>
+                    <li>GS Amount: Game Speed Amount.</li>
+                    <li>Medals Amount: Bonus Medals Amount.</li>
+                </ul>
+            </li>
+            <li>You can sort in two orders:
+                <ul>
+                    <li>ASC: Ascendant order (A -> Z, 0 -> +n...).</li>
+                    <li>DESC: Descendant order (Z -> A, +n -> 0...).</li>
+                </ul>
+            </li>
+            <li>You can cumulate multiple orders.
+                <ul>
+                    <li>I.E: Clicking on <b>GS Amount DESC</b> then on <b>Medals Amount DESC</b> will sort sets firstly by their amount of GS and then by their medals in DESC order.
+                    <ul>
+                            <li>50% GS / 1000% Medals -> 50% GS -> 500% Medals -> 30% GS / 1000% Medals...</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>To reset the order, simply click on <b>Default</b>.</li>
+        </ul>
+    </div >
 );

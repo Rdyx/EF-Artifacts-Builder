@@ -14,12 +14,13 @@ export class SettingsModal extends Component {
         enhancementMode: PropTypes.array.isRequired,
         enhancementLevels: PropTypes.array.isRequired,
         totalArtsPerSet: PropTypes.array.isRequired,
+        setsSorting: PropTypes.array.isRequired,
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            tabs: ['Filters', 'Enhancements', 'Set Levels'],
+            tabs: ['Filters', 'Enhances', 'Sets Levels', 'Sorting'],
             selectedTab: 'Filters'
         }
     }
@@ -60,7 +61,7 @@ export class SettingsModal extends Component {
                                     </div>
                                 </div>
                             </Fragment>
-                        ) : this.state.selectedTab === 'Enhancements' ? (
+                        ) : this.state.selectedTab === 'Enhances' ? (
                             <div className="col-12 col-sm-6">
                                 <h3 className="mt-2">Sets Enhancement</h3>
                                 <div className="row mx-auto">
@@ -70,12 +71,18 @@ export class SettingsModal extends Component {
                                     {this.props.enhancementLevels}
                                 </div>
                             </div>
+                        ) : this.state.selectedTab === 'Sets Levels' ? (
+                            <div className="col-12 col-sm-6">
+                                <h3 className="mt-2">Sets Levels</h3>
+                                {this.props.setsLevels}
+                            </div>
                         ) : (
-                                    <div className="col-12 col-sm-6">
-                                        <h3 className="mt-2">Sets Levels</h3>
-                                        {this.props.setsLevels}
-                                    </div>
-                                )}
+                                        <div className="col-12 col-sm-6">
+                                            <h3 className="mt-2">Sets Sorting</h3>
+                                            {this.props.setsSorting}
+                                        </div>
+                                    )
+                        }
                     </div>
                 </Modal>
             </div >

@@ -27,6 +27,7 @@ export class NavBar extends Component {
         enhancementLevels: PropTypes.array.isRequired,
         connected: PropTypes.bool.isRequired,
         totalArtsPerSet: PropTypes.array.isRequired,
+        setsSorting: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -114,6 +115,7 @@ export class NavBar extends Component {
                         enhancementMode={this.props.enhancementMode}
                         enhancementLevels={this.props.enhancementLevels}
                         totalArtsPerSet={this.props.totalArtsPerSet}
+                        setsSorting={this.props.setsSorting}
                     />
                 ) : null}
                 {this.state.howToUse ? (

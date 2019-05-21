@@ -1,5 +1,16 @@
 export const versions = [
     {
+        number: '1.11.0',
+        date: '21 May 2019',
+        title: "Added sets sorting systems, reworked Settings tab under Help section.",
+        content: {
+            point1: "You can now sorts sets by certain values in the Settings. Available orders are: Number of arts per sets, Alphabetical, GS Amount & Medals amount. More informations about it in the Help section! ;)",
+            point2: "Reworked Settings tab to be less messy and more relevant.",
+            point3: "Added Raid 5 Set (Ancient Frost Civilization raid).",
+            point4: "Based on user feedback, default enhancement mode will now be manual. Should make EFAB easier to use for newcomers! :)"
+        },
+    },
+    {
         number: '1.10.4',
         date: '29 April 2019',
         title: "Changed data storage system, auto-refresh after update.",

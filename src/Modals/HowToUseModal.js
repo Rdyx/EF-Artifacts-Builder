@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import { baseStyle } from '../styles/ModalStyle';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
-import { AutomaticBuilderInfo } from './HowToUseContent/AutomaticBuilderInfo';
-import { ManualBuilderInfo } from './HowToUseContent/ManualBuilderInfo';
+import { AutomaticBuilderInfo, ManualBuilderInfo } from './HowToUseContent/BuildersInfo';
 import { MiscInfo } from './HowToUseContent/MiscInfo';
-import { SettingsInfo } from './HowToUseContent/SettingsInfo';
+import { FiltersInfo, EnhancementsInfo, SetsLevelsInfo, SortingInfo } from './HowToUseContent/SettingsInfo';
 import { ShareInfo } from './HowToUseContent/ShareInfo';
 import { setButtons } from './ModalsComponents/ButtonsModalComponent';
 
@@ -21,13 +20,15 @@ export class HowToUseModal extends Component {
             selectedInfo: 'Builders',
             buildersTabs: ['Automatic Builder', 'Manual Builder'],
             selectedBuilder: 'Automatic Builder',
-
+            settingsTabs: ['Filters', 'Enhancements', 'Sets Levels', 'Sorting'],
+            selectedSetting: 'Filters',
         }
     }
 
     render() {
         const infoTabsLength = this.state.infoTabs.length;
-        const buildersTabsLenth = this.state.buildersTabs.length;
+        const buildersTabsLength = this.state.buildersTabs.length;
+        const settingsTabsLength = this.state.settingsTabs.length;
 
         return (
             <div>
@@ -47,9 +48,17 @@ export class HowToUseModal extends Component {
                         {this.state.selectedInfo === 'Builders' ?
                             this.state.buildersTabs.map((tab) => setButtons(
                                 tab,
-                                buildersTabsLenth,
+                                buildersTabsLength,
                                 this.state.selectedBuilder,
                                 () => this.setState({ selectedBuilder: tab })
+                            ))
+                            : null}
+                        {this.state.selectedInfo === 'Settings' ?
+                            this.state.settingsTabs.map((tab) => setButtons(
+                                tab,
+                                settingsTabsLength,
+                                this.state.selectedSetting,
+                                () => this.setState({ selectedSetting: tab })
                             ))
                             : null}
                     </div>
@@ -58,7 +67,10 @@ export class HowToUseModal extends Component {
                             AutomaticBuilderInfo : ManualBuilderInfo :
                         this.state.selectedInfo === 'Share List' ?
                             ShareInfo : this.state.selectedInfo === 'Settings' ?
-                                SettingsInfo : MiscInfo}
+                                this.state.selectedSetting === 'Filters' ?
+                                    FiltersInfo : this.state.selectedSetting === 'Enhancements' ?
+                                        EnhancementsInfo : this.state.selectedSetting === 'Sets Levels' ?
+                                            SetsLevelsInfo : SortingInfo : MiscInfo}
                 </Modal>
             </div>
         )

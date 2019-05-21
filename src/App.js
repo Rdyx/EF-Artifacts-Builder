@@ -6,6 +6,7 @@ import { NavBar } from './component/NavBar';
 import { StatsSummaryAndArtsBox } from './component/StatsSummaryAndArtsBox';
 import { LoadingScreen } from './component/LoadingScreen';
 import { calculateGSFromEnhancement, calculateMedalsFromEnhancement, knapsack } from './optimiser/Optimiser';
+import { artsPerSetSort, alphabeticalSort, GSAmountSort, MedalsAmountSort } from './sorting/SortingSets';
 
 
 export default class App extends Component {
@@ -23,7 +24,7 @@ export default class App extends Component {
             artsLevels: [6, 7],
             setsLevels: ['T0', 'T1', 'T2', 'T3'],
             enhancementModes: ['Manual', 'All'],
-            enhancementMode: 'All',
+            enhancementMode: 'Manual',
             enhancementLevels: [0, 1, 2, 3, 4],
             enhanceLevel: 4,
             maxArtsPerSet: 6,
@@ -37,6 +38,8 @@ export default class App extends Component {
             filterByBonusType: 'All',
             filterBySetLevel: 'All',
             filterByTotalArtsNumber: 'All',
+            sorts: ['Arts per Set', 'Alphabetical', 'GS Amount', 'Medals Amount'],
+            sortedBy: 'Default',
             loading: false,
             // visitorCount: null,
             offline: '',
@@ -81,6 +84,7 @@ export default class App extends Component {
                         let sortedData = [];
                         let pushInArray = [];
                         let setTypesArray = ['All'];
+
                         let i = 0;
                         while (i < data.length) {
                             let setType = data[i].setType.replace(/\d+ /, '');
@@ -108,14 +112,23 @@ export default class App extends Component {
                             }
                             i++;
                         }
-                        // Sorting every index (array of sets) by arts number
+
+                        // Sorting every index (array of sets) by arts number then resort by setLevel to ensure every array last index is the "best" set
                         sortedData.map(x => {
-                            return x.sort((a, b) => (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0))
+                            let sortByArtNumber = x.sort((a, b) => {
+                                return (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0)
+                            });
+
+                            return sortByArtNumber.sort((a, b) => {
+                                return (a.setLevel > b.setLevel) ? 1 : ((b.setLevel > a.setLevel) ? -1 : 0)
+                            })
                         });
+
                         localStorage.setItem('data', JSON.stringify(sortedData));
                         localStorage.setItem('setTypes', JSON.stringify(setTypesArray));
                         this.setState({
                             data: JSON.parse(localStorage.getItem('data')),
+                            defaultData: JSON.parse(localStorage.getItem('data')),
                             setTypes: JSON.parse(localStorage.getItem('setTypes')),
                             loading: false,
                         });
@@ -141,6 +154,7 @@ export default class App extends Component {
 
             return this.setState({
                 data: data,
+                defaultData: data,
                 setTypes: JSON.parse(localStorage.getItem('setTypes')),
                 loading: false,
                 offline: 'You are currently offline, data may be outdated.',
@@ -150,6 +164,77 @@ export default class App extends Component {
                 offline: message,
             });
         }
+    };
+
+    sortingASCorDESC = (btnValue, method, findBonus = null) => {
+        return btnValue.match(/ ASC/) ?
+            this.setState({ data: method(this.state.data, 'ASC', findBonus), sortedBy: btnValue }) :
+            this.setState({ data: method(this.state.data, 'DESC', findBonus), sortedBy: btnValue });
+    };
+
+    sortingMethod = (btnValue) => {
+        return btnValue.match('Arts per Set') ?
+            this.sortingASCorDESC(btnValue, artsPerSetSort) : btnValue.match('Alphabetical') ?
+                this.sortingASCorDESC(btnValue, alphabeticalSort) : btnValue.match('GS Amount') ?
+                    this.sortingASCorDESC(btnValue, GSAmountSort, this.findBonus) : btnValue.match('Medals Amount') ?
+                        this.sortingASCorDESC(btnValue, MedalsAmountSort, this.findBonus) : this.setState({ data: this.state.defaultData });
+    };
+
+    sortingButtons = (btnValue) => {
+        return (
+            <Fragment>
+                <input
+                    id={btnValue + 'sorting'}
+                    type="radio"
+                    name={'totalArtsPerSet'}
+                    value={btnValue + (btnValue === 'Default' ? '' : ' ASC')}
+                    defaultChecked={btnValue + (btnValue === 'Default' ? '' : ' ASC') === this.state.sortedBy}
+                    onClick={(e) => this.sortingMethod(e.target.value)}
+                />
+                <label htmlFor={btnValue + 'sorting'}
+                    className={`col mb-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                    {btnValue + (btnValue === 'Default' ? '' : ' ASC')}
+                </label>
+                {btnValue !== 'Default' ? (
+                    <Fragment>
+                        <input
+                            id={btnValue + 'sortingRevert'}
+                            type="radio"
+                            name={'totalArtsPerSet'}
+                            value={btnValue + ' DESC'}
+                            defaultChecked={btnValue + ' DESC' === this.state.sortedBy}
+                            onClick={(e) => this.sortingMethod(e.target.value)}
+                        />
+                        <label htmlFor={btnValue + 'sortingRevert'}
+                            className={`col mb-2 ml-2 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                            {btnValue} DESC
+                        </label>
+                    </Fragment>
+                ) : null}
+
+            </Fragment>
+        )
+    };
+
+    setsSortingButtons = () => {
+        const boxes = [];
+        const sorts = this.state.sorts;
+
+        // Default sorting button
+        boxes.push(
+            <div key='Defaultsorting' className="row mx-auto">
+                {this.sortingButtons('Default')}
+            </div>
+        );
+
+        for (let i = 0; i < sorts.length; i++) {
+            boxes.push(
+                <div key={sorts[i] + 'sorting'} className="row mx-auto">
+                    {this.sortingButtons(sorts[i])}
+                </div>);
+        }
+
+        return boxes;
     };
 
     resetSummaryState = () => {
@@ -679,7 +764,7 @@ export default class App extends Component {
         return setLevelBoxes
     };
 
-    artsPerSetButtons = (i, filterBy) => {
+    artsPerSetButtons = (i) => {
         return (
             <Fragment key={i + 'total arts'}>
                 <input
@@ -980,6 +1065,7 @@ export default class App extends Component {
                     enhancementLevels={this.state.enhancementLevels.map(this.enhancementLevels)}
                     connected={this.state.connected}
                     totalArtsPerSet={this.getArtsPerSet()}
+                    setsSorting={this.setsSortingButtons()}
                 />
                 <StatsSummaryAndArtsBox
                     totalNumberOfArts={this.sum(this.state.totalNumberOfArts)}
