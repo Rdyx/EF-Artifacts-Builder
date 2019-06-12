@@ -7,6 +7,7 @@ export default class Set extends Component {
     static propTypes = {
         set: PropTypes.object.isRequired,
         wholeSetForModalStats: PropTypes.array.isRequired,
+        test: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -53,6 +54,7 @@ export default class Set extends Component {
                     <SetModal
                         handler={this.closeSetStats}
                         sets={this.props.wholeSetForModalStats}
+                        test={this.props.test}
                     />
                 ) : null}
                 <div

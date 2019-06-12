@@ -15,6 +15,7 @@ export class SettingsModal extends Component {
         enhancementLevels: PropTypes.array.isRequired,
         totalArtsPerSet: PropTypes.array.isRequired,
         setsSorting: PropTypes.array.isRequired,
+        artsLevelsFiltering: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -26,7 +27,7 @@ export class SettingsModal extends Component {
     }
 
     render() {
-        const tabs = this.props.optimiser ? this.state.tabs : this.state.tabs.filter(tab => tab !== 'Set Levels');
+        const tabs = this.props.optimiser ? this.state.tabs : this.state.tabs.filter(tab => tab !== 'Sets Levels');
         const tabsLength = tabs.length;
 
         return (
@@ -58,6 +59,10 @@ export class SettingsModal extends Component {
                                     <div className="row mx-auto">
                                         <h3 className="col-12 mt-2">Arts per Set</h3>
                                         {this.props.totalArtsPerSet}
+                                    </div>
+                                    <div className="row mx-auto">
+                                        <h3 className="col-12 mt-2">Arts Levels</h3>
+                                        {this.props.artsLevelsFiltering}
                                     </div>
                                 </div>
                             </Fragment>

@@ -21,7 +21,7 @@ export class ArtifactModal extends Component {
                         {this.props.artifact ? (
                             <div>
                                 <div className="text-center">
-                                    <h1 className="text-center">{this.props.artifact.artifact_name}</h1>
+                                    <h1 className="text-center">{this.props.artifact.artifact_name} ({this.props.artifact.art_level})</h1>
                                     <img className="text-center"
                                         src={this.props.artifact.artifact_img}
                                         alt={this.props.artifact.artifact_name} />

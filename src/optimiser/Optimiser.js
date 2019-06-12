@@ -9,6 +9,7 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
     const lvl0 = elvl === 0;
     const lvl1 = elvl === 1;
     const lvl2 = elvl === 2;
+    const lvl3 = elvl === 3;
     const trans0 = trans === 'T0';
     const trans1 = trans === 'T1';
     const trans2 = trans === 'T2';
@@ -42,7 +43,7 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
     } else if (artLevel === '8*') {
         // Only trans0 for now and 1 speed available, no data available for enhance 4
         if (trans0) {
-            return bonusGS === 47 ? lvl0 ? 47 : lvl1 ? 53 : lvl2 ? 60 : 67 : 0;
+            return bonusGS === 47 ? lvl0 ? 47 : lvl1 ? 53 : lvl2 ? 60 : lvl3 ? 67 : 67 : 0;
         }
     }
 };

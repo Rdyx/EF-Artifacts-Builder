@@ -8,6 +8,7 @@ export class SetModal extends Component {
     static propTypes = {
         handler: PropTypes.func.isRequired,
         sets: PropTypes.array.isRequired,
+        test: PropTypes.array.isRequired,
     };
 
     constructor(props) {
@@ -15,6 +16,7 @@ export class SetModal extends Component {
         this.state = {
             artifacts: [],
             showArtStats: false,
+            art: {},
         }
     }
 
@@ -42,11 +44,11 @@ export class SetModal extends Component {
                     {this.state.showArtStats ? (
                         <ArtifactModal
                             handler={this.closeArtStats}
-                            artifact={art}
+                            artifact={this.state.art}
                         />
                     ) : null}
                     <img
-                        onClick={() => this.setState({ showArtStats: true })}
+                        onClick={() => this.setState({ showArtStats: true, art: art })}
                         className="art-image mt-2"
                         src={art.artifact_img}
                         alt={art.artifact_name}
@@ -180,6 +182,16 @@ export class SetModal extends Component {
         )
     };
 
+    getArtsLevels = () => {
+        const artsLevels = [];
+
+        this.state.artifacts.map(art => {
+            return art && !artsLevels.includes(art.art_level) ? artsLevels.push(art.art_level) : null
+        })
+
+        return artsLevels.length > 1 ? artsLevels.map((x, index) => !(index === artsLevels.length - 1) ? x + '/' : x) : artsLevels
+    };
+
     render() {
         const defaultSet = this.props.sets[0];
         const bonusValues = this.props.sets.map((set, index) => this.filterBonuses(set, index));
@@ -192,7 +204,8 @@ export class SetModal extends Component {
                     style={customStyles}
                 >
                     <div className="text-center">
-                        <h1>{defaultSet.set_name.replace(/ \(\dp\)/g, '')}</h1>
+                        {this.props.test}
+                        <h1>{defaultSet.set_name.replace(/ \(\dp\)/g, '')} ({this.getArtsLevels()})</h1>
                         {defaultSet ? (
                             <div className="row justify-content-around">
                                 {this.state.artifacts.map(this.showArts)}

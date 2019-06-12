@@ -21,7 +21,8 @@ export default class App extends Component {
             gameSpeedBonuses: [],
             bonusMedals: [],
             bonusTypes: ['All', 'Game Speed', 'Increase Additional Medals Obtained'],
-            artsLevels: [6, 7],
+            artsAndTiersLevels: [6, 7],
+            artsLevels: [4, 5, 6, 7, 8],
             setsLevels: ['T0', 'T1', 'T2', 'T3'],
             enhancementModes: ['Manual', 'All'],
             enhancementMode: 'Manual',
@@ -38,6 +39,7 @@ export default class App extends Component {
             filterByBonusType: 'All',
             filterBySetLevel: 'All',
             filterByTotalArtsNumber: 'All',
+            filterByArtLevel: 'All',
             sorts: ['Arts per Set', 'Alphabetical', 'GS Amount', 'Medals Amount'],
             sortedBy: 'Default',
             loading: false,
@@ -385,12 +387,13 @@ export default class App extends Component {
 
     getSelection = (set) => {
         const fullSet = set.set_arts_number === set.set_total_arts_number;
-        let findGsBonus = !isNaN(set.calculatedBonusGS) ?
+
+        const findGsBonus = !isNaN(set.calculatedBonusGS) ?
             set.calculatedBonusGS : fullSet ?
                 calculateGSFromEnhancement(this.findBonus(set, /Game Speed/), set.artifact1.art_level, set.setLevel, set.enhance_level) :
                 this.findBonus(set, /Game Speed/);
 
-        let findMedalBonus = !isNaN(set.calculatedBonusMedals) ?
+        const findMedalBonus = !isNaN(set.calculatedBonusMedals) ?
             set.calculatedBonusMedals : fullSet ?
                 calculateMedalsFromEnhancement(this.findBonus(set, /Increase Additional Medals Obtained/), set.enhance_level) : this.findBonus(set, /Increase Additional Medals Obtained/);
 
@@ -413,14 +416,25 @@ export default class App extends Component {
             })
     };
 
+    getArtsLevelsForFilter = (set) => {
+        const artsLevels = [];
+
+        Object.keys(set).map(key => {
+            return key.match('artifact') ? set[key] && !artsLevels.includes(set[key].art_level) ? artsLevels.push(set[key].art_level) : null : null;
+        })
+
+        return artsLevels.some(x => x === this.state.filterByArtLevel || this.state.filterByArtLevel === 'All');
+    };
+
     showIfMatch = (set) => {
         const techName = set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase());
         const setType = set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) || this.state.searchBySetType === 'All';
         const bonus = this.findBonus(set, this.state.filterByBonusType) || this.state.filterByBonusType === 'All';
         const matchTotalArtsNumber = set.set_total_arts_number.toString() === this.state.filterByTotalArtsNumber || this.state.filterByTotalArtsNumber === 'All';
+        const matchArtLevel = this.getArtsLevelsForFilter(set);
 
         // Match set tech name, set types and set total arts number, if All, every set is shown
-        return techName && setType && bonus && matchTotalArtsNumber;
+        return techName && setType && bonus && matchTotalArtsNumber && matchArtLevel;
     };
 
     filterSetsForStatsModal = (set) => {
@@ -431,6 +445,24 @@ export default class App extends Component {
         }).sort((set1, set2) => {
             return set1.setLevel >= set2.setLevel ? 1 : -1;
         });
+    };
+
+    getEnhancedBonusValues = (set) => {
+        function returnValueFromArtLevel(artLevel, value1, value2, value3) {
+            return artLevel === '6*' ? value1 : artLevel === '7*' ? value2 : value3;
+        }
+        const artLevel = set.artifact1.art_level;
+        console.log(artLevel)
+        const elvls = returnValueFromArtLevel(artLevel, [0, 1, 2], [0, 1, 2, 3], [0, 1, 2, 3, 4]);
+        const tiers = returnValueFromArtLevel(artLevel, ['T0', 'T1', 'T2', 'T3'], ['T0', 'T1', 'T2'], ['T0'])
+
+        console.log(tiers)
+        // const elvls = artLevel === '6*' ? [0, 1, 2] : artLevel === '7*' ? [0, 1, 2, 3] : [0, 1, 2, 3, 4];
+
+        console.log(elvls)
+
+
+
     };
 
     getSets = (sets) => {
@@ -466,9 +498,11 @@ export default class App extends Component {
             globalArray.push(t3Array);
         }
 
+        console.log(sets)
         // Last index is selected to be able to check if the set has any required bonus
         // to apply filter we need to get the set with maximum bonus
         let set = sets[sets.length - 1];
+        this.getEnhancedBonusValues(set)
         let showIfMatch = this.showIfMatch(set, false);
         const filteredSets = this.filterSetsForStatsModal(set);
         return (
@@ -520,6 +554,7 @@ export default class App extends Component {
                     <Set
                         set={set}
                         wholeSetForModalStats={filteredSets}
+                        test={sets.map(set => this.enhancementButtons(set, globalArray))}
                     />
                 </div>
             </div>
@@ -625,9 +660,11 @@ export default class App extends Component {
                     !(setLevel.match(sevenStarsSets) && artLevel === '7') : false;
         });
 
+
         if (sets.length > 0) {
             const regex = / \(\dp\)/;
             const set = sets[sets.length - 1];
+            this.getEnhancedBonusValues(set)
             let showIfMatch = this.showIfMatch(set);
             const filteredSets = this.filterSetsForStatsModal(set);
             const isExcluded = this.state.excludedFromOptimiser.indexOf(set.set_name) !== -1;
@@ -673,6 +710,7 @@ export default class App extends Component {
                         <Set
                             set={set}
                             wholeSetForModalStats={filteredSets}
+                            test={this.findBonus(set, /Medals/)}
                         />
                     </div>
                 </div>
@@ -762,6 +800,35 @@ export default class App extends Component {
         }
 
         return setLevelBoxes
+    };
+
+    artLevelButton = (artLevel) => {
+        return (
+            <Fragment key={artLevel + 'ArtLevel'}>
+                <input
+                    id={artLevel + 'ArtLevel'}
+                    type="radio"
+                    name={'ArtLevel'}
+                    value={artLevel}
+                    defaultChecked={artLevel === this.state.filterByArtLevel}
+                    onClick={(e) => this.setState({ filterByArtLevel: e.target.value })}
+                />
+                <label htmlFor={artLevel + 'ArtLevel'}
+                    className={`col mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                    {artLevel}
+                </label>
+            </Fragment>
+        )
+    };
+
+    getArtsLevels = () => {
+        const artLevels = [];
+
+        this.state.artsLevels.map(x => artLevels.push(this.artLevelButton(x + '*')));
+
+        artLevels.push(this.artLevelButton('All'));
+
+        return artLevels;
     };
 
     artsPerSetButtons = (i) => {
@@ -1053,12 +1120,22 @@ export default class App extends Component {
                     swapManualToAutomaticBuilder={() => this.setState({ optimiser: !this.state.optimiser })}
                     triggerScreenshot={this.triggerScreenshot}
                     searchBySetName={(e) => this.setState({ searchBySetName: e.target.value.replace(/[^a-zA-Z0-9 ]/g, '') })}
-                    setFiltering={this.state.searchBySetType !== 'All' || this.state.filterByBonusType !== 'All'}
+                    setFiltering={
+                        this.state.searchBySetType !== 'All' ||
+                        this.state.filterByBonusType !== 'All' ||
+                        this.state.filterByTotalArtsNumber !== 'All' ||
+                        this.state.filterByArtLevel !== 'All'
+                    }
                     setsTypes={this.state.setTypes.map(this.getSetsTypes)}
                     bonusTypes={this.state.bonusTypes.map(this.getBonusTypes)}
                     optimiser={this.state.optimiser}
-                    setsLevels={this.state.artsLevels.map(this.getSetLevels)}
-                    resetFilters={() => this.setState({ searchBySetType: 'All', filterByBonusType: 'All' })}
+                    setsLevels={this.state.artsAndTiersLevels.map(this.getSetLevels)}
+                    resetFilters={() => this.setState({
+                        searchBySetType: 'All',
+                        filterByBonusType: 'All',
+                        filterByTotalArtsNumber: 'All',
+                        filterByArtLevel: 'All',
+                    })}
                     listLength={this.state.selectedList.length}
                     resetList={() => this.resetSummaryState()}
                     enhancementMode={this.state.enhancementModes.map(this.enhancementMode)}
@@ -1066,6 +1143,7 @@ export default class App extends Component {
                     connected={this.state.connected}
                     totalArtsPerSet={this.getArtsPerSet()}
                     setsSorting={this.setsSortingButtons()}
+                    artsLevelsFiltering={this.getArtsLevels()}
                 />
                 <StatsSummaryAndArtsBox
                     totalNumberOfArts={this.sum(this.state.totalNumberOfArts)}
