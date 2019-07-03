@@ -1,50 +1,41 @@
-// BASE KNAPSACK CODE AT
-// https://gist.github.com/lqt0223/21f033450a9d762ce8aee4da336363b1
-
 export const calculateMedalsFromEnhancement = (bonusMedals, elvl) => {
     return bonusMedals + ((bonusMedals / 2) * elvl);
 };
 
 export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
-    const lvl0 = elvl === 0;
-    const lvl1 = elvl === 1;
-    const lvl2 = elvl === 2;
-    const trans0 = trans === 'T0';
-    const trans1 = trans === 'T1';
-    const trans2 = trans === 'T2';
-    const trans3 = trans === 'T3';
+    function getGS(GSArrays, bonusGS, elvl) {
+        const lvl0 = elvl === 0;
+        const lvl1 = elvl === 1;
+        const lvl2 = elvl === 2;
+        const lvl3 = elvl === 3;
+        const lvl4 = elvl === 4;
+        const GSValues = bonusGS === GSArrays[0][0] ? GSArrays[0] : GSArrays[1];
 
-    if (artLevel === '6*') {
-        if (trans0) {
-            return bonusGS === 15 ? lvl0 ? 15 : lvl1 ? 17 : 19 :
-                bonusGS === 25 ? lvl0 ? 25 : lvl1 ? 28 : 32 : 0;
-        } else if (trans1) {
-            return bonusGS === 22 ? lvl0 ? 22 : lvl1 ? 25 : 28 :
-                bonusGS === 37 ? lvl0 ? 37 : lvl1 ? 42 : 47 : 0;
-        } else if (trans2) {
-            return bonusGS === 26 ? lvl0 ? 26 : lvl1 ? 29 : 33 :
-                bonusGS === 45 ? lvl0 ? 45 : lvl1 ? 51 : 57 : 0;
-        } else if (trans3) {
-            return bonusGS === 27 ? lvl0 ? 27 : lvl1 ? 31 : 34 :
-                bonusGS === 46 ? lvl0 ? 46 : lvl1 ? 52 : 58 : 0;
-        }
-    } else if (artLevel === '7*') {
-        if (trans0) {
-            return bonusGS === 37 ? lvl0 ? 37 : lvl1 ? 43 : lvl2 ? 48 : 54 :
-                bonusGS === 16 ? lvl0 ? 16 : lvl1 ? 18 : lvl2 ? 21 : 23 : 0;
-        } else if (trans1) {
-            return bonusGS === 38 ? lvl0 ? 38 : lvl1 ? 44 : lvl2 ? 49 : 55 :
-                bonusGS === 23 ? lvl0 ? 23 : lvl1 ? 26 : lvl2 ? 30 : 33 : 0;
-        } else if (trans2) {
-            return bonusGS === 50 ? lvl0 ? 50 : lvl1 ? 58 : lvl2 ? 65 : 73 :
-                bonusGS === 30 ? lvl0 ? 30 : lvl1 ? 35 : lvl2 ? 39 : 44 : 0;
-        }
-    } else if (artLevel === '8*') {
-        // Only trans0 for now and 1 speed available, no data available for enhance 4
-        if (trans0) {
-            return bonusGS === 47 ? lvl0 ? 47 : lvl1 ? 53 : lvl2 ? 60 : 67 : 0;
-        }
-    }
+        return lvl0 ? GSValues[0] : lvl1 ? GSValues[1] : lvl2 ? GSValues[2] : lvl3 ? GSValues[3] : lvl4 ? GSValues[4] : 0;
+    };
+
+    // Each number is the elvl equivalent
+    // There are 2 arrays because sets GS are divided by 2 different start values
+    const defaultStartGSValues = {
+        "6*": {
+            T0: [[15, 17, 19, 0, 0], [25, 28, 32, 0, 0]],
+            T1: [[22, 25, 28, 0, 0], [37, 42, 47, 0, 0]],
+            T2: [[26, 29, 33, 0, 0], [45, 51, 57, 0, 0]],
+            T3: [[27, 31, 34, 0, 0], [46, 52, 58, 0, 0]],
+        },
+        "7*": {
+            T0: [[23, 26, 30, 33, 0], [37, 43, 48, 54, 0]],
+            T1: [[28, 32, 36, 41, 0], [38, 44, 49, 55, 0]],
+            T2: [[30, 35, 39, 44, 0], [50, 58, 65, 73, 0]],
+            T3: [[33, 41, 44, 74, 0], [51, 59, 66, 74, 0]],
+        },
+        "8*": {
+            T0: [[47, 53, 60, 67, 74], [0, 0, 0, 0, 0]],
+            T1: [[51, 59, 66, 74, 77], [0, 0, 0, 0, 0]],
+        },
+    };
+
+    return getGS(defaultStartGSValues[artLevel][trans], bonusGS, elvl);
 };
 
 // Making a filter method upon existing sets to get the most powerfull ones
@@ -112,6 +103,9 @@ export const filterSets = (
         return (set1.avgGS - set2.avgGS) * -1;
     });
 };
+
+// BASE KNAPSACK CODE AT
+// https://gist.github.com/lqt0223/21f033450a9d762ce8aee4da336363b1
 
 // KNAPSACK ALGORITHM MODIFIED A BIT TO FIT THE APP NEEDS
 export const knapsack = (

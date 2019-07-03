@@ -21,7 +21,7 @@ export default class App extends Component {
             gameSpeedBonuses: [],
             bonusMedals: [],
             bonusTypes: ['All', 'Game Speed', 'Increase Additional Medals Obtained'],
-            artsLevels: [6, 7],
+            artsLevels: [6, 7, 8],
             setsLevels: ['T0', 'T1', 'T2', 'T3'],
             enhancementModes: ['Manual', 'All'],
             enhancementMode: 'Manual',
@@ -47,8 +47,8 @@ export default class App extends Component {
             optimiserNbArts: 0,
             optimiserMaxGS: 0,
             optimiserSixStarsLevel: 'T3',
-            optimiserSevenStarsLevel: 'T2',
-            optimiserEightStarsLevel: 'T0',
+            optimiserSevenStarsLevel: 'T3',
+            optimiserEightStarsLevel: 'T1',
             optimisedSets: [],
             optimisedResultSelectedIndex: 1,
             connected: false,
@@ -540,8 +540,8 @@ export default class App extends Component {
         const showElvls = set.hasOwnProperty('enhance_level') &&
             (
                 (artLevel === '6*' && setLevel === 'T3') ||
-                (artLevel === '7*' && setLevel === 'T2') ||
-                (artLevel === '8*' && setLevel === 'T0')
+                (artLevel === '7*' && setLevel === 'T3') ||
+                (artLevel === '8*' && setLevel === 'T1')
             ) && set.set_arts_number === set.set_total_arts_number;
 
         // Must get the whole div in condition and rewrite it completely depending on state
@@ -611,8 +611,9 @@ export default class App extends Component {
     getOptimizedSets = (sets) => {
         // This function is here to filter and fill ArtsBox only with sets that automatic builder will use
         const artLevels = /[6-8]/g;
-        const sixStarsSets = /T[012]/g;
-        const sevenStarsSets = /T[01]/g;
+        const sixStarsSets = /T[0-2]/g;
+        const sevenStarsSets = /T[0-2]/g;
+        const eightStarsSets = /T[0]/g;
 
         sets = sets.filter(set => {
             const testGSValue = this.findBonus(set, /Game Speed/);
@@ -622,7 +623,8 @@ export default class App extends Component {
 
             return !artLevel.match(artLevels) || !(testGSValue || testMedalsValue) ? false :
                 !(setLevel.match(sixStarsSets) && artLevel === '6') ?
-                    !(setLevel.match(sevenStarsSets) && artLevel === '7') : false;
+                    !(setLevel.match(sevenStarsSets) && artLevel === '7') ?
+                        !(setLevel.match(eightStarsSets) && artLevel === '8') : false : false;
         });
 
         if (sets.length > 0) {
@@ -727,13 +729,13 @@ export default class App extends Component {
 
         return setLevel === '6' ? this.setState({ optimiserSixStarsLevel: setTier }) :
             setLevel === '7' ? this.setState({ optimiserSevenStarsLevel: setTier }) :
-                setLevel === '8' ? this.setState({ optimiserSevenStarsLevel: setTier }) : null;
+                setLevel === '8' ? this.setState({ optimiserEightStarsLevel: setTier }) : null;
     };
 
     getSetLevels = (artLevel) => {
         const setLevelBoxes = [];
         // Lvl 8 is here to be available easier later
-        const setSetsLevel = artLevel === 6 ? 3 : artLevel === 7 ? 2 : artLevel === 8 ? 0 : 0;
+        const setSetsLevel = artLevel === 6 ? 3 : artLevel === 7 ? 3 : artLevel === 8 ? 1 : 0;
         const setTier = artLevel === 6 ? this.state.optimiserSixStarsLevel :
             artLevel === 7 ? this.state.optimiserSevenStarsLevel :
                 artLevel === 8 ? this.state.optimiserEightStarsLevel : 0;
@@ -753,7 +755,7 @@ export default class App extends Component {
                         onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
                     />
                     <label htmlFor={setLevel + artLevel + i}
-                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col'} mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col-6'} mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
                         {setLevel} {artLevel}*
                     </label>
                     {newLine}

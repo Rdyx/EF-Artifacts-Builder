@@ -2,9 +2,12 @@ export const versions = [
     {
         number: '1.11.1',
         date: '3 July 2019',
-        title: "New sets data (7* T3 & 8* T1).",
+        title: "New sets data (7* T3 & 8* T1), bug fixes.",
         content: {
-            point1: "New sets data is available, you can now use 7* T3 and 8* T1! :)"
+            point1: "New sets data is available, you can now use 7* T3 and 8* T1! :)",
+            point2: "Summer Airships, Bear Airships and Indian Gods sets are now available.",
+            point3: "Modified GS calculation for easier maintenability.",
+            point4: "Fixed some sets data (airships GS has changed).",
         },
     },
     {
