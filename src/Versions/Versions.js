@@ -1,5 +1,13 @@
 export const versions = [
     {
+        number: '1.11.1',
+        date: '3 July 2019',
+        title: "New sets data (7* T3 & 8* T1).",
+        content: {
+            point1: "New sets data is available, you can now use 7* T3 and 8* T1! :)"
+        },
+    },
+    {
         number: '1.11.0',
         date: '21 May 2019',
         title: "Added sets sorting systems, reworked Settings tab under Help section.",
