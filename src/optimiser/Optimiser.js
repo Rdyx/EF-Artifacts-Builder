@@ -4,7 +4,7 @@ export const calculateMedalsFromEnhancement = (bonusMedals, elvl) => {
 
 export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
     if (!bonusGS) {
-        return;
+        return 0;
     };
     
     function getGS(GSArrays, bonusGS, elvl) {
