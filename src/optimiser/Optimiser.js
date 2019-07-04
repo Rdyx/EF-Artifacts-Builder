@@ -3,6 +3,10 @@ export const calculateMedalsFromEnhancement = (bonusMedals, elvl) => {
 };
 
 export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
+    if (!bonusGS) {
+        return;
+    };
+    
     function getGS(GSArrays, bonusGS, elvl) {
         const lvl0 = elvl === 0;
         const lvl1 = elvl === 1;
