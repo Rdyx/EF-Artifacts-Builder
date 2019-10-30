@@ -19,7 +19,7 @@ export class HeaderModal extends Component {
     };
 
     logoUrl = (url, logo, alt) => {
-        return this.props.isMobile ? (
+        return this.props.isMobile && alt === 'Facebook' ? (
             <li className={`list-inline-item ${alt !== 'Paypal' ? 'mr-2' : ''}`}>
                 <div className="efd"
                     onClick={this.props.testFBApp}>
@@ -60,7 +60,7 @@ export class HeaderModal extends Component {
                             {this.logoUrl('https://www.paypal.me/rdyx', paypal, 'Paypal')}
                         </ul>
                         <h2 className="col-12 version-underline pb-2">Endless Frontier Artifacts Builder</h2>
-                        <p className="col-12">This builder has been made by Rdyx (S2) from Limitless.</p>
+                        <p className="col-12">This builder has been made by Rdyx (Server 1 @ Limitless).</p>
                         <p className="col-12">
                             I simply wanted to discover some frameworks and have a user-friendly interface
                             to build sets setups.

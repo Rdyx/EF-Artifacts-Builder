@@ -1,5 +1,15 @@
 export const versions = [
     {
+        number: '1.11.2',
+        date: '30 October 2019',
+        title: "New sets data (Raid 1, Raid 5, Airship sets), bug fix.",
+        content: {
+            point1: "New sets data is available.",
+            point2: "Fixed bug in EFAB presentation modal where Mobile links were all redirecting to EFAB's Facebook page.",
+            point3: "Sorry for being late in this data update, I stopped to play EF some times ago so I lacked about data update. Feel free to contact me directly when some new sets are out so I can update ASAP :)",
+        },
+    },
+    {
         number: '1.11.1',
         date: '3 July 2019',
         title: "New sets data (7* T3 & 8* T1), bug fixes.",
