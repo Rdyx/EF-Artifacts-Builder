@@ -1,5 +1,15 @@
 export const versions = [
     {
+        number: '1.11.3',
+        date: '15 Mai 2020',
+        title: "EFAB is back!",
+        content: {
+            point1: "I am glad to announce that EFAB has got some service again! Thank you for your support messages and very sorry for the unconvenience, this happened at a pretty bad time!... I'll try to add the latest data ASAP but it can take some time since it looks like I missed a serious bunch of things!",
+            point2: "Added a slightly improvement to use less bandwith if you already have the latest data available! ;)",
+        },
+
+    },
+    {
         number: '1.11.2',
         date: '30 October 2019',
         title: "New sets data (Raid 1, Raid 5, Airship sets), bug fix.",

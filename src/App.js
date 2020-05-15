@@ -7,7 +7,7 @@ import { StatsSummaryAndArtsBox } from './component/StatsSummaryAndArtsBox';
 import { LoadingScreen } from './component/LoadingScreen';
 import { calculateGSFromEnhancement, calculateMedalsFromEnhancement, knapsack } from './optimiser/Optimiser';
 import { artsPerSetSort, alphabeticalSort, GSAmountSort, MedalsAmountSort } from './sorting/SortingSets';
-import { versionNumber } from './versions/fast-checker';
+import { versions } from './Versions/Versions';
 
 
 export default class App extends Component {
@@ -73,18 +73,21 @@ export default class App extends Component {
             .then(() => {
                 // Check current user version to decide if we will use stored data
                 const versionNumberFromLocalStorage = localStorage.getItem('versionNumber');
-                const currentVersion = versionNumber;
+                // Get latest version number
+                const currentVersion = versions[0].number;
+
+                // Used to show facebook button
+                this.setState({ connected: true });
 
                 // If the stored version in localStorage is different, fetch new data
                 if (versionNumberFromLocalStorage !== currentVersion) {
                     // Checking if user can fetch latest data
+
                     fetch(process.env.REACT_APP_SETS_FETCH)
                         .then(response => {
                             return response.json()
                         })
                         .then(data => {
-                            // Used to show facebook button
-                            this.setState({ connected: true });
                             // Sorting 2 dimensions array to sort arts by their names
                             localStorage.setItem('data', '');
                             localStorage.setItem('setTypes', '');
@@ -139,11 +142,13 @@ export default class App extends Component {
                                 setTypes: JSON.parse(localStorage.getItem('setTypes')),
                                 loading: false,
                             });
+                            localStorage.setItem('versionNumber', currentVersion);
                         })
                         .catch(() => {
                             this.checkOfflineAndLocalStorage('There has been a problem while loading data. Please try again later.', enhanceLevel);
                         })
                 } else {
+                    this.getDataFromLocalStorage(enhanceLevel);
                     console.log('already')
                 }
             })
@@ -152,23 +157,29 @@ export default class App extends Component {
             })
     };
 
+    getDataFromLocalStorage = (enhanceLevel) => {
+        // Setting sets enhance_level from localStorage value
+        let data = JSON.parse(localStorage.getItem('data')).map(sets => {
+            return sets.map(set => {
+                set.enhance_level = enhanceLevel;
+                return set;
+            })
+        });
+
+        return this.setState({
+            data: data,
+            defaultData: data,
+            setTypes: JSON.parse(localStorage.getItem('setTypes')),
+            loading: false,
+        });
+    }
+
     checkOfflineAndLocalStorage = (message, enhanceLevel) => {
         if (localStorage.getItem('data') && localStorage.getItem('setTypes')) {
-            // Setting sets enhance_level from localStorage value
-            let data = JSON.parse(localStorage.getItem('data')).map(sets => {
-                return sets.map(set => {
-                    set.enhance_level = enhanceLevel;
-                    return set;
-                })
-            });
-
+            this.getDataFromLocalStorage(enhanceLevel);
             return this.setState({
-                data: data,
-                defaultData: data,
-                setTypes: JSON.parse(localStorage.getItem('setTypes')),
-                loading: false,
                 offline: 'You are currently offline, data may be outdated.',
-            });
+            })
         } else {
             return this.setState({
                 offline: message,
