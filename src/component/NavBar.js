@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { HeaderModal } from "../Modals/HeaderModal";
 import { VersionModal } from "../Modals/VersionModal";
-import { versions } from "../Versions/Versions";
+import { versions } from "../versions/versions";
 import { SettingsModal } from "../Modals/SettingsModal";
 import { HowToUseModal } from '../Modals/HowToUseModal';
 

@@ -6,7 +6,7 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
     if (!bonusGS) {
         return 0;
     };
-    
+
     function getGS(GSArrays, bonusGS, elvl) {
         const lvl0 = elvl === 0;
         const lvl1 = elvl === 1;
@@ -44,7 +44,7 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
 
 // Making a filter method upon existing sets to get the most powerfull ones
 export const filterSets = (
-    sets, findBonus, excludedFromOptimiser = [], sixStarsLevel = 'T3', sevenStarsLevel = 'T2', EightStarsLevel = 'T0'
+    sets, findBonus, excludedFromOptimiser = [], sixStarsLevel = 'T3', sevenStarsLevel = 'T3', EightStarsLevel = 'T1'
 ) => {
     // Sets filter
     const artLevels = /[6-8]/g;

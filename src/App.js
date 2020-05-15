@@ -7,6 +7,7 @@ import { StatsSummaryAndArtsBox } from './component/StatsSummaryAndArtsBox';
 import { LoadingScreen } from './component/LoadingScreen';
 import { calculateGSFromEnhancement, calculateMedalsFromEnhancement, knapsack } from './optimiser/Optimiser';
 import { artsPerSetSort, alphabeticalSort, GSAmountSort, MedalsAmountSort } from './sorting/SortingSets';
+import { versionNumber } from './versions/fast-checker';
 
 
 export default class App extends Component {
@@ -70,72 +71,81 @@ export default class App extends Component {
                 return response.status;
             })
             .then(() => {
-                // Checking if user can fetch latest data
-                fetch(process.env.REACT_APP_SETS_FETCH)
-                    .then(response => {
-                        return response.json()
-                    })
-                    .then(data => {
-                        // Used to show facebook button
-                        this.setState({ connected: true });
-                        // Sorting 2 dimensions array to sort arts by their names
-                        localStorage.setItem('data', '');
-                        localStorage.setItem('setTypes', '');
-                        let sortedData = [];
-                        let pushInArray = [];
-                        let setTypesArray = ['All'];
+                // Check current user version to decide if we will use stored data
+                const versionNumberFromLocalStorage = localStorage.getItem('versionNumber');
+                const currentVersion = versionNumber;
 
-                        let i = 0;
-                        while (i < data.length) {
-                            let setType = data[i].setType.replace(/\d+ /, '');
+                // If the stored version in localStorage is different, fetch new data
+                if (versionNumberFromLocalStorage !== currentVersion) {
+                    // Checking if user can fetch latest data
+                    fetch(process.env.REACT_APP_SETS_FETCH)
+                        .then(response => {
+                            return response.json()
+                        })
+                        .then(data => {
+                            // Used to show facebook button
+                            this.setState({ connected: true });
+                            // Sorting 2 dimensions array to sort arts by their names
+                            localStorage.setItem('data', '');
+                            localStorage.setItem('setTypes', '');
+                            let sortedData = [];
+                            let pushInArray = [];
+                            let setTypesArray = ['All'];
 
-                            data[i].enhance_level = this.adaptElvl(data[i], enhanceLevel);
+                            let i = 0;
+                            while (i < data.length) {
+                                let setType = data[i].setType.replace(/\d+ /, '');
 
-                            if (!setTypesArray.includes(setType)) {
-                                setTypesArray.push(setType);
-                            }
+                                data[i].enhance_level = this.adaptElvl(data[i], enhanceLevel);
 
-                            // If next index exists
-                            if (data[i + 1]) {
-                                // Push this index into array pushInArray
-                                pushInArray.push(data[i]);
-                                // If set name of the actual set is not the same than next set name, excluding (*p)
-                                if (data[i].set_name.match(/(.*)[^ (\dp)]/g)[0] !== data[i + 1].set_name.match(/(.*)[^ (\dp)]/g)[0]) {
-                                    // Pushing pushInArray into sortedData
-                                    sortedData.push(pushInArray);
-                                    // Reseting pushInArray
-                                    pushInArray = [];
+                                if (!setTypesArray.includes(setType)) {
+                                    setTypesArray.push(setType);
                                 }
-                            } else {
-                                pushInArray.push(data[i]);
-                                sortedData.push(pushInArray);
-                            }
-                            i++;
-                        }
 
-                        // Sorting every index (array of sets) by arts number then resort by setLevel to ensure every array last index is the "best" set
-                        sortedData.map(x => {
-                            let sortByArtNumber = x.sort((a, b) => {
-                                return (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0)
+                                // If next index exists
+                                if (data[i + 1]) {
+                                    // Push this index into array pushInArray
+                                    pushInArray.push(data[i]);
+                                    // If set name of the actual set is not the same than next set name, excluding (*p)
+                                    if (data[i].set_name.match(/(.*)[^ (\dp)]/g)[0] !== data[i + 1].set_name.match(/(.*)[^ (\dp)]/g)[0]) {
+                                        // Pushing pushInArray into sortedData
+                                        sortedData.push(pushInArray);
+                                        // Reseting pushInArray
+                                        pushInArray = [];
+                                    }
+                                } else {
+                                    pushInArray.push(data[i]);
+                                    sortedData.push(pushInArray);
+                                }
+                                i++;
+                            }
+
+                            // Sorting every index (array of sets) by arts number then resort by setLevel to ensure every array last index is the "best" set
+                            sortedData.map(x => {
+                                let sortByArtNumber = x.sort((a, b) => {
+                                    return (a.set_arts_number > b.set_arts_number) ? 1 : ((b.set_arts_number > a.set_arts_number) ? -1 : 0)
+                                });
+
+                                return sortByArtNumber.sort((a, b) => {
+                                    return (a.setLevel > b.setLevel) ? 1 : ((b.setLevel > a.setLevel) ? -1 : 0)
+                                })
                             });
 
-                            return sortByArtNumber.sort((a, b) => {
-                                return (a.setLevel > b.setLevel) ? 1 : ((b.setLevel > a.setLevel) ? -1 : 0)
-                            })
-                        });
-
-                        localStorage.setItem('data', JSON.stringify(sortedData));
-                        localStorage.setItem('setTypes', JSON.stringify(setTypesArray));
-                        this.setState({
-                            data: JSON.parse(localStorage.getItem('data')),
-                            defaultData: JSON.parse(localStorage.getItem('data')),
-                            setTypes: JSON.parse(localStorage.getItem('setTypes')),
-                            loading: false,
-                        });
-                    })
-                    .catch(() => {
-                        this.checkOfflineAndLocalStorage('There has been a problem while loading data. Please try again later.', enhanceLevel);
-                    })
+                            localStorage.setItem('data', JSON.stringify(sortedData));
+                            localStorage.setItem('setTypes', JSON.stringify(setTypesArray));
+                            this.setState({
+                                data: JSON.parse(localStorage.getItem('data')),
+                                defaultData: JSON.parse(localStorage.getItem('data')),
+                                setTypes: JSON.parse(localStorage.getItem('setTypes')),
+                                loading: false,
+                            });
+                        })
+                        .catch(() => {
+                            this.checkOfflineAndLocalStorage('There has been a problem while loading data. Please try again later.', enhanceLevel);
+                        })
+                } else {
+                    console.log('already')
+                }
             })
             .catch(() => {
                 this.checkOfflineAndLocalStorage('You need to connect at least once to run this app.', enhanceLevel);
@@ -970,7 +980,6 @@ export default class App extends Component {
 
     startBuild = () => {
         const nbArtsWanted = this.state.optimiserNbArts;
-
         let getResults = knapsack(
             this.state.data,
             nbArtsWanted,
