@@ -22,8 +22,13 @@ export default class App extends Component {
             gameSpeedBonuses: [],
             bonusMedals: [],
             bonusTypes: ['All', 'Game Speed', 'Increase Additional Medals Obtained'],
-            artsLevels: [6, 7, 8],
+            artsLevels: [6, 7, 8, 9],
             setsLevels: ['T0', 'T1', 'T2', 'T3'],
+            artsLevelsOptimized: /[6-8]/g,
+            sixStarsSetsOptimized: /T[0-2]/g,
+            sevenStarsSetsOptimized: /T[0-2]/g,
+            eightStarsSetsOptimized: /T[0-2]/g,
+            nineStarsSetsOptimized: /T[0]/g,
             enhancementModes: ['Manual', 'All'],
             enhancementMode: 'Manual',
             enhancementLevels: [0, 1, 2, 3, 4],
@@ -49,7 +54,8 @@ export default class App extends Component {
             optimiserMaxGS: 0,
             optimiserSixStarsLevel: 'T3',
             optimiserSevenStarsLevel: 'T3',
-            optimiserEightStarsLevel: 'T1',
+            optimiserEightStarsLevel: 'T2',
+            optimiserNineStarsLevel: 'T0',
             optimisedSets: [],
             optimisedResultSelectedIndex: 1,
             connected: false,
@@ -80,7 +86,8 @@ export default class App extends Component {
                 this.setState({ connected: true });
 
                 // If the stored version in localStorage is different, fetch new data
-                if (versionNumberFromLocalStorage !== currentVersion) {
+                console.log(process.env.NODE_ENV !== 'development')
+                if (versionNumberFromLocalStorage !== currentVersion || process.env.NODE_ENV === 'development') {
                     // Checking if user can fetch latest data
 
                     fetch(process.env.REACT_APP_SETS_FETCH)
@@ -97,6 +104,12 @@ export default class App extends Component {
 
                             let i = 0;
                             while (i < data.length) {
+                                // Add a 0 on set types that are under 10
+                                const dataSetTypeSplit = data[i].setType.split(' ');
+                                if (parseInt(dataSetTypeSplit[0], 10) < 10) {
+                                    data[i].setType = '0' + data[i].setType;
+                                }
+
                                 let setType = data[i].setType.replace(/\d+ /, '');
 
                                 data[i].enhance_level = this.adaptElvl(data[i], enhanceLevel);
@@ -134,6 +147,9 @@ export default class App extends Component {
                                 })
                             });
 
+                            // Quick ensure our sets are sorted by their setType (DESC, higher number will be at top)
+                            sortedData.sort((a, b) => b[0].setType.localeCompare(a[0].setType));
+
                             localStorage.setItem('data', JSON.stringify(sortedData));
                             localStorage.setItem('setTypes', JSON.stringify(setTypesArray));
                             this.setState({
@@ -165,6 +181,8 @@ export default class App extends Component {
                 return set;
             })
         });
+
+        // this.sortDataBySetType(data);
 
         return this.setState({
             data: data,
@@ -435,13 +453,14 @@ export default class App extends Component {
     };
 
     showIfMatch = (set) => {
+        const setName = set.set_name.toLowerCase().match(this.state.searchBySetName.toLowerCase());
         const techName = set.set_tech_name.toLowerCase().match(this.state.searchBySetName.toLowerCase());
         const setType = set.setType.toLowerCase().match(this.state.searchBySetType.toLowerCase()) || this.state.searchBySetType === 'All';
         const bonus = this.findBonus(set, this.state.filterByBonusType) || this.state.filterByBonusType === 'All';
         const matchTotalArtsNumber = set.set_total_arts_number.toString() === this.state.filterByTotalArtsNumber || this.state.filterByTotalArtsNumber === 'All';
 
         // Match set tech name, set types and set total arts number, if All, every set is shown
-        return techName && setType && bonus && matchTotalArtsNumber;
+        return (setName || techName) && setType && bonus && matchTotalArtsNumber;
     };
 
     filterSetsForStatsModal = (set) => {
@@ -631,10 +650,11 @@ export default class App extends Component {
 
     getOptimizedSets = (sets) => {
         // This function is here to filter and fill ArtsBox only with sets that automatic builder will use
-        const artLevels = /[6-8]/g;
-        const sixStarsSets = /T[0-2]/g;
-        const sevenStarsSets = /T[0-2]/g;
-        const eightStarsSets = /T[0]/g;
+        const artLevels = this.state.artsLevelsOptimized;
+        const sixStarsSets = this.state.sixStarsSetsOptimized;
+        const sevenStarsSets = this.state.sevenStarsSetsOptimized;
+        const eightStarsSets = this.state.eightStarsSetsOptimized;
+        const nineStarsSets = this.state.nineStarsSetsOptimized;
 
         sets = sets.filter(set => {
             const testGSValue = this.findBonus(set, /Game Speed/);
@@ -645,7 +665,8 @@ export default class App extends Component {
             return !artLevel.match(artLevels) || !(testGSValue || testMedalsValue) ? false :
                 !(setLevel.match(sixStarsSets) && artLevel === '6') ?
                     !(setLevel.match(sevenStarsSets) && artLevel === '7') ?
-                        !(setLevel.match(eightStarsSets) && artLevel === '8') : false : false;
+                        !(setLevel.match(eightStarsSets) && artLevel === '8') ?
+                            !(setLevel.match(nineStarsSets) && artLevel === '9') : false : false : false;
         });
 
         if (sets.length > 0) {
@@ -750,7 +771,8 @@ export default class App extends Component {
 
         return setLevel === '6' ? this.setState({ optimiserSixStarsLevel: setTier }) :
             setLevel === '7' ? this.setState({ optimiserSevenStarsLevel: setTier }) :
-                setLevel === '8' ? this.setState({ optimiserEightStarsLevel: setTier }) : null;
+                setLevel === '8' ? this.setState({ optimiserEightStarsLevel: setTier }) :
+                    setLevel === '9' ? this.setState({ optimiserNineStarsLevel: setTier }) : null;
     };
 
     getSetLevels = (artLevel) => {
@@ -759,7 +781,8 @@ export default class App extends Component {
         const setSetsLevel = artLevel === 6 ? 3 : artLevel === 7 ? 3 : artLevel === 8 ? 1 : 0;
         const setTier = artLevel === 6 ? this.state.optimiserSixStarsLevel :
             artLevel === 7 ? this.state.optimiserSevenStarsLevel :
-                artLevel === 8 ? this.state.optimiserEightStarsLevel : 0;
+                artLevel === 8 ? this.state.optimiserEightStarsLevel :
+                    artLevel === 9 ? this.state.optimiserNineStarsLevel : 0;
 
         for (let i = 0; i <= setSetsLevel; i++) {
             const setLevel = this.state.setsLevels[i];
@@ -1001,6 +1024,7 @@ export default class App extends Component {
             this.state.optimiserSixStarsLevel,
             this.state.optimiserSevenStarsLevel,
             this.state.optimiserEightStarsLevel,
+            this.state.optimiserNineStarsLevel,
         );
 
         getResults = getResults.sort((r1, r2) =>

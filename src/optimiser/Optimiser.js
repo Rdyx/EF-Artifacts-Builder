@@ -44,7 +44,8 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
 
 // Making a filter method upon existing sets to get the most powerfull ones
 export const filterSets = (
-    sets, findBonus, excludedFromOptimiser = [], sixStarsLevel = 'T3', sevenStarsLevel = 'T3', EightStarsLevel = 'T1'
+    sets, findBonus, excludedFromOptimiser = [], sixStarsLevel = 'T3', sevenStarsLevel = 'T3', eightStarsLevel = 'T2',
+    nineStarsLevel = 'T0'
 ) => {
     // Sets filter
     const artLevels = /[6-8]/g;
@@ -64,9 +65,12 @@ export const filterSets = (
                     (setLevel === sevenStarsLevel &&
                         artLevel === '7' &&
                         excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) :
-                        (setLevel === EightStarsLevel &&
+                        (setLevel === eightStarsLevel &&
                             artLevel === '8' &&
-                            excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) : null;
+                            excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) :
+                            (setLevel === nineStarsLevel &&
+                                artLevel === '9' &&
+                                excludedFromOptimiser.indexOf(setName) === -1) ? unifiedArray.push(set) : null;
         })
     });
 
@@ -113,7 +117,8 @@ export const filterSets = (
 
 // KNAPSACK ALGORITHM MODIFIED A BIT TO FIT THE APP NEEDS
 export const knapsack = (
-    sets, maxArts, maxGS, minMedalsPerSet, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, EightStarsLevel
+    sets, maxArts, maxGS, minMedalsPerSet, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, eightStarsLevel,
+    nineStarsLevel,
 ) => {
     function getSolution(row, nbArts, maxGS, minMedalsPerSet, memo) {
         const NO_SOLUTION = { totalArts: 0, gameSpeed: 0, medalsBonus: 0, sets: [] };
@@ -191,7 +196,7 @@ export const knapsack = (
         // return lastRow[lastRow.length - 1];
     }
 
-    sets = filterSets(sets, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, EightStarsLevel);
+    sets = filterSets(sets, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, eightStarsLevel, nineStarsLevel);
 
     let results = [];
     // Creating loop to make multiple knapsacks
