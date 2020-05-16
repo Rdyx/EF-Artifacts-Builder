@@ -573,7 +573,8 @@ export default class App extends Component {
 
         const elvls = artLevel === '6*' ?
             this.state.enhancementLevels.filter(x => x !== 3 && x !== 4) : artLevel === '7*' ?
-                this.state.enhancementLevels.filter(x => x !== 4) : this.state.enhancementLevels;
+                this.state.enhancementLevels.filter(x => x !== 4) : artLevel === '8*' ? 
+                this.state.enhancementLevels : this.state.enhancementLevels.filter(x => true); // filter all levels for 9* sets
 
         const enhanceLevel = this.adaptElvl(set, this.state.enhanceLevel);
 
@@ -581,7 +582,8 @@ export default class App extends Component {
             (
                 (artLevel === '6*' && setLevel === 'T3') ||
                 (artLevel === '7*' && setLevel === 'T3') ||
-                (artLevel === '8*' && setLevel === 'T1')
+                (artLevel === '8*' && setLevel === 'T2') ||
+                (artLevel === '9*' && setLevel === 'T0')
             ) && set.set_arts_number === set.set_total_arts_number;
 
         // Must get the whole div in condition and rewrite it completely depending on state
