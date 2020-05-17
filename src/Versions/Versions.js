@@ -1,12 +1,12 @@
 export const versions = [
     {
         number: '1.12.0',
-        date: '15 Mai 2020',
-        title: "New data, 9* sets & T2 8*, quick UI improvement",
+        date: '17 Mai 2020',
+        title: "New data (9* sets & T2 8*), quick UI improvement",
         content: {
-            point1: "I am glad to announce that EFAB has got some service again! Thank you for your support messages and very sorry for the unconvenience, this happened at a pretty bad time!... I'll try to add the latest data ASAP but it can take some time since it looks like I missed a serious bunch of things!",
-            point2: "9* and T2 8* sets have been added and are taken in account in automatic build.",
-            point2: "Artifact level is now shown when you click on an artifact right to its name.",
+            point1: "9* and T2 8* sets have been added and are now taken in account in automatic build.",
+            point2: "Artifact level is now shown when you click on an artifact (right to its name).",
+            point3: "Slightly modified text search, now taking in account set names and their technical names at the same time.",
         },
     },
     {

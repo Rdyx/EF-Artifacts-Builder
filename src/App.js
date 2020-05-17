@@ -24,11 +24,11 @@ export default class App extends Component {
             bonusTypes: ['All', 'Game Speed', 'Increase Additional Medals Obtained'],
             artsLevels: [6, 7, 8, 9],
             setsLevels: ['T0', 'T1', 'T2', 'T3'],
-            artsLevelsOptimized: /[6-8]/g,
+            artsLevelsOptimized: /[6-9]/g,
             sixStarsSetsOptimized: /T[0-2]/g,
             sevenStarsSetsOptimized: /T[0-2]/g,
-            eightStarsSetsOptimized: /T[0-2]/g,
-            nineStarsSetsOptimized: /T[0]/g,
+            eightStarsSetsOptimized: /T[0-1]/g,
+            nineStarsSetsOptimized: null,
             enhancementModes: ['Manual', 'All'],
             enhancementMode: 'Manual',
             enhancementLevels: [0, 1, 2, 3, 4],
@@ -85,8 +85,7 @@ export default class App extends Component {
                 // Used to show facebook button
                 this.setState({ connected: true });
 
-                // If the stored version in localStorage is different, fetch new data
-                console.log(process.env.NODE_ENV !== 'development')
+                // If the stored version in localStorage is different or we are in dev, fetch new data
                 if (versionNumberFromLocalStorage !== currentVersion || process.env.NODE_ENV === 'development') {
                     // Checking if user can fetch latest data
 
@@ -165,7 +164,6 @@ export default class App extends Component {
                         })
                 } else {
                     this.getDataFromLocalStorage(enhanceLevel);
-                    console.log('already')
                 }
             })
             .catch(() => {
@@ -332,7 +330,7 @@ export default class App extends Component {
             const bonusMedals = fullSet ?
                 calculateMedalsFromEnhancement(findBonusMedalsMethod, event.enhance_level) : findBonusMedalsMethod;
             const bonusGS = fullSet ?
-                calculateGSFromEnhancement(findBonusGSMethod, event.artifact1.art_level, event.setLevel, event.enhance_level) : findBonusGSMethod;
+                calculateGSFromEnhancement(findBonusGSMethod, event.artifact1.art_level, event.setLevel, event.enhance_level, event.setType) : findBonusGSMethod;
 
             this.setState(prevState => ({
                 selectedList: [...prevState.selectedList, event],
@@ -352,7 +350,7 @@ export default class App extends Component {
             if (!isNaN(oldSet.bonusMedals) || !isNaN(oldSet.bonusGS)) {
                 if (fullSet) {
                     oldSet.calculatedBonusMedals = calculateMedalsFromEnhancement(oldSet.bonusMedals, oldSet.enhance_level);
-                    oldSet.calculatedBonusGS = calculateGSFromEnhancement(oldSet.bonusGS, oldSet.artifact1.art_level, oldSet.setLevel, oldSet.enhance_level);
+                    oldSet.calculatedBonusGS = calculateGSFromEnhancement(oldSet.bonusGS, oldSet.artifact1.art_level, oldSet.setLevel, oldSet.enhance_level, oldSet.setType);
                 }
             } else {
                 const findBonusMedalsMethod = this.findBonus(oldSet, /Increase Additional Medals Obtained/);
@@ -361,7 +359,7 @@ export default class App extends Component {
                 bonusMedals = fullSet ?
                     calculateMedalsFromEnhancement(findBonusMedalsMethod, oldSet.enhance_level) : findBonusMedalsMethod;
                 bonusGS = fullSet ?
-                    calculateGSFromEnhancement(findBonusGSMethod, oldSet.artifact1.art_level, oldSet.setLevel, oldSet.enhance_level) : findBonusGSMethod;
+                    calculateGSFromEnhancement(findBonusGSMethod, oldSet.artifact1.art_level, oldSet.setLevel, oldSet.enhance_level, oldSet.setType) : findBonusGSMethod;
             }
 
             this.setState(prevState => ({
@@ -426,7 +424,7 @@ export default class App extends Component {
         const fullSet = set.set_arts_number === set.set_total_arts_number;
         let findGsBonus = !isNaN(set.calculatedBonusGS) ?
             set.calculatedBonusGS : fullSet ?
-                calculateGSFromEnhancement(this.findBonus(set, /Game Speed/), set.artifact1.art_level, set.setLevel, set.enhance_level) :
+                calculateGSFromEnhancement(this.findBonus(set, /Game Speed/), set.artifact1.art_level, set.setLevel, set.enhance_level, set.setType) :
                 this.findBonus(set, /Game Speed/);
 
         let findMedalBonus = !isNaN(set.calculatedBonusMedals) ?
@@ -573,8 +571,8 @@ export default class App extends Component {
 
         const elvls = artLevel === '6*' ?
             this.state.enhancementLevels.filter(x => x !== 3 && x !== 4) : artLevel === '7*' ?
-                this.state.enhancementLevels.filter(x => x !== 4) : artLevel === '8*' ? 
-                this.state.enhancementLevels : this.state.enhancementLevels.filter(x => true); // filter all levels for 9* sets
+                this.state.enhancementLevels.filter(x => x !== 4) : artLevel === '8*' ?
+                    this.state.enhancementLevels : this.state.enhancementLevels.filter(x => x < 1); // filter all levels for 9* sets
 
         const enhanceLevel = this.adaptElvl(set, this.state.enhanceLevel);
 
@@ -780,7 +778,7 @@ export default class App extends Component {
     getSetLevels = (artLevel) => {
         const setLevelBoxes = [];
         // Lvl 8 is here to be available easier later
-        const setSetsLevel = artLevel === 6 ? 3 : artLevel === 7 ? 3 : artLevel === 8 ? 1 : 0;
+        const setSetsLevel = artLevel === 6 ? 3 : artLevel === 7 ? 3 : artLevel === 8 ? 2 : 0;
         const setTier = artLevel === 6 ? this.state.optimiserSixStarsLevel :
             artLevel === 7 ? this.state.optimiserSevenStarsLevel :
                 artLevel === 8 ? this.state.optimiserEightStarsLevel :
@@ -801,7 +799,7 @@ export default class App extends Component {
                         onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
                     />
                     <label htmlFor={setLevel + artLevel + i}
-                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col-6'} mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col'} mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
                         {setLevel} {artLevel}*
                     </label>
                     {newLine}
@@ -890,7 +888,8 @@ export default class App extends Component {
                         set.bonusGS,
                         set.artifact1.art_level,
                         set.setLevel,
-                        set.enhance_level
+                        set.enhance_level,
+                        set.setType,
                     );
                 }
 
@@ -902,7 +901,8 @@ export default class App extends Component {
                         this.findBonus(set, /Game Speed/),
                         set.artifact1.art_level,
                         set.setLevel,
-                        set.enhance_level
+                        set.enhance_level,
+                        set.setType,
                     );
 
                 this.setState({
@@ -1023,6 +1023,7 @@ export default class App extends Component {
             1250,
             this.findBonus,
             this.state.excludedFromOptimiser,
+            this.state.artsLevelsOptimized,
             this.state.optimiserSixStarsLevel,
             this.state.optimiserSevenStarsLevel,
             this.state.optimiserEightStarsLevel,

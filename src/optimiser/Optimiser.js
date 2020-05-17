@@ -2,24 +2,27 @@ export const calculateMedalsFromEnhancement = (bonusMedals, elvl) => {
     return bonusMedals + ((bonusMedals / 2) * elvl);
 };
 
-export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
+export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl, setType) => {
     if (!bonusGS) {
         return 0;
     };
 
-    function getGS(GSArrays, bonusGS, elvl) {
+    const eightStarsSetIsAirship = (setType.match(/Airship/g) && artLevel === '8*');
+
+    function getGS(GSArrays, bonusGS, elvl, eightStarsSetIsAirship) {
         const lvl0 = elvl === 0;
         const lvl1 = elvl === 1;
         const lvl2 = elvl === 2;
         const lvl3 = elvl === 3;
         const lvl4 = elvl === 4;
-        const GSValues = bonusGS === GSArrays[0][0] ? GSArrays[0] : GSArrays[1];
+        const GSValues = eightStarsSetIsAirship ? GSArrays[2] : bonusGS === GSArrays[0][0] ? GSArrays[0] : GSArrays[1];
 
         return lvl0 ? GSValues[0] : lvl1 ? GSValues[1] : lvl2 ? GSValues[2] : lvl3 ? GSValues[3] : lvl4 ? GSValues[4] : 0;
     };
 
     // Each number is the elvl equivalent
     // There are 2 arrays because sets GS are divided by 2 different start values
+    // 8* is a special case because for some reason, airships and usual gs sets start with the same value (#thankYouEkkor...)
     const defaultStartGSValues = {
         "6*": {
             T0: [[15, 17, 19, 0, 0], [25, 28, 32, 0, 0]],
@@ -34,22 +37,23 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl) => {
             T3: [[33, 41, 44, 74, 0], [51, 59, 66, 74, 0]],
         },
         "8*": {
-            T0: [[47, 53, 60, 67, 74], [0, 0, 0, 0, 0]],
-            T1: [[51, 59, 66, 74, 77], [0, 0, 0, 0, 0]],
+            T0: [[47, 53, 60, 67, 74], [0, 0, 0, 0, 0], [47, 53, 59, 65, 73]],
+            T1: [[51, 59, 66, 74, 77], [0, 0, 0, 0, 0], [49, 55, 61, 67, 75]],
+            T2: [[54, 62, 69, 77, 80], [0, 0, 0, 0, 0], [52, 60, 67, 75, 77]],
         },
+        "9*": {
+            T0: [[52, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+        }
     };
 
-    return getGS(defaultStartGSValues[artLevel][trans], bonusGS, elvl);
+    return getGS(defaultStartGSValues[artLevel][trans], bonusGS, elvl, eightStarsSetIsAirship);
 };
 
 // Making a filter method upon existing sets to get the most powerfull ones
 export const filterSets = (
-    sets, findBonus, excludedFromOptimiser = [], sixStarsLevel = 'T3', sevenStarsLevel = 'T3', eightStarsLevel = 'T2',
+    sets, findBonus, excludedFromOptimiser = [], artLevels, sixStarsLevel = 'T3', sevenStarsLevel = 'T3', eightStarsLevel = 'T2',
     nineStarsLevel = 'T0'
 ) => {
-    // Sets filter
-    const artLevels = /[6-8]/g;
-
     // Flatting arrays and filtering sets
     let unifiedArray = [];
     sets.map(setArray => {
@@ -88,6 +92,7 @@ export const filterSets = (
         // Since GS and Medals Bonus are most important bonus, save those sets and flush the rest
         return bonusGSValue || bonusMedalsValue ?
             objectStyle.push({
+                'setType': set.setType,
                 'setLevel': set.setLevel,
                 'set_name': set.set_name.replace(/ \(\dp\)/g, ''),
                 // 'set_name': set.set_name,
@@ -96,7 +101,7 @@ export const filterSets = (
                 'set_total_arts_number': set.set_total_arts_number,
                 'bonusGS': bonusGSValue,
                 'calculatedBonusGS': bonusGSValue ?
-                    fullSet ? calculateGSFromEnhancement(bonusGSValue, set.artifact1.art_level, set.setLevel, set.enhance_level) : bonusGSValue : 0,
+                    fullSet ? calculateGSFromEnhancement(bonusGSValue, set.artifact1.art_level, set.setLevel, set.enhance_level, set.setType) : bonusGSValue : 0,
                 'bonusMedals': bonusMedalsValue,
                 'calculatedBonusMedals': bonusMedalsValue ?
                     fullSet ? calculateMedalsFromEnhancement(bonusMedalsValue, set.enhance_level) : bonusMedalsValue : 0,
@@ -117,7 +122,7 @@ export const filterSets = (
 
 // KNAPSACK ALGORITHM MODIFIED A BIT TO FIT THE APP NEEDS
 export const knapsack = (
-    sets, maxArts, maxGS, minMedalsPerSet, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, eightStarsLevel,
+    sets, maxArts, maxGS, minMedalsPerSet, findBonus, excludedFromOptimiser, artLevels, sixStarsLevel, sevenStarsLevel, eightStarsLevel,
     nineStarsLevel,
 ) => {
     function getSolution(row, nbArts, maxGS, minMedalsPerSet, memo) {
@@ -196,7 +201,7 @@ export const knapsack = (
         // return lastRow[lastRow.length - 1];
     }
 
-    sets = filterSets(sets, findBonus, excludedFromOptimiser, sixStarsLevel, sevenStarsLevel, eightStarsLevel, nineStarsLevel);
+    sets = filterSets(sets, findBonus, excludedFromOptimiser, artLevels, sixStarsLevel, sevenStarsLevel, eightStarsLevel);
 
     let results = [];
     // Creating loop to make multiple knapsacks
