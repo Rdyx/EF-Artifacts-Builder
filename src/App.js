@@ -31,8 +31,8 @@ export default class App extends Component {
             nineStarsSetsOptimized: null,
             enhancementModes: ['Manual', 'All'],
             enhancementMode: 'Manual',
-            enhancementLevels: [0, 1, 2, 3, 4],
-            enhanceLevel: 4,
+            enhancementLevels: [0, 1, 2, 3, 4, 5],
+            enhanceLevel: 5,
             maxArtsPerSet: 6,
             set: null,
             artifact: null,
@@ -64,7 +64,7 @@ export default class App extends Component {
 
     componentWillMount() {
         if (!localStorage.getItem('enhanceLevel')) {
-            localStorage.setItem('enhanceLevel', 4);
+            localStorage.setItem('enhanceLevel', 5);
         }
 
         const enhanceLevel = parseInt(localStorage.getItem('enhanceLevel'), 10);
@@ -281,6 +281,10 @@ export default class App extends Component {
             gameSpeedBonuses: [],
             bonusMedals: [],
         });
+
+        // Default checking every "X" radio input ("reset")
+        const radioInputsList = document.querySelectorAll('.row.container-fluid.mx-auto>input');
+        radioInputsList.forEach(input => input.checked = true)
     };
 
     handleList = (event, status = null, elvl, globalArray) => {
@@ -570,9 +574,9 @@ export default class App extends Component {
         const setLevel = set.setLevel;
 
         const elvls = artLevel === '6*' ?
-            this.state.enhancementLevels.filter(x => x !== 3 && x !== 4) : artLevel === '7*' ?
-                this.state.enhancementLevels.filter(x => x !== 4) : artLevel === '8*' ?
-                    this.state.enhancementLevels : this.state.enhancementLevels.filter(x => x < 1); // filter all levels for 9* sets
+            this.state.enhancementLevels.filter(x => ![3, 4, 5].includes(x)) : artLevel === '7*' ?
+                this.state.enhancementLevels.filter(x => ![4, 5].includes(x)) : artLevel === '8*' ?
+                    this.state.enhancementLevels.filter(x => ![5].includes(x)) : this.state.enhancementLevels; // filter all levels for 9* sets
 
         const enhanceLevel = this.adaptElvl(set, this.state.enhanceLevel);
 
@@ -937,23 +941,19 @@ export default class App extends Component {
     adaptElvl = (set, elvl) => {
         const artLevel = set.artifact1.art_level;
 
-        if (elvl === 4) {
-            if (artLevel === '8*') {
-                return elvl;
-            } else if (artLevel === '7*') {
-                return elvl - 1;
-            } else {
-                return elvl - 2;
-            }
-        } else if (elvl === 3) {
-            if (artLevel === '7*' || artLevel === '8*') {
-                return elvl
-            } else {
-                return elvl - 1;
-            }
-        } else {
-            return elvl;
+        if (elvl === 5) {
+            return artLevel === '9*' ? elvl :
+                artLevel === '8*' ? elvl - 1 :
+                    artLevel === '7*' ? elvl - 2 : elvl - 3;
         }
+        if (elvl === 4) {
+            return ['8*', '9*'].includes(artLevel) ? elvl :
+                artLevel === '7*' ? elvl - 1 : elvl - 2;
+        }
+        if (elvl === 3) {
+            return ['7*', '8*', '9*'].includes(artLevel) ? elvl : elvl - 1;
+        }
+        return elvl;
     };
 
     modifySelectedSet = (list, set, elvl) => {

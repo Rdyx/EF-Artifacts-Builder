@@ -83,7 +83,7 @@ export class ArtsBox extends Component {
                                     type="number"
                                     onChange={this.props.optimiserNbArts}
                                     defaultValue={this.props.wantedArts === 0 ? '' : this.props.wantedArts}
-                                    max={50}
+                                    max={100}
                                     min={0}
                                     placeholder={0}
                                     onKeyUp={(e) => this.triggerBuild(e)}

@@ -15,6 +15,7 @@ export class SetModal extends Component {
         this.state = {
             artifacts: [],
             showArtStats: false,
+            artNumberToShow: 0,
         }
     }
 
@@ -39,14 +40,14 @@ export class SetModal extends Component {
         if (art) {
             return (
                 <div key={art.artifact_number}>
-                    {this.state.showArtStats ? (
+                    {this.state.showArtStats && art.artifact_number === this.state.artNumberToShow ? (
                         <ArtifactModal
                             handler={this.closeArtStats}
                             artifact={art}
                         />
                     ) : null}
                     <img
-                        onClick={() => this.setState({ showArtStats: true })}
+                        onClick={() => this.setState({ showArtStats: true, artNumberToShow: art.artifact_number })}
                         className="art-image mt-2"
                         src={art.artifact_img}
                         alt={art.artifact_name}
@@ -192,7 +193,7 @@ export class SetModal extends Component {
                     style={customStyles}
                 >
                     <div className="text-center">
-                        <h1>{defaultSet.set_name.replace(/ \(\dp\)/g, '')}</h1>
+                        <h1>{defaultSet.set_name.replace(/ \(\dp\)/g, '')} {defaultSet.artifact1.art_level}</h1>
                         {defaultSet ? (
                             <div className="row justify-content-around">
                                 {this.state.artifacts.map(this.showArts)}

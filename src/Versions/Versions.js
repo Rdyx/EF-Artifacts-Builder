@@ -1,8 +1,18 @@
 export const versions = [
     {
+        number: '1.12.1',
+        date: '1st June 2020',
+        title: "9* Sets now have 5th level of enhancement, quick fixes.",
+        content: {
+            point1: "9* Sets now have their 5 enhancement levels available.",
+            point2: "Quick fix about artifact modal when an artifact was clicked in the set modal (Clicking on a single artifact was triggering every artifact modal).",
+            point3: "Quick fix about the Reset Summary button which was not resetting properly selected sets in Manual Build mode.",
+        },
+    },
+    {
         number: '1.12.0',
         date: '17 Mai 2020',
-        title: "New data (9* sets & T2 8*), quick UI improvement",
+        title: "New data (9* sets & T2 8*), quick UI improvement.",
         content: {
             point1: "9* and T2 8* sets have been added and are now taken in account in automatic build.",
             point2: "Artifact level is now shown when you click on an artifact (right to its name).",

@@ -10,14 +10,8 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl, setTy
     const eightStarsSetIsAirship = (setType.match(/Airship/g) && artLevel === '8*');
 
     function getGS(GSArrays, bonusGS, elvl, eightStarsSetIsAirship) {
-        const lvl0 = elvl === 0;
-        const lvl1 = elvl === 1;
-        const lvl2 = elvl === 2;
-        const lvl3 = elvl === 3;
-        const lvl4 = elvl === 4;
         const GSValues = eightStarsSetIsAirship ? GSArrays[2] : bonusGS === GSArrays[0][0] ? GSArrays[0] : GSArrays[1];
-
-        return lvl0 ? GSValues[0] : lvl1 ? GSValues[1] : lvl2 ? GSValues[2] : lvl3 ? GSValues[3] : lvl4 ? GSValues[4] : 0;
+        return GSValues[elvl];
     };
 
     // Each number is the elvl equivalent
@@ -25,24 +19,24 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl, setTy
     // 8* is a special case because for some reason, airships and usual gs sets start with the same value (#thankYouEkkor...)
     const defaultStartGSValues = {
         "6*": {
-            T0: [[15, 17, 19, 0, 0], [25, 28, 32, 0, 0]],
-            T1: [[22, 25, 28, 0, 0], [37, 42, 47, 0, 0]],
-            T2: [[26, 29, 33, 0, 0], [45, 51, 57, 0, 0]],
-            T3: [[27, 31, 34, 0, 0], [46, 52, 58, 0, 0]],
+            T0: [[15, 17, 19, 0, 0, 0], [25, 28, 32, 0, 0, 0]],
+            T1: [[22, 25, 28, 0, 0, 0], [37, 42, 47, 0, 0, 0]],
+            T2: [[26, 29, 33, 0, 0, 0], [45, 51, 57, 0, 0, 0]],
+            T3: [[27, 31, 34, 0, 0, 0], [46, 52, 58, 0, 0, 0]],
         },
         "7*": {
-            T0: [[23, 26, 30, 33, 0], [37, 43, 48, 54, 0]],
-            T1: [[28, 32, 36, 41, 0], [38, 44, 49, 55, 0]],
-            T2: [[30, 35, 39, 44, 0], [50, 58, 65, 73, 0]],
-            T3: [[33, 41, 44, 74, 0], [51, 59, 66, 74, 0]],
+            T0: [[23, 26, 30, 33, 0, 0], [37, 43, 48, 54, 0, 0]],
+            T1: [[28, 32, 36, 41, 0, 0], [38, 44, 49, 55, 0, 0]],
+            T2: [[30, 35, 39, 44, 0, 0], [50, 58, 65, 73, 0, 0]],
+            T3: [[33, 41, 44, 74, 0, 0], [51, 59, 66, 74, 0, 0]],
         },
         "8*": {
-            T0: [[47, 53, 60, 67, 74], [0, 0, 0, 0, 0], [47, 53, 59, 65, 73]],
-            T1: [[51, 59, 66, 74, 77], [0, 0, 0, 0, 0], [49, 55, 61, 67, 75]],
-            T2: [[54, 62, 69, 77, 80], [0, 0, 0, 0, 0], [52, 60, 67, 75, 77]],
+            T0: [[47, 53, 60, 67, 74, 0], [0, 0, 0, 0, 0, 0], [47, 53, 59, 65, 73], 0],
+            T1: [[51, 59, 66, 74, 77, 0], [0, 0, 0, 0, 0, 0], [49, 55, 61, 67, 75], 0],
+            T2: [[54, 62, 69, 77, 80, 0], [0, 0, 0, 0, 0, 0], [52, 60, 67, 75, 77], 0],
         },
         "9*": {
-            T0: [[52, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+            T0: [[52, 60, 67, 75, 78, 81], [0, 0, 0, 0, 0, 0]],
         }
     };
 
