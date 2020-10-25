@@ -1,6 +1,7 @@
 {
   "name": "efartifacts-front",
   "version": "0.1.0",
+  "homepage": "./build/",
   "private": true,
   "dependencies": {
     "bootstrap": "4.1.2",
