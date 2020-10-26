@@ -36,7 +36,8 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl, setTy
             T2: [[54, 62, 69, 77, 80, 0], [0, 0, 0, 0, 0, 0], [52, 60, 67, 75, 77], 0],
         },
         "9*": {
-            T0: [[52, 60, 67, 75, 78, 81], [0, 0, 0, 0, 0, 0]],
+            T0: [[52, 60, 67, 75, 78, 81], [51, 58, 64, 71, 77, 80]],
+            T1: [[55, 63, 70, 78, 81, 84], [54, 62, 69, 77, 80, 83]],
         }
     };
 
@@ -46,7 +47,7 @@ export const calculateGSFromEnhancement = (bonusGS, artLevel, trans, elvl, setTy
 // Making a filter method upon existing sets to get the most powerfull ones
 export const filterSets = (
     sets, findBonus, excludedFromOptimiser = [], artLevels, sixStarsLevel = 'T3', sevenStarsLevel = 'T3', eightStarsLevel = 'T2',
-    nineStarsLevel = 'T0'
+    nineStarsLevel = 'T1'
 ) => {
     // Flatting arrays and filtering sets
     let unifiedArray = [];
@@ -195,7 +196,7 @@ export const knapsack = (
         // return lastRow[lastRow.length - 1];
     }
 
-    sets = filterSets(sets, findBonus, excludedFromOptimiser, artLevels, sixStarsLevel, sevenStarsLevel, eightStarsLevel);
+    sets = filterSets(sets, findBonus, excludedFromOptimiser, artLevels, sixStarsLevel, sevenStarsLevel, eightStarsLevel, nineStarsLevel);
 
     let results = [];
     // Creating loop to make multiple knapsacks

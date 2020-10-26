@@ -25,10 +25,10 @@ export default class App extends Component {
             artsLevels: [6, 7, 8, 9],
             setsLevels: ['T0', 'T1', 'T2', 'T3'],
             artsLevelsOptimized: /[6-9]/g,
-            sixStarsSetsOptimized: /T[0-2]/g,
+            sixStarsSetsOptimized: /T[0-2]/g, // NB: Regex to EXCLUDE set
             sevenStarsSetsOptimized: /T[0-2]/g,
             eightStarsSetsOptimized: /T[0-1]/g,
-            nineStarsSetsOptimized: null,
+            nineStarsSetsOptimized: /T[0]/g,
             enhancementModes: ['Manual', 'All'],
             enhancementMode: 'Manual',
             enhancementLevels: [0, 1, 2, 3, 4, 5],
@@ -55,14 +55,14 @@ export default class App extends Component {
             optimiserSixStarsLevel: 'T3',
             optimiserSevenStarsLevel: 'T3',
             optimiserEightStarsLevel: 'T2',
-            optimiserNineStarsLevel: 'T0',
+            optimiserNineStarsLevel: 'T1',
             optimisedSets: [],
             optimisedResultSelectedIndex: 1,
             connected: false,
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!localStorage.getItem('enhanceLevel')) {
             localStorage.setItem('enhanceLevel', 5);
         }
@@ -585,7 +585,7 @@ export default class App extends Component {
                 (artLevel === '6*' && setLevel === 'T3') ||
                 (artLevel === '7*' && setLevel === 'T3') ||
                 (artLevel === '8*' && setLevel === 'T2') ||
-                (artLevel === '9*' && setLevel === 'T0')
+                (artLevel === '9*' && setLevel === 'T1')
             ) && set.set_arts_number === set.set_total_arts_number;
 
         // Must get the whole div in condition and rewrite it completely depending on state
@@ -781,8 +781,11 @@ export default class App extends Component {
 
     getSetLevels = (artLevel) => {
         const setLevelBoxes = [];
-        // Lvl 8 is here to be available easier later
-        const setSetsLevel = artLevel === 6 ? 3 : artLevel === 7 ? 3 : artLevel === 8 ? 2 : 0;
+
+        const setSetsLevel = artLevel === 6 ? 3 : 
+            artLevel === 7 ? 3 :
+                artLevel === 8 ? 2 :
+                    artLevel === 9 ? 1 : 0;
         const setTier = artLevel === 6 ? this.state.optimiserSixStarsLevel :
             artLevel === 7 ? this.state.optimiserSevenStarsLevel :
                 artLevel === 8 ? this.state.optimiserEightStarsLevel :
@@ -803,7 +806,7 @@ export default class App extends Component {
                         onClick={(e) => this.optimiserSetSetsLevelsFilter(e)}
                     />
                     <label htmlFor={setLevel + artLevel + i}
-                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : 'col'} mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
+                        className={`${setSetsLevel === 3 ? 'col-3' : setSetsLevel === 2 ? 'col-4' : setSetsLevel === 1 ? 'col-6' : 'col'} mb-1 set-filter-button radio-btn personnal-checkbox green-check filter-modal`}>
                         {setLevel} {artLevel}*
                     </label>
                     {newLine}

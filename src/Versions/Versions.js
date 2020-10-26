@@ -4,8 +4,8 @@ export const versions = [
         date: '26th October 2020',
         title: "Data update & bug fixes.",
         content: {
-            point1: "Updated sets data.",
-            point1: "Fixed some problems with CSS encountered after having updated used librairies.",
+            point1: "Updated sets data & optimiser to take in account 9* sets.",
+            point2: "Fixed some problems with CSS encountered after having updated used librairies.",
         },
     },
     {

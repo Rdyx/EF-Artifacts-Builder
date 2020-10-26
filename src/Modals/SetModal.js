@@ -19,7 +19,7 @@ export class SetModal extends Component {
         }
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({
             artifacts: [
                 this.props.sets[0].artifact1,

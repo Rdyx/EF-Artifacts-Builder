@@ -41,7 +41,7 @@ export class NavBar extends Component {
         }
     };
 
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         localStorage.setItem('showLastPatchNote', showLastPatchNote)
         this.setState({ showLastPatchNote: showLastPatchNote })
     };
@@ -197,6 +197,7 @@ export class NavBar extends Component {
                             placeholder="Search Sets"
                             alt="Search Sets"
                             onChange={this.props.searchBySetName}
+                            autoComplete="off"
                         />
                     </div>
                 </nav>

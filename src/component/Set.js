@@ -18,7 +18,7 @@ export default class Set extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({
             artifacts: [
                 this.props.set.artifact1,
