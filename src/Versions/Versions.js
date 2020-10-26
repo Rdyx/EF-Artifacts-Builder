@@ -1,5 +1,14 @@
 export const versions = [
     {
+        number: '1.12.2',
+        date: '26th October 2020',
+        title: "Data update & bug fixes.",
+        content: {
+            point1: "Updated sets data.",
+            point1: "Fixed some problems with CSS encountered after having updated used librairies.",
+        },
+    },
+    {
         number: '1.12.1',
         date: '1st June 2020',
         title: "9* Sets now have 5th level of enhancement, quick fixes.",
