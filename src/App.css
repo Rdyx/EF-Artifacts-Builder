@@ -2,6 +2,7 @@
     --main-bg-color: #000;
     --main-text-color: #FFF;
     --table-dark-text: #000;
+    --table-light-text: #FFF;
     --set-name-border-color: #FFF;
     --external-link: rgb(31, 169, 255);
     --set-checkbox-text-color: rgba(250, 180, 50, 0.8);
@@ -117,6 +118,10 @@ label {
     overflow-y: scroll;
     text-align: center;
     transition: all 0.2s ease;
+}
+
+.screenstats.d-block.d-md-none table tr {
+    color: var(--table-light-text);
 }
 
 .screenshot {
@@ -355,6 +360,7 @@ table.personnal-table {
     border-left: 1px solid var(--main-text-color);
     border-right: 1px solid var(--main-text-color);
     border-radius: 5px;
+    background-color: var(--transparent);
 }
 
 .btn-link:hover {
